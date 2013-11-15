@@ -10,7 +10,7 @@
 
 static bool main_running = true;
 
-int main_event_watch(void *core, SDL_Event *e){
+int main_event_watch(void *data, SDL_Event *e){
     if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
         main_running = false;
     }
@@ -20,11 +20,10 @@ int main_event_watch(void *core, SDL_Event *e){
 
 int main(int arc, char* argv[]){
     SDL_Init(SDL_INIT_EVERYTHING);
+    SDL_AddEventWatch(&main_event_watch, NULL);
     
     core_t core;
     core_init(&core);
-    
-    SDL_AddEventWatch(&main_event_watch, &core);
     
     game_t game;
     game_init(&game, &core);
