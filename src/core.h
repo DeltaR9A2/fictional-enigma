@@ -24,6 +24,8 @@ struct core_t{
 };
 
 void core_init(core_t *core);
+void core_quit(core_t *core);
+
 void core_window_redraw(core_t *core);
 void core_window_resize(core_t *core, int32_t w, int32_t h);
 

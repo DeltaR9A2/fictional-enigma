@@ -8,9 +8,11 @@
 #include "core.h"
 #include "game.h"
 
+static bool main_running = true;
+
 int main_event_watch(void *core, SDL_Event *e){
     if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
-        ((core_t *)core)->running = false;
+        main_running = false;
     }
     
     return 0;
@@ -33,7 +35,7 @@ int main(int arc, char* argv[]){
     int32_t ms_delta = 0;
     int32_t ms_accum = 0;
     
-    while(core.running){
+    while(main_running && core.running){
         prev_ms = curr_ms;
         curr_ms = SDL_GetTicks();
         ms_delta = curr_ms - prev_ms;
@@ -52,7 +54,10 @@ int main(int arc, char* argv[]){
             }
         }
     }
-    
+
+    game_quit(&game);
+    core_quit(&core);
+
     SDL_Quit();
     
     return 0;

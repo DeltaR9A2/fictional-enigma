@@ -1,13 +1,15 @@
 #include "core.h"
 
 void core_init(core_t *core){
-    core->win_vw = core->win_cw = 640;
-    core->win_vh = core->win_ch = 360;
+    core->win_vw = 640;
+    core->win_vh = 360;
+    core->win_cw = 1280;
+    core->win_ch = 720;
     
     core->active_rect.x = 0;
     core->active_rect.y = 0;
-    core->active_rect.w = 640;
-    core->active_rect.h = 360;
+    core->active_rect.w = 1280;
+    core->active_rect.h = 720;
 
     core->window = SDL_CreateWindow(
         "I am not a robot.",
@@ -29,6 +31,13 @@ void core_init(core_t *core){
     core->screen_texture = create_streaming_texture(core->rend, core->win_vw, core->win_vh);
 
     controller_reset(&core->controller);
+}
+
+void core_quit(core_t *core){
+    SDL_DestroyTexture(core->screen_texture);
+    SDL_FreeSurface(core->screen);
+    SDL_DestroyRenderer(core->rend);
+    SDL_DestroyWindow(core->window);
 }
 
 void core_window_resize(core_t *core, int32_t w, int32_t h){
