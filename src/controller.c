@@ -18,24 +18,24 @@ const uint32_t BTN_RT =   0x00000800;
 const uint32_t BTN_LS =   0x00001000;
 const uint32_t BTN_RS =   0x00002000;
 const uint32_t BTN_BACK = 0x00004000;
-const uint32_t BTN_STRT = 0x00008000;
+const uint32_t BTN_NEXT = 0x00008000;
 
 const uint32_t BTN_NONE = 0x00000000;
 
 bool controller_pressed(controller_t *c, uint32_t buttons){
-    return (c->pressed & buttons);
+    return ((c->pressed & buttons) == buttons);
 }
 
 bool controller_released(controller_t *c, uint32_t buttons){
-    return !(c->pressed & buttons);
+    return !((c->pressed & buttons) == buttons);
 }
 
 bool controller_just_pressed(controller_t *c, uint32_t buttons){
-    return (c->pressed & buttons) && !(c->previous & buttons);
+    return ((c->pressed & buttons) == buttons) && !((c->previous & buttons) == buttons);
 }
 
 bool controller_just_released(controller_t *c, uint32_t buttons){
-    return !(c->pressed & buttons) && (c->previous & buttons);
+    return !((c->pressed & buttons) == buttons) && ((c->previous & buttons) == buttons);
 }
 
 void controller_reset(controller_t *c){
@@ -75,7 +75,7 @@ void controller_poll_events(controller_t *c){
             case SDL_SCANCODE_F:
                 c->pressed |= BTN_RT; break;
             case SDL_SCANCODE_RETURN:
-                c->pressed |= BTN_STRT; break;
+                c->pressed |= BTN_NEXT; break;
             case SDL_SCANCODE_BACKSPACE:
                 c->pressed |= BTN_BACK; break;
             default:
@@ -84,33 +84,33 @@ void controller_poll_events(controller_t *c){
         }else if(e.type == SDL_KEYUP){
             switch(e.key.keysym.scancode){
             case SDL_SCANCODE_UP:
-                c->pressed &= !BTN_U; break;
+                c->pressed &= ~BTN_U; break;
             case SDL_SCANCODE_DOWN:
-                c->pressed &= !BTN_D; break;
+                c->pressed &= ~BTN_D; break;
             case SDL_SCANCODE_LEFT:
-                c->pressed &= !BTN_L; break;
+                c->pressed &= ~BTN_L; break;
             case SDL_SCANCODE_RIGHT:
-                c->pressed &= !BTN_R; break;
+                c->pressed &= ~BTN_R; break;
             case SDL_SCANCODE_Z:
-                c->pressed &= !BTN_A; break;
+                c->pressed &= ~BTN_A; break;
             case SDL_SCANCODE_X:
-                c->pressed &= !BTN_B; break;
+                c->pressed &= ~BTN_B; break;
             case SDL_SCANCODE_C:
-                c->pressed &= !BTN_X; break;
+                c->pressed &= ~BTN_X; break;
             case SDL_SCANCODE_V:
-                c->pressed &= !BTN_Y; break;
+                c->pressed &= ~BTN_Y; break;
             case SDL_SCANCODE_A:
-                c->pressed &= !BTN_LB; break;
+                c->pressed &= ~BTN_LB; break;
             case SDL_SCANCODE_S:
-                c->pressed &= !BTN_RB; break;
+                c->pressed &= ~BTN_RB; break;
             case SDL_SCANCODE_D:
-                c->pressed &= !BTN_LT; break;
+                c->pressed &= ~BTN_LT; break;
             case SDL_SCANCODE_F:
-                c->pressed &= !BTN_RT; break;
+                c->pressed &= ~BTN_RT; break;
             case SDL_SCANCODE_RETURN:
-                c->pressed &= !BTN_STRT; break;
+                c->pressed &= ~BTN_NEXT; break;
             case SDL_SCANCODE_BACKSPACE:
-                c->pressed &= !BTN_BACK; break;
+                c->pressed &= ~BTN_BACK; break;
             default:
                 break;
             }
