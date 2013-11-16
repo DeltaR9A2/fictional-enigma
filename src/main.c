@@ -28,11 +28,11 @@ int main(int arc, char* argv[]){
     game_t game;
     game_init(&game, &core);
     
-    int32_t ms_per_frame = 16;
-    int32_t curr_ms = SDL_GetTicks();
-    int32_t prev_ms = curr_ms;
-    int32_t ms_delta = 0;
-    int32_t ms_accum = 0;
+    double ms_per_frame = 16.66;
+    double curr_ms = SDL_GetTicks();
+    double prev_ms = curr_ms;
+    double ms_delta = 0;
+    double ms_accum = 0;
     
     while(main_running && core.running){
         prev_ms = curr_ms;
