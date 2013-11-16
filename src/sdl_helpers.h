@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL2_rotozoom.h>
 
 SDL_Surface *create_surface(int32_t w, int32_t h);
 SDL_Surface *convert_surface(SDL_Surface *src);
