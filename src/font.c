@@ -52,7 +52,7 @@ font_t *font_create(const char *image_fn){
     return font;
 }
 
-void font_destroy(font_t *font){
+void font_delete(font_t *font){
     SDL_FreeSurface(font->src);
     free(font);
 }
