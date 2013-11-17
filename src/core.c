@@ -1,6 +1,9 @@
 #include "core.h"
 
 void core_init(core_t *core){
+    core->running = true;
+    core->fullscreen = false;
+
     core->win_vw = 640;
     core->win_vh = 360;
     core->win_cw = 1280;
@@ -17,7 +20,7 @@ void core_init(core_t *core){
         SDL_WINDOWPOS_CENTERED,
         core->win_cw,
         core->win_ch,
-        0 //SDL_WINDOW_RESIZABLE
+        SDL_WINDOW_RESIZABLE
     );
     
     if(core->window == NULL){
@@ -54,6 +57,16 @@ void core_window_resize(core_t *core, int32_t w, int32_t h){
     core->active_rect.y = (core->win_ch - core->active_rect.h)/2;
     
     SDL_SetWindowSize(core->window, core->win_cw, core->win_ch);
+}
+
+void core_toggle_fullscreen(core_t *core){
+    core->fullscreen = !(core->fullscreen);
+    
+    if(core->fullscreen){
+        SDL_SetWindowFullscreen(core->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }else{
+        SDL_SetWindowFullscreen(core->window, false);
+    }
 }
 
 void core_window_redraw(core_t *core){

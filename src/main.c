@@ -10,9 +10,13 @@
 
 static bool main_running = true;
 
-int main_event_watch(void *data, SDL_Event *e){
+int main_event_watch(void *game, SDL_Event *e){
     if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
         main_running = false;
+    }else if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
+        core_window_resize(((game_t*)game)->core, e->window.data1, e->window.data2);
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
+        core_toggle_fullscreen(((game_t*)game)->core);
     }
     
     return 0;
@@ -20,13 +24,14 @@ int main_event_watch(void *data, SDL_Event *e){
 
 int main(int arc, char* argv[]){
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_AddEventWatch(&main_event_watch, NULL);
-    
+
     core_t core;
     core_init(&core);
     
     game_t game;
     game_init(&game, &core);
+
+    SDL_AddEventWatch(&main_event_watch, &game);
     
     double ms_per_frame = 16.66;
     double curr_ms = SDL_GetTicks();

@@ -11,6 +11,7 @@
 typedef struct core_t core_t;
 struct core_t{
     bool running;
+    bool fullscreen;
 
     SDL_Window *window;
     int32_t win_vw, win_vh;
