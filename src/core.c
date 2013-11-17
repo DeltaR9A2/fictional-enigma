@@ -6,16 +6,16 @@ void core_init(core_t *core){
 
     core->win_vw = 640;
     core->win_vh = 360;
-    core->win_cw = 1280;
-    core->win_ch = 720;
+    core->win_cw = core->win_vw*2;
+    core->win_ch = core->win_vh*2;
     
     core->active_rect.x = 0;
     core->active_rect.y = 0;
-    core->active_rect.w = 1280;
-    core->active_rect.h = 720;
+    core->active_rect.w = core->win_vw*2;
+    core->active_rect.h = core->win_vh*2;
 
     core->window = SDL_CreateWindow(
-        "I am not a robot.",
+        "Ninmu Nanmu: Love and Freedom",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         core->win_cw,
