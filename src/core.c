@@ -1,6 +1,8 @@
 #include "core.h"
 
-void core_init(core_t *core){
+core_t *core_create(void){
+    core_t *core = malloc(sizeof(core_t));
+    
     core->running = true;
     core->fullscreen = false;
 
@@ -34,13 +36,16 @@ void core_init(core_t *core){
     core->screen_texture = create_streaming_texture(core->rend, core->win_vw, core->win_vh);
 
     controller_reset(&core->controller);
+    
+    return core;
 }
 
-void core_quit(core_t *core){
+void core_delete(core_t *core){
     SDL_DestroyTexture(core->screen_texture);
     SDL_FreeSurface(core->screen);
     SDL_DestroyRenderer(core->rend);
     SDL_DestroyWindow(core->window);
+    free(core);
 }
 
 void core_window_resize(core_t *core, int32_t w, int32_t h){

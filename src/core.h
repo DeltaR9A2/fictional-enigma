@@ -24,10 +24,11 @@ struct core_t{
     controller_t controller;
 };
 
-void core_init(core_t *core);
-void core_quit(core_t *core);
+core_t *core_create(void);
+void core_delete(core_t *core);
 
 void core_window_redraw(core_t *core);
 void core_window_resize(core_t *core, int32_t w, int32_t h);
+void core_toggle_fullscreen(core_t *core);
 
 #endif
