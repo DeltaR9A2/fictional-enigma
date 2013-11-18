@@ -1,14 +1,15 @@
 #include "game.h"
 
-frameset_t *framesets = NULL;
-animation_t *animations = NULL;
+fset_t *fsets = NULL;
+anim_t *anims = NULL;
 
-animation_t *anim_one = NULL;
-animation_t *anim_two = NULL;
+fset_t *fset_one = NULL;
+anim_t *anim_one = NULL;
+anim_t *anim_two = NULL;
 
 SDL_Rect arect;
 
-animation_t *current_anim = NULL;
+anim_t *current_anim = NULL;
 
 wchar_t debug_message[128];
 
@@ -19,16 +20,17 @@ game_t *game_create(core_t *core){
     game->step = 0;
     game->font = font_create("font_8bit_operator_black.png");
     
-    framesets = frameset_create("player_anarchy_female.png", L"player_anarchy_female", 8, 4);
+    fsets = fset_create("player_anarchy_female.png", L"player_anarchy_female", 8, 4);
 
-    animations = anim_create(L"ana_f_idle", 6, 8);
-    animation_list_add(animations, anim_create(L"ana_f_run", 8, 10));
+    anims = anim_create(L"ana_f_idle", 6, 8);
+    anim_list_add(anims, anim_create(L"ana_f_run", 8, 10));
     
-    anim_one = animation_list_get(animations, L"ana_f_idle");
-    anim_two = animation_list_get(animations, L"ana_f_run");
+    fset_one = fset_list_get(fsets, L"player_anarchy_female");
+    anim_one = anim_list_get(anims, L"ana_f_idle");
+    anim_two = anim_list_get(anims, L"ana_f_run");
     
-    anim_set_frames(anim_one, framesets, 0);
-    anim_set_frames(anim_two, framesets, 8);
+    anim_set_frames(anim_one, fset_one, 0);
+    anim_set_frames(anim_two, fset_one, 8);
 
     arect.x = 100;
     arect.y = 100;
@@ -37,8 +39,8 @@ game_t *game_create(core_t *core){
 }
 
 void game_delete(game_t *game){
-    animation_list_delete(animations);
-    frameset_list_delete(framesets);
+    anim_list_delete(anims);
+    fset_list_delete(fsets);
     font_delete(game->font);
     
     free(game);

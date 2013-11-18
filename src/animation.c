@@ -1,7 +1,7 @@
 #include "animation.h"
 
-frameset_t *frameset_create(const char *fn, const wchar_t *name, int cols, int rows){
-    frameset_t *frameset = malloc(sizeof(frameset_t));
+fset_t *fset_create(const char *fn, const wchar_t *name, int cols, int rows){
+    fset_t *frameset = malloc(sizeof(fset_t));
 
     wcsncpy(frameset->name, name, NAME_MAX_LEN-1);
     frameset->next = NULL;
@@ -33,7 +33,7 @@ frameset_t *frameset_create(const char *fn, const wchar_t *name, int cols, int r
     return frameset;
 }
 
-void frameset_delete(frameset_t *frameset){
+void fset_delete(fset_t *frameset){
     for(int i=0; i<frameset->len; i++){
         SDL_FreeSurface(frameset->frames[i]);
     }
@@ -41,8 +41,8 @@ void frameset_delete(frameset_t *frameset){
     free(frameset);
 }
 
-void frameset_list_add(frameset_t *head, frameset_t *frameset){
-    frameset_t *iter = head;
+void fset_list_add(fset_t *head, fset_t *frameset){
+    fset_t *iter = head;
     
     while(iter->next != NULL){
         if(iter == frameset){
@@ -55,8 +55,8 @@ void frameset_list_add(frameset_t *head, frameset_t *frameset){
     iter->next = frameset;
 }
 
-frameset_t *frameset_list_get(frameset_t *head, const wchar_t *name){
-    frameset_t *iter = head;
+fset_t *fset_list_get(fset_t *head, const wchar_t *name){
+    fset_t *iter = head;
     
     while(wcscmp(name, iter->name) != 0){
         if(iter->next == NULL){
@@ -69,19 +69,19 @@ frameset_t *frameset_list_get(frameset_t *head, const wchar_t *name){
     return iter;
 }
 
-void frameset_list_delete(frameset_t *head){
-    frameset_t *iter = head;
-    frameset_t *next = NULL;
+void fset_list_delete(fset_t *head){
+    fset_t *iter = head;
+    fset_t *next = NULL;
 
     while(iter != NULL){
         next = iter->next;
-        frameset_delete(iter);
+        fset_delete(iter);
         iter = next;
     }
 }
 
-animation_t *anim_create(const wchar_t *name, int len, int fps){
-    animation_t *anim = malloc(sizeof(animation_t));
+anim_t *anim_create(const wchar_t *name, int len, int fps){
+    anim_t *anim = malloc(sizeof(anim_t));
 
     wcsncpy(anim->name, name, NAME_MAX_LEN-1);
     anim->next = NULL;
@@ -96,13 +96,13 @@ animation_t *anim_create(const wchar_t *name, int len, int fps){
     return anim;
 }
 
-void anim_delete(animation_t *anim){
+void anim_delete(anim_t *anim){
     free(anim->frames);
     free(anim);
 }
 
-void animation_list_add(animation_t *head, animation_t *anim){
-    animation_t *iter = head;
+void anim_list_add(anim_t *head, anim_t *anim){
+    anim_t *iter = head;
     
     while(iter->next != NULL){
         if(iter == anim){
@@ -115,8 +115,8 @@ void animation_list_add(animation_t *head, animation_t *anim){
     iter->next = anim;
 }
 
-animation_t *animation_list_get(animation_t *head, const wchar_t *name){
-    animation_t *iter = head;
+anim_t *anim_list_get(anim_t *head, const wchar_t *name){
+    anim_t *iter = head;
     
     while(wcscmp(name, iter->name) != 0){
         if(iter->next == NULL){
@@ -129,9 +129,9 @@ animation_t *animation_list_get(animation_t *head, const wchar_t *name){
     return iter;
 }
 
-void animation_list_delete(animation_t *head){
-    animation_t *iter = head;
-    animation_t *next = NULL;
+void anim_list_delete(anim_t *head){
+    anim_t *iter = head;
+    anim_t *next = NULL;
 
     while(iter != NULL){
         next = iter->next;
@@ -140,7 +140,7 @@ void animation_list_delete(animation_t *head){
     }
 }
 
-void anim_add_frame(animation_t *anim, frameset_t *frameset, int frame_index){
+void anim_add_frame(anim_t *anim, fset_t *frameset, int frame_index){
     for(int i=0; i < anim->len; i++){
         if(anim->frames[i] == NULL){
             anim->frames[i] = frameset->frames[frame_index];
@@ -150,13 +150,13 @@ void anim_add_frame(animation_t *anim, frameset_t *frameset, int frame_index){
     fprintf(stderr,"Warning: anim_add_frame: No more room for frame");
 }
 
-void anim_set_frames(animation_t *anim, frameset_t *frameset, int start_index){
+void anim_set_frames(anim_t *anim, fset_t *frameset, int start_index){
     for(int i=0; i < anim->len; i++){
         anim->frames[i] = frameset->frames[start_index + i];
     }
 }    
 
-void anim_draw(animation_t *anim, int step, SDL_Surface *target, SDL_Rect *dest){
+void anim_draw(anim_t *anim, int step, SDL_Surface *target, SDL_Rect *dest){
     // Magic number 0.01666 is the inverse of 60
     // and 60 is the refresh rate of the main loop
     SDL_BlitSurface(anim->frames[((int)((step*0.01666) * anim->fps)) % anim->len], NULL, target, dest);
