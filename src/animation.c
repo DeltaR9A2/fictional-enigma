@@ -45,7 +45,11 @@ void frameset_list_add(frameset_t *head, frameset_t *frameset){
     frameset_t *iter = head;
     
     while(iter->next != NULL){
-        iter = iter->next;
+        if(iter == frameset){
+            return;
+        }else{
+            iter = iter->next;
+        }
     }
     
     iter->next = frameset;
@@ -101,7 +105,11 @@ void animation_list_add(animation_t *head, animation_t *anim){
     animation_t *iter = head;
     
     while(iter->next != NULL){
-        iter = iter->next;
+        if(iter == anim){
+            return;
+        }else{
+            iter = iter->next;
+        }
     }
     
     iter->next = anim;
