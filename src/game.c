@@ -10,7 +10,9 @@ int current_anim = 0;
 
 wchar_t debug_message[128];
 
-void game_init(game_t *game, core_t *core){
+game_t *game_create(core_t *core){
+    game_t *game = malloc(sizeof(game_t));
+    
     game->core = core;
     game->step = 0;
     game->font = font_create("font_8bit_operator_black.png");
@@ -29,9 +31,11 @@ void game_init(game_t *game, core_t *core){
 
     arect.x = 100;
     arect.y = 100;
+    
+    return game;
 }
 
-void game_quit(game_t *game){
+void game_delete(game_t *game){
     for(int i=0; i<256; i++){
         if(animations[i] != NULL){
             anim_delete(animations[i]);
@@ -39,6 +43,8 @@ void game_quit(game_t *game){
     }
     frameset_delete(frameset);
     font_delete(game->font);
+    
+    free(game);
 }
 
 void game_fast_frame(game_t *game){
