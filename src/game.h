@@ -12,8 +12,7 @@
 #include "core.h"
 #include "font.h"
 
-#include "frameset.h"
-#include "anim.h"
+#include "animation.h"
 
 typedef struct game_t game_t;
 struct game_t{

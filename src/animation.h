@@ -1,7 +1,17 @@
-#ifndef anim_h
-#define anim_h
+#ifndef animation_h
+#define animation_h
 
-#include "frameset.h"
+#include "sdl_helpers.h"
+
+typedef struct frameset_t frameset_t;
+struct frameset_t{
+    int len;
+    SDL_Surface **frames;
+};
+
+frameset_t *frameset_create(const char *fn, int cols, int rows);
+
+void frameset_delete(frameset_t *frameset);
 
 typedef struct anim_t anim_t;
 struct anim_t{
