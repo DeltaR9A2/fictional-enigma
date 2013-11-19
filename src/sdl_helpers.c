@@ -32,3 +32,12 @@ SDL_Texture *create_streaming_texture(SDL_Renderer *render, int32_t w, int32_t h
     return SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
+bool sdl_rect_overlap(SDL_Rect *a, SDL_Rect *b){
+        if((a->x + a->w) <= (b->x) || (a->x) >= (b->x + b->w) ||
+           (a->y + a->h) <= (b->y) || (a->y) >= (b->y + b->h)){
+            return false;
+        }else{
+            return true;
+        }
+}
+

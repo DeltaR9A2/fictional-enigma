@@ -1,4 +1,4 @@
-#include "animation.h"
+#include "anim.h"
 
 fset_t *fset_create(const char *fn, const wchar_t *name, int cols, int rows){
     fset_t *frameset = malloc(sizeof(fset_t));

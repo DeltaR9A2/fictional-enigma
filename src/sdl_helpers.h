@@ -2,6 +2,7 @@
 #define sdl_helpers_h
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -13,5 +14,7 @@ SDL_Surface *load_image(const char *fn);
 
 SDL_Texture *create_texture(SDL_Renderer *render, int32_t w, int32_t h);
 SDL_Texture *create_streaming_texture(SDL_Renderer *render, int32_t w, int32_t h);
+
+bool sdl_rect_overlap(SDL_Rect *a, SDL_Rect *b);
 
 #endif

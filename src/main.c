@@ -26,7 +26,6 @@ int main(int arc, char* argv[]){
     SDL_Init(SDL_INIT_EVERYTHING);
 
     core_t *core = core_create();
-
     game_t *game = game_create(core);
 
     SDL_AddEventWatch(&main_event_watch, game);
@@ -46,7 +45,7 @@ int main(int arc, char* argv[]){
         if(ms_accum > ms_per_frame){
             ms_accum -= ms_per_frame;
 
-            controller_poll_events(&core->controller);
+            controller_poll_events(&game->controller);
             
             if(ms_accum > ms_per_frame){
                 game_fast_frame(game);

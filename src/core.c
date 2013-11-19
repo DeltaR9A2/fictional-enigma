@@ -35,8 +35,6 @@ core_t *core_create(void){
     core->screen = create_surface(core->win_vw, core->win_vh);
     core->screen_texture = create_streaming_texture(core->rend, core->win_vw, core->win_vh);
 
-    controller_reset(&core->controller);
-    
     return core;
 }
 

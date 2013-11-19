@@ -6,7 +6,6 @@
 #include <SDL2/SDL.h>
 
 #include "sdl_helpers.h"
-#include "controller.h"
 
 typedef struct core_t core_t;
 struct core_t{
@@ -21,7 +20,6 @@ struct core_t{
     SDL_Renderer *rend;
     SDL_Surface *screen;
     SDL_Texture *screen_texture;
-    controller_t controller;
 };
 
 core_t *core_create(void);

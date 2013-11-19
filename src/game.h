@@ -11,14 +11,19 @@
 
 #include "core.h"
 #include "font.h"
-
-#include "animation.h"
+#include "anim.h"
+#include "controller.h"
 
 typedef struct game_t game_t;
 struct game_t{
     core_t *core;
-    font_t *font;
     uint32_t step;
+
+    controller_t controller;
+
+    fset_t *fsets;
+    anim_t *anims;
+    font_t *fonts;
 };
 
 game_t *game_create(core_t *core);
