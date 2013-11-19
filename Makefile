@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 CC      := gcc
 CFLAGS  := -std=c99 -Wall -O0 -g -I./lib
-LFLAGS  := -Wl,-rpath,. -g -lSDL2 -lSDL2_image -lSDL2_gfx
+LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx
 
 BINDIR  := bin
 SRCDIR  := src
