@@ -6,25 +6,56 @@ anim_t *anim_two = NULL;
 SDL_Rect arect;
 
 #include "rect.h"
+#include "body.h"
 
-typedef struct body_t body_t;
-struct body_t{
-    rect_t *rect;
-    double vx, vy;
-};
+/*
+void do_physics_to_it(body_t *body, rect_t **terrain_rects, rect_t **platform_rects):
+    rect_t *start = rect_create();
+    rect_match_to(start, body->rect);
 
-body_t *body_create(void){
-    body_t *body = malloc(sizeof(body_t));
-    body->rect = rect_create();
-    body->vx = 0;
-    body->vy = 0;
-    return body;
-}
+    body.x += body.x_vel
+    body.l_blocked = False
+    body.r_blocked = False
 
-void body_delete(body_t *body){
-    rect_delete(body->rect);
-    free(body);
-}
+    for rect in terrain_rects:
+        if rect.overlap(body):
+            if body.x_vel > 0 and body.r_edge >= rect.l_edge:
+                body.x_vel = 0
+                body.r_edge = rect.l_edge
+                body.r_blocked = True
+            elif body.x_vel < 0 and body.l_edge <= rect.r_edge:
+                body.x_vel = 0
+                body.l_edge = rect.r_edge
+                body.l_blocked = True
+            break
+
+    body.y += body.y_vel
+    body.t_blocked = False
+    body.b_blocked = False
+
+    for rect in terrain_rects:
+        if rect.overlap(body):
+            if body.y_vel > 0 and body.b_edge >= rect.t_edge:
+                body.y_vel = 0
+                body.b_edge = rect.t_edge
+                body.b_blocked = True
+            elif body.y_vel < 0 and body.t_edge <= rect.b_edge:
+                body.y_vel = 0
+                body.t_edge = rect.b_edge
+                body.t_blocked = True
+            break
+
+    if body.y_vel > 0 and not body.fall_through:
+        for rect in platform_rects:
+            if rect.overlap(body):
+                if start.b_edge <= rect.t_edge:
+                    body.y_vel = 0
+                    body.b_edge = rect.t_edge
+                    body.b_blocked = True
+                break
+
+    rect_delete(start);
+*/
 
 typedef struct sprite_t sprite_t;
 struct sprite_t{
@@ -63,18 +94,18 @@ game_t *game_create(core_t *core){
     game->step = 0;
     game->fonts = font_create("font_8bit_operator_black.png");
     
-    game->fsets = fset_create("player_anarchy_female.png", L"player_anarchy_female", 8, 4);
-
-    game->anims = anim_create(L"ana_f_idle", 6, 8);
-    anim_list_add(game->anims, anim_create(L"ana_f_run", 8, 10));
+    game->fsets = fset_list_create();
+    game->anims = anim_list_create();
     
     fset_one = fset_list_get(game->fsets, L"player_anarchy_female");
-    anim_one = anim_list_get(game->anims, L"ana_f_idle");
-    anim_two = anim_list_get(game->anims, L"ana_f_run");
+    fset_init(fset_one, "player_anarchy_female.png", 8, 4);
     
-    anim_set_frames(anim_one, fset_one, 0);
-    anim_set_frames(anim_two, fset_one, 8);
+    anim_one = anim_list_get(game->anims, L"ana_f_idle");
+    anim_init(anim_one, fset_one, 0, 6,  8);
 
+    anim_two = anim_list_get(game->anims, L"ana_f_run");
+    anim_init(anim_two, fset_one, 8, 8, 10);
+    
     body = body_create();
     body->rect->w = 64;
     body->rect->h = 64;

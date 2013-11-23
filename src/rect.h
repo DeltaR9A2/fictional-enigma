@@ -13,7 +13,6 @@ struct rect_t{
 };
 
 rect_t *rect_create(void);
-
 void rect_delete(rect_t *rect);
 
 void rect_copy_to_sdl(rect_t *rect, SDL_Rect *sdl_rect);
