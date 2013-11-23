@@ -3,6 +3,8 @@
 
 #include <wchar.h>
 
+#include "list_macros.h"
+
 #include "sdl_helpers.h"
 
 #define NAME_MAX_LEN 32
@@ -19,9 +21,8 @@ struct fset_t{
 fset_t *fset_create(const char *fn, const wchar_t *name, int cols, int rows);
 void fset_delete(fset_t *frameset);
 
-void fset_list_add(fset_t *head, fset_t *frameset);
-fset_t *fset_list_get(fset_t *head, const wchar_t *name);
-void fset_list_delete(fset_t *head);
+// See list_macros.h
+PRT_LIST_FUNCS(fset)
 
 typedef struct anim_t anim_t;
 struct anim_t{
@@ -42,5 +43,7 @@ void anim_list_add(anim_t *head, anim_t *anim);
 anim_t *anim_list_get(anim_t *head, const wchar_t *name);
 void anim_list_delete(anim_t *head);
 
+// See list_macros.h
+PRT_LIST_FUNCS(anim)
 
 #endif
