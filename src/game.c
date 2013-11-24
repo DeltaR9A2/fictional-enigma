@@ -94,16 +94,16 @@ game_t *game_create(core_t *core){
     game->step = 0;
     game->fonts = font_create("font_8bit_operator_black.png");
     
-    game->fsets = fset_list_create();
-    game->anims = anim_list_create();
+    game->fsets = fset_wmap_create();
+    game->anims = anim_wmap_create();
     
-    fset_one = fset_list_get(game->fsets, L"player_anarchy_female");
+    fset_one = fset_wmap_get(game->fsets, L"player_anarchy_female");
     fset_init(fset_one, "player_anarchy_female.png", 8, 4);
     
-    anim_one = anim_list_get(game->anims, L"ana_f_idle");
+    anim_one = anim_wmap_get(game->anims, L"ana_f_idle");
     anim_init(anim_one, fset_one, 0, 6,  8);
 
-    anim_two = anim_list_get(game->anims, L"ana_f_run");
+    anim_two = anim_wmap_get(game->anims, L"ana_f_run");
     anim_init(anim_two, fset_one, 8, 8, 10);
     
     body = body_create();
@@ -124,8 +124,8 @@ game_t *game_create(core_t *core){
 
 void game_delete(game_t *game){
     sprite_delete(sprite);
-    anim_list_delete(game->anims);
-    fset_list_delete(game->fsets);
+    anim_wmap_delete(game->anims);
+    fset_wmap_delete(game->fsets);
     font_delete(game->fonts);
     
     free(game);
@@ -166,7 +166,7 @@ void game_fast_frame(game_t *game){
 void game_full_frame(game_t *game){
     game_fast_frame(game);
     SDL_FillRect(game->core->screen, NULL, 0xFFFFFFFF);
-    swprintf(debug_message, 100, L"Window Size: %ix%i  Active Size: %ix%i", game->core->win_cw, game->core->win_ch, game->core->active_rect.w, game->core->active_rect.h);
+    swprintf(debug_message, 100, L"Body b_edge: %f", rect_get_b_edge(body->rect));
     font_draw_string(game->fonts, debug_message, 8, 4, game->core->screen);
     
     rect_move_to(sprite->rect, body->rect);

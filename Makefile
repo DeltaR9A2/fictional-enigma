@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 CC      := gcc
-CFLAGS  := -std=c99 -Wall -O0 -g -I./lib
+CFLAGS  := -std=c99 -Wall -O0 -g -I./src -I./gen/out
 LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx
 
 BINDIR  := bin
@@ -9,6 +9,7 @@ SRCDIR  := src
 OBJDIR  := obj
 LIBDIR  := lib
 RESDIR  := res
+GENDIR  := gen
 
 TARGET := main
 SOURCES := $(wildcard $(SRCDIR)/*.c)
@@ -19,10 +20,15 @@ PNGS := $(XCFS:$(RESDIR)/%.xcf=$(BINDIR)/%.png)
 
 REMOVE  := rm -f
 
+.PHONY: all gen clean run
+
 all: $(BINDIR)/$(TARGET)
 
-$(BINDIR)/$(TARGET): $(OBJECTS) $(PNGS)
-	@$(CC) $(OBJECTS) $(LFLAGS) -o $@
+gen:
+	$(MAKE) -C gen
+
+$(BINDIR)/$(TARGET): gen $(OBJECTS) $(PNGS)
+	@$(CC) ./obj/*.o $(LFLAGS) -o $@
 	@echo "Build complete: "$(BINDIR)/$(TARGET)
 	
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
@@ -34,7 +40,8 @@ $(PNGS): $(BINDIR)/%.png : $(RESDIR)/%.xcf
 	@echo "Converted "$<"..."
 
 clean:
-	$(REMOVE) $(OBJECTS) $(BINDIR)/*
+	$(MAKE) -C gen clean
+	$(REMOVE) $(BINDIR)/* $(OBJECTS) 
 
 run: all
 	@echo "Running build: "$(BINDIR)/$(TARGET)

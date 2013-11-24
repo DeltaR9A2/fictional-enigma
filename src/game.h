@@ -14,8 +14,8 @@
 #include "anim.h"
 #include "controller.h"
 
-#include "fset_list.h"
-#include "anim_list.h"
+#include "fset_wmap.h"
+#include "anim_wmap.h"
 
 typedef struct game_t game_t;
 struct game_t{
@@ -24,8 +24,8 @@ struct game_t{
 
     controller_t controller;
 
-    fset_list_t *fsets;
-    anim_list_t *anims;
+    fset_wmap_t *fsets;
+    anim_wmap_t *anims;
     
     font_t *fonts;
 };
