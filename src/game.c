@@ -8,54 +8,68 @@ SDL_Rect arect;
 #include "rect.h"
 #include "body.h"
 
-/*
-void do_physics_to_it(body_t *body, rect_t **terrain_rects, rect_t **platform_rects):
+
+void do_physics_to_it(body_t *body, rect_list_t *terr_rects, rect_list_t *plat_rects){
     rect_t *start = rect_create();
     rect_match_to(start, body->rect);
+    
+    rect_node_t *iter;
+    
+    body->flags &= ~BLOCKED_MASK;
+    
+    body->rect->x += body->vx;
+    iter = terr_rects->head;
+    while(iter != NULL){
+        if(rect_overlap(body->rect, iter->data)){
+            if(body->vx > 0 && rect_get_r_edge(body->rect) >= rect_get_l_edge(iter->data)){
+                body->vx = 0;
+                rect_set_r_edge(body->rect, rect_get_l_edge(iter->data));
+                body->flags |= BLOCKED_R;
+            }else if(body->vx < 0 && rect_get_l_edge(body->rect) <= rect_get_r_edge(iter->data)){
+                body->vx = 0;
+                rect_set_l_edge(body->rect, rect_get_r_edge(iter->data));
+                body->flags |= BLOCKED_L;
+            }
+            break;
+        }
+        iter = iter->next;
+    }
 
-    body.x += body.x_vel
-    body.l_blocked = False
-    body.r_blocked = False
-
-    for rect in terrain_rects:
-        if rect.overlap(body):
-            if body.x_vel > 0 and body.r_edge >= rect.l_edge:
-                body.x_vel = 0
-                body.r_edge = rect.l_edge
-                body.r_blocked = True
-            elif body.x_vel < 0 and body.l_edge <= rect.r_edge:
-                body.x_vel = 0
-                body.l_edge = rect.r_edge
-                body.l_blocked = True
-            break
-
-    body.y += body.y_vel
-    body.t_blocked = False
-    body.b_blocked = False
-
-    for rect in terrain_rects:
-        if rect.overlap(body):
-            if body.y_vel > 0 and body.b_edge >= rect.t_edge:
-                body.y_vel = 0
-                body.b_edge = rect.t_edge
-                body.b_blocked = True
-            elif body.y_vel < 0 and body.t_edge <= rect.b_edge:
-                body.y_vel = 0
-                body.t_edge = rect.b_edge
-                body.t_blocked = True
-            break
-
-    if body.y_vel > 0 and not body.fall_through:
-        for rect in platform_rects:
-            if rect.overlap(body):
-                if start.b_edge <= rect.t_edge:
-                    body.y_vel = 0
-                    body.b_edge = rect.t_edge
-                    body.b_blocked = True
-                break
-
+    body->rect->y += body->vy;
+    iter = terr_rects->head;
+    while(iter != NULL){
+        if(rect_overlap(body->rect, iter->data)){
+            if(body->vy > 0 && rect_get_b_edge(body->rect) >= rect_get_t_edge(iter->data)){
+                body->vy = 0;
+                rect_set_b_edge(body->rect, rect_get_t_edge(iter->data));
+                body->flags |= BLOCKED_D;
+            }else if(body->vy < 0 && rect_get_t_edge(body->rect) <= rect_get_b_edge(iter->data)){
+                body->vy = 0;
+                rect_set_t_edge(body->rect, rect_get_b_edge(iter->data));
+                body->flags |= BLOCKED_U;
+            }
+            break;
+        }
+        iter = iter->next;
+    }
+    
+    if(body->vy > 0 && !(body->flags & PLAT_DROP)){
+        iter = plat_rects->head;
+        while(iter != NULL){
+            if(rect_overlap(body->rect, iter->data)){
+                if(rect_get_b_edge(start) <= rect_get_t_edge(iter->data)){
+                    body->vy = 0;
+                    rect_set_b_edge(body->rect, rect_get_t_edge(iter->data));
+                    body->flags |= BLOCKED_D;
+                }
+                break;
+            }
+            iter = iter->next;
+        }
+    }
+    
     rect_delete(start);
-*/
+}
 
 typedef struct sprite_t sprite_t;
 struct sprite_t{
@@ -82,6 +96,9 @@ void sprite_set_anim(sprite_t *sprite, anim_t *anim){
     }
 }
 
+rect_t *terrain;
+rect_t *platform;
+
 body_t *body;
 sprite_t *sprite;
 
@@ -106,7 +123,25 @@ game_t *game_create(core_t *core){
     anim_two = anim_wmap_get(game->anims, L"ana_f_run");
     anim_init(anim_two, fset_one, 8, 8, 10);
     
-    body = body_create();
+    game->terr_rect_list = rect_list_create();
+    game->plat_rect_list = rect_list_create();
+    
+    terrain = rect_list_get(game->terr_rect_list);
+    terrain->x = 0;
+    terrain->y = 360;
+    terrain->w = 640;
+    terrain->h = 8;
+    
+    platform = rect_list_get(game->plat_rect_list);
+    platform->x = 0;
+    platform->y = 320;
+    platform->w = 320;
+    platform->h = 8;
+    
+    game->phys_body_list = body_list_create();
+    body = body_list_get(game->phys_body_list);
+    body->rect->x = 64;
+    body->rect->y = 64;
     body->rect->w = 64;
     body->rect->h = 64;
 
@@ -135,32 +170,32 @@ void game_fast_frame(game_t *game){
     game->step += 1;
     sprite->step += 1;
     
-    if(rect_get_b_edge(body->rect) < 360){
-        if(body->vy < 4.0){
-            body->vy += 0.1;
-        }
+    if(body->vy < 4.0){
+        body->vy += 0.1;
+    }
+
+    if(body->flags & BLOCKED_D && controller_just_pressed(&game->controller, BTN_A)){
+        body->vy = -4.0;
+    }
+    
+    if(controller_pressed(&game->controller, BTN_D)){
+        body->flags |= PLAT_DROP;
     }else{
-        if(controller_pressed(&game->controller, BTN_A)){
-            body->vy = -4.0;
-        }else{
-            body->vy = 0.0;
-        }
+        body->flags &= ~PLAT_DROP;
     }
     
     if(controller_pressed(&game->controller, BTN_R)){
+        body->vx = 2.5;
         sprite_set_anim(sprite, anim_two);
-        
-        body->rect->x += 2.5;
     }else if(controller_pressed(&game->controller, BTN_L)){
+        body->vx = -2.5;
         sprite_set_anim(sprite, anim_two);
-        
-        body->rect->x -= 2.5;
     }else{
+        body->vx = 0.0;
         sprite_set_anim(sprite, anim_one);
     }
     
-    body->rect->x += body->vx;
-    body->rect->y += body->vy;
+    do_physics_to_it(body, game->terr_rect_list, game->plat_rect_list);
 }
 
 void game_full_frame(game_t *game){

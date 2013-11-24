@@ -17,6 +17,9 @@
 #include "fset_wmap.h"
 #include "anim_wmap.h"
 
+#include "rect_list.h"
+#include "body_list.h"
+
 typedef struct game_t game_t;
 struct game_t{
     core_t *core;
@@ -26,6 +29,10 @@ struct game_t{
 
     fset_wmap_t *fsets;
     anim_wmap_t *anims;
+    
+    body_list_t *phys_body_list;
+    rect_list_t *terr_rect_list;
+    rect_list_t *plat_rect_list;
     
     font_t *fonts;
 };
