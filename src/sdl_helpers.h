@@ -9,8 +9,9 @@
 #include <SDL2/SDL2_rotozoom.h>
 
 SDL_Surface *create_surface(int32_t w, int32_t h);
-SDL_Surface *convert_surface(SDL_Surface *src);
 SDL_Surface *load_image(const char *fn);
+SDL_Surface *convert_surface(SDL_Surface *src);
+SDL_Surface *flip_surface(SDL_Surface *src);
 
 SDL_Texture *create_texture(SDL_Renderer *render, int32_t w, int32_t h);
 SDL_Texture *create_streaming_texture(SDL_Renderer *render, int32_t w, int32_t h);

@@ -48,6 +48,10 @@ void rect_set_size(rect_t *rect, double w, double h){
     rect->h = h;
 }
 
+double rect_get_area(rect_t *rect){
+    return rect->w * rect->h;
+}
+
 void rect_grow(rect_t *rect, double dw, double dh){
     double mid_x = rect_get_mid_x(rect);
     double mid_y = rect_get_mid_y(rect);
@@ -62,8 +66,6 @@ void rect_move_to(rect_t *rect, rect_t *other){
     rect_set_mid_x(rect, rect_get_mid_x(other));    
     rect_set_mid_y(rect, rect_get_mid_y(other));
 }
-
-#include <math.h>
 
 double rect_range_to(rect_t *rect, rect_t *other){
     return sqrt(pow(rect_get_mid_x(other) - rect_get_mid_x(rect), 2) + 

@@ -13,7 +13,7 @@ void anim_init(anim_t *anim, fset_t *fset, int start, int len, int fps){
     anim->len = len;
     anim->fps = fps;
     anim->frames = malloc(sizeof(SDL_Surface*)*(anim->len));
-
+    
     for(int i=0; i < anim->len; i++){
         anim->frames[i] = fset->frames[start + i];
     }

@@ -16,10 +16,14 @@ SDL_Surface *load_image(const char *fn){
     return final;
 }
 
+SDL_Surface *flip_surface(SDL_Surface *src){
+    return zoomSurface(src, -1, 1, SMOOTHING_OFF);
+}
+
 SDL_Surface *load_image_flipped(const char *fn){
     SDL_Surface *tmp, *final;
     tmp = load_image(fn);
-    final = zoomSurface(tmp, -1, 1, SMOOTHING_OFF);
+    final = flip_surface(tmp);
     SDL_FreeSurface(tmp);
     return final;
 }

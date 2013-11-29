@@ -38,6 +38,8 @@ void rect_set_mid_y(rect_t *rect, double n);
 void rect_set_size(rect_t *rect, double w, double h);
 void rect_set_center(rect_t *rect, double x, double y);
 
+double rect_get_area(rect_t *rect);
+
 void rect_grow(rect_t *rect, double dw, double dh);
 
 void rect_move_to(rect_t *rect, rect_t *other);

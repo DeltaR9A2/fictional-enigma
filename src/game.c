@@ -8,99 +8,92 @@ SDL_Rect arect;
 #include "rect.h"
 #include "body.h"
 
+#include "physics.h"
+#include "sprite.h"
+#include "loader.h"
 
-void do_physics_to_it(body_t *body, rect_list_t *terr_rects, rect_list_t *plat_rects){
-    rect_t *start = rect_create();
-    rect_match_to(start, body->rect);
-    
-    rect_node_t *iter;
-    
-    body->flags &= ~BLOCKED_MASK;
-    
-    body->rect->x += body->vx;
-    iter = terr_rects->head;
+body_t *body = NULL;
+sprite_t *sprite = NULL;
+
+const uint32_t DIR_X = 0;
+const uint32_t DIR_R = 1;
+const uint32_t DIR_L = 2;
+
+uint32_t player_face_dir = 0;
+uint32_t player_push_dir = 0;
+uint32_t player_real_dir = 0;
+
+const double PLAYER_FALL_SPEED = 7.0;
+const double PLAYER_FALL_ACCEL = 0.3;
+
+const double PLAYER_GROUND_SPEED = 3.5;
+const double PLAYER_GROUND_ACCEL = 0.35;
+const double PLAYER_GROUND_DECEL = 0.15;
+
+const double PLAYER_JUMP_FORCE = -6.5;
+const double PLAYER_JUMP_BRAKE = -2.0;
+
+//self.dash_vel = 8
+//self.dash_timer = 0
+//self.air_dash = False
+
+/*
+def cmap_to_rects(cmap, map_w, map_h):
+    def mark(rect):
+        for coord in rect.internal_coords():
+            cmap[coord] = 2
+
+    def validate(rect):
+        for coord in rect.internal_coords():
+            if cmap.get(coord, 0) == 0:
+                return False
+        return True
+
+    map_rect = ScRect(0, 0, map_w, map_h)
+
+    rects = []
+    for coord in map_rect.internal_coords():
+        x, y = coord
+
+        if cmap.get(coord, 0) == 1:
+            current_rect = ScRect(x, y, 1, 1)
+
+            while validate(current_rect):
+                current_rect.w += 1
+            current_rect.w -= 1
+
+            while validate(current_rect):
+                current_rect.h += 1
+            current_rect.h -= 1
+
+            mark(current_rect)
+
+            rects.append(current_rect)
+
+    return rects
+*/
+
+void draw_terrain_rects(game_t *game){
+    SDL_Rect fill_rect;
+
+    rect_node_t *iter = game->terr_rect_list->head;
     while(iter != NULL){
-        if(rect_overlap(body->rect, iter->data)){
-            if(body->vx > 0 && rect_get_r_edge(body->rect) >= rect_get_l_edge(iter->data)){
-                body->vx = 0;
-                rect_set_r_edge(body->rect, rect_get_l_edge(iter->data));
-                body->flags |= BLOCKED_R;
-            }else if(body->vx < 0 && rect_get_l_edge(body->rect) <= rect_get_r_edge(iter->data)){
-                body->vx = 0;
-                rect_set_l_edge(body->rect, rect_get_r_edge(iter->data));
-                body->flags |= BLOCKED_L;
-            }
-            break;
-        }
+        rect_copy_to_sdl(iter->data, &fill_rect);
+        SDL_FillRect(game->core->screen, &fill_rect, 0x333366FF);
         iter = iter->next;
     }
+}
 
-    body->rect->y += body->vy;
-    iter = terr_rects->head;
+void draw_platform_rects(game_t *game){
+    SDL_Rect fill_rect;
+
+    rect_node_t *iter = game->plat_rect_list->head;
     while(iter != NULL){
-        if(rect_overlap(body->rect, iter->data)){
-            if(body->vy > 0 && rect_get_b_edge(body->rect) >= rect_get_t_edge(iter->data)){
-                body->vy = 0;
-                rect_set_b_edge(body->rect, rect_get_t_edge(iter->data));
-                body->flags |= BLOCKED_D;
-            }else if(body->vy < 0 && rect_get_t_edge(body->rect) <= rect_get_b_edge(iter->data)){
-                body->vy = 0;
-                rect_set_t_edge(body->rect, rect_get_b_edge(iter->data));
-                body->flags |= BLOCKED_U;
-            }
-            break;
-        }
+        rect_copy_to_sdl(iter->data, &fill_rect);
+        SDL_FillRect(game->core->screen, &fill_rect, 0x7777AAFF);
         iter = iter->next;
     }
-    
-    if(body->vy > 0 && !(body->flags & PLAT_DROP)){
-        iter = plat_rects->head;
-        while(iter != NULL){
-            if(rect_overlap(body->rect, iter->data)){
-                if(rect_get_b_edge(start) <= rect_get_t_edge(iter->data)){
-                    body->vy = 0;
-                    rect_set_b_edge(body->rect, rect_get_t_edge(iter->data));
-                    body->flags |= BLOCKED_D;
-                }
-                break;
-            }
-            iter = iter->next;
-        }
-    }
-    
-    rect_delete(start);
 }
-
-typedef struct sprite_t sprite_t;
-struct sprite_t{
-    rect_t *rect;
-    anim_t *anim;
-    int step;
-};
-
-sprite_t *sprite_create(){
-    sprite_t *sprite = malloc(sizeof(sprite_t));
-    sprite->rect = rect_create();
-    return sprite;
-}
-
-void sprite_delete(sprite_t *sprite){
-    rect_delete(sprite->rect);
-    free(sprite);
-}
-
-void sprite_set_anim(sprite_t *sprite, anim_t *anim){
-    if(sprite->anim != anim){
-        sprite->anim = anim;
-        sprite->step = 0;
-    }
-}
-
-rect_t *terrain;
-rect_t *platform;
-
-body_t *body;
-sprite_t *sprite;
 
 wchar_t debug_message[128];
 
@@ -113,45 +106,28 @@ game_t *game_create(core_t *core){
     
     game->fsets = fset_wmap_create();
     game->anims = anim_wmap_create();
-    
-    fset_one = fset_wmap_get(game->fsets, L"player_anarchy_female");
-    fset_init(fset_one, "player_anarchy_female.png", 8, 4);
-    
-    anim_one = anim_wmap_get(game->anims, L"ana_f_idle");
-    anim_init(anim_one, fset_one, 0, 6,  8);
-
-    anim_two = anim_wmap_get(game->anims, L"ana_f_run");
-    anim_init(anim_two, fset_one, 8, 8, 10);
-    
     game->terr_rect_list = rect_list_create();
     game->plat_rect_list = rect_list_create();
-    
-    terrain = rect_list_get(game->terr_rect_list);
-    terrain->x = 0;
-    terrain->y = 360;
-    terrain->w = 640;
-    terrain->h = 8;
-    
-    platform = rect_list_get(game->plat_rect_list);
-    platform->x = 0;
-    platform->y = 320;
-    platform->w = 320;
-    platform->h = 8;
+
+    load_framesets(game);
+    load_animations(game);
+    load_terrain_rects(game);
+    load_platform_rects(game);
     
     game->phys_body_list = body_list_create();
     body = body_list_get(game->phys_body_list);
     body->rect->x = 64;
     body->rect->y = 64;
-    body->rect->w = 64;
-    body->rect->h = 64;
+    body->rect->w = 28;
+    body->rect->h = 38;
 
     sprite = sprite_create();
     sprite->rect->x = 32;
     sprite->rect->y = 32;
     sprite->rect->w = 64;
     sprite->rect->h = 64;
-    sprite->anim = anim_one;
-    
+    sprite->anim = anim_wmap_get(game->anims, L"ana_f_idle_r");
+
     controller_reset(&game->controller);
     
     return game;
@@ -170,39 +146,110 @@ void game_fast_frame(game_t *game){
     game->step += 1;
     sprite->step += 1;
     
-    if(body->vy < 4.0){
-        body->vy += 0.1;
+    body->flags &= ~PLAT_DROP;
+
+    if(body->vy < PLAYER_FALL_SPEED){
+        body->vy = fmin(PLAYER_FALL_SPEED, body->vy + PLAYER_FALL_ACCEL);
     }
 
-    if(body->flags & BLOCKED_D && controller_just_pressed(&game->controller, BTN_A)){
-        body->vy = -4.0;
+    if(controller_pressed(&game->controller, BTN_D | BTN_A)){
+        body->flags |= PLAT_DROP;
     }
     
-    if(controller_pressed(&game->controller, BTN_D)){
-        body->flags |= PLAT_DROP;
-    }else{
-        body->flags &= ~PLAT_DROP;
+    if(controller_just_pressed(&game->controller, BTN_A)){
+        if(body->flags & BLOCKED_D && controller_released(&game->controller, BTN_D)){
+            body->vy = PLAYER_JUMP_FORCE;
+        }
+    }else if(controller_just_released(&game->controller, BTN_A)){
+        if(body->vy < PLAYER_JUMP_BRAKE){
+            body->vy = PLAYER_JUMP_BRAKE;
+        }
     }
     
     if(controller_pressed(&game->controller, BTN_R)){
-        body->vx = 2.5;
-        sprite_set_anim(sprite, anim_two);
+        player_face_dir = DIR_R;
+        player_push_dir = DIR_R;
+        if(body->vx < 0){
+            body->vx += PLAYER_GROUND_ACCEL;
+        }else if(body->vx < PLAYER_GROUND_SPEED){
+            body->vx = fmin(PLAYER_GROUND_SPEED, body->vx + PLAYER_GROUND_ACCEL);
+        }
     }else if(controller_pressed(&game->controller, BTN_L)){
-        body->vx = -2.5;
-        sprite_set_anim(sprite, anim_two);
+        player_face_dir = DIR_L;
+        player_push_dir = DIR_L;
+        if(body->vx > 0){
+            body->vx -= PLAYER_GROUND_ACCEL;
+        }else if(body->vx > -PLAYER_GROUND_SPEED){
+            body->vx = fmax(-PLAYER_GROUND_SPEED, body->vx - PLAYER_GROUND_ACCEL);
+        }
     }else{
-        body->vx = 0.0;
-        sprite_set_anim(sprite, anim_one);
+        player_push_dir = DIR_X;
+        if(body->vx > 0.0){
+            body->vx = fmax(0.0, body->vx - PLAYER_GROUND_DECEL);
+        }else if(body->vx < 0.0){
+            body->vx = fmin(0.0, body->vx + PLAYER_GROUND_DECEL);
+        }
     }
     
+    if(body->vx > 0 && !(body->flags & BLOCKED_R)){
+        player_real_dir = DIR_R;
+    }else if(body->vx < 0 && !(body->flags & BLOCKED_L)){
+        player_real_dir = DIR_L;
+    }else{
+        player_real_dir = DIR_X;
+    }
+    
+    if(body->flags & BLOCKED_D){
+        if(player_real_dir == DIR_X){
+            if(player_face_dir == DIR_R){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_idle_r"));
+            }else if(player_face_dir == DIR_L){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_idle_l"));
+            }
+        }else if(player_real_dir == DIR_R){
+            if(player_push_dir == DIR_R){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_move_r"));
+            }else{
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_skid_r"));
+            }
+        }else if(player_real_dir == DIR_L){
+            if(player_push_dir == DIR_L){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_move_l"));
+            }else{
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_skid_l"));
+            }
+        }
+    }else{
+        if(player_face_dir == DIR_R){
+            if(body->vy < -1.0){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_jump_r"));
+            }else if(body->vy > 1.0){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_hang_r"));
+            }else{
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_fall_r"));
+            }
+        }else if(player_face_dir == DIR_L){
+            if(body->vy < -1.0){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_jump_l"));
+            }else if(body->vy > 1.0){
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_hang_l"));
+            }else{
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_fall_l"));
+            }
+        }
+    }
+        
     do_physics_to_it(body, game->terr_rect_list, game->plat_rect_list);
 }
 
 void game_full_frame(game_t *game){
     game_fast_frame(game);
-    SDL_FillRect(game->core->screen, NULL, 0xFFFFFFFF);
+    SDL_FillRect(game->core->screen, NULL, 0xDDDDDDFF);
+    draw_terrain_rects(game);
+    draw_platform_rects(game);
+
     swprintf(debug_message, 100, L"Body b_edge: %f", rect_get_b_edge(body->rect));
-    font_draw_string(game->fonts, debug_message, 8, 4, game->core->screen);
+    font_draw_string(game->fonts, debug_message, 24, 20, game->core->screen);
     
     rect_move_to(sprite->rect, body->rect);
     rect_copy_to_sdl(sprite->rect, &arect);

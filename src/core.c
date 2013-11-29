@@ -30,7 +30,7 @@ core_t *core_create(void){
         exit(EXIT_FAILURE);
     }
     
-    core->rend = SDL_CreateRenderer(core->window, -1, SDL_RENDERER_ACCELERATED);
+    core->rend = SDL_CreateRenderer(core->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     
     core->screen = create_surface(core->win_vw, core->win_vh);
     core->screen_texture = create_streaming_texture(core->rend, core->win_vw, core->win_vh);

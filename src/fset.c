@@ -7,7 +7,7 @@ fset_t *fset_create(void){
     return fset;
 }
 
-void fset_init(fset_t *fset, const char *fn, int cols, int rows){
+void fset_init(fset_t *fset, const char *fn, int cols, int rows, bool flip){
     fset->len = cols * rows;
     fset->frames = malloc(sizeof(SDL_Surface*)*(fset->len));
 
@@ -26,7 +26,12 @@ void fset_init(fset_t *fset, const char *fn, int cols, int rows){
             frame_rect.x = c * frame_rect.w;
             frame_rect.y = r * frame_rect.h;
             SDL_BlitSurface(tmp, &frame_rect, frame, NULL);
-            fset->frames[c+(r*cols)] = frame;
+            if(!flip){
+                fset->frames[c+(r*cols)] = frame;
+            }else{
+                fset->frames[c+(r*cols)] = flip_surface(frame);
+                SDL_FreeSurface(frame);
+            }
         }
     }
     

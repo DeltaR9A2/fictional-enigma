@@ -23,11 +23,11 @@ TYPE_t *TYPE_wmap_get(TYPE_wmap_t *wmap, const wchar_t *name){
     TYPE_node_t *iter = wmap->head;
     
     while(iter->next != NULL){
-        if(wcscmp(name, iter->name)){
-            return iter->data;
-        }else{
-            iter = iter->next;
+        if(wcscmp(name, iter->next->name) == 0){
+            return iter->next->data;
         }
+
+        iter = iter->next;
     }
 
     iter->next = _TYPE_node_create(name);
