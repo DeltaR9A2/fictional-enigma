@@ -126,7 +126,7 @@ game_t *game_create(core_t *core){
     sprite->rect->y = 32;
     sprite->rect->w = 64;
     sprite->rect->h = 64;
-    sprite->anim = anim_wmap_get(game->anims, L"ana_f_idle_r");
+    sprite->anim = anim_wmap_get(game->anims, L"frost_f_idle_r");
 
     controller_reset(&game->controller);
     
@@ -202,39 +202,39 @@ void game_fast_frame(game_t *game){
     if(body->flags & BLOCKED_D){
         if(player_real_dir == DIR_X){
             if(player_face_dir == DIR_R){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_idle_r"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_idle_r"));
             }else if(player_face_dir == DIR_L){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_idle_l"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_idle_l"));
             }
         }else if(player_real_dir == DIR_R){
             if(player_push_dir == DIR_R){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_move_r"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_move_r"));
             }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_skid_r"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_skid_r"));
             }
         }else if(player_real_dir == DIR_L){
             if(player_push_dir == DIR_L){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_move_l"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_move_l"));
             }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_skid_l"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_skid_l"));
             }
         }
     }else{
         if(player_face_dir == DIR_R){
             if(body->vy < -1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_jump_r"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_jump_r"));
             }else if(body->vy > 1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_hang_r"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_hang_r"));
             }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_fall_r"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_fall_r"));
             }
         }else if(player_face_dir == DIR_L){
             if(body->vy < -1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_jump_l"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_jump_l"));
             }else if(body->vy > 1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_hang_l"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_hang_l"));
             }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"ana_f_fall_l"));
+                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_fall_l"));
             }
         }
     }

@@ -22,18 +22,18 @@ fset_def_t static_framesets[] = {
 };
 
 anim_def_t static_animations[] = {
-    {L"p_frost_f_r", L"ana_f_idle_r",  0,  4,  5},
-    {L"p_frost_f_r", L"ana_f_move_r",  8,  8, 10},
-    {L"p_frost_f_r", L"ana_f_jump_r", 16,  2,  8},
-    {L"p_frost_f_r", L"ana_f_hang_r", 18,  2,  8},
-    {L"p_frost_f_r", L"ana_f_fall_r", 20,  2,  8},
-    {L"p_frost_f_r", L"ana_f_skid_r", 22,  2,  8},
-    {L"p_frost_f_l", L"ana_f_idle_l",  0,  4,  5},
-    {L"p_frost_f_l", L"ana_f_move_l",  8,  8, 10},
-    {L"p_frost_f_l", L"ana_f_jump_l", 16,  2,  8},
-    {L"p_frost_f_l", L"ana_f_hang_l", 18,  2,  8},
-    {L"p_frost_f_l", L"ana_f_fall_l", 20,  2,  8},
-    {L"p_frost_f_l", L"ana_f_skid_l", 22,  2,  8},
+    {L"p_frost_f_r", L"frost_f_idle_r",  0,  4,  5},
+    {L"p_frost_f_r", L"frost_f_move_r",  8,  8, 10},
+    {L"p_frost_f_r", L"frost_f_jump_r", 16,  2,  8},
+    {L"p_frost_f_r", L"frost_f_hang_r", 18,  2,  8},
+    {L"p_frost_f_r", L"frost_f_fall_r", 20,  2,  8},
+    {L"p_frost_f_r", L"frost_f_skid_r", 22,  2,  8},
+    {L"p_frost_f_l", L"frost_f_idle_l",  0,  4,  5},
+    {L"p_frost_f_l", L"frost_f_move_l",  8,  8, 10},
+    {L"p_frost_f_l", L"frost_f_jump_l", 16,  2,  8},
+    {L"p_frost_f_l", L"frost_f_hang_l", 18,  2,  8},
+    {L"p_frost_f_l", L"frost_f_fall_l", 20,  2,  8},
+    {L"p_frost_f_l", L"frost_f_skid_l", 22,  2,  8},
     {NULL, NULL, 0, 0, 0},
 };
 
