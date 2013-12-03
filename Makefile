@@ -1,6 +1,7 @@
 SHELL := /bin/bash
 
 CC      := gcc
+DB      := gdb
 CFLAGS  := -std=c99 -Wall -O0 -g -I./src -I./gen/out
 LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx
 
@@ -20,7 +21,7 @@ PNGS := $(XCFS:$(RESDIR)/%.xcf=$(BINDIR)/%.png)
 
 REMOVE  := rm -f
 
-.PHONY: all gen clean run
+.PHONY: all gen clean run debug
 
 all: $(BINDIR)/$(TARGET)
 
@@ -47,3 +48,6 @@ run: all
 	@echo "Running build: "$(BINDIR)/$(TARGET)
 	@(cd $(BINDIR) && exec ./$(TARGET))
 
+debug: all
+	@echo "Debugging build: "$(BINDIR)/$(TARGET)
+	@(cd $(BINDIR) && exec $(DB) ./$(TARGET))
