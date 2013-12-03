@@ -12,26 +12,60 @@ SDL_Rect arect;
 #include "sprite.h"
 #include "loader.h"
 
-body_t *body = NULL;
-sprite_t *sprite = NULL;
-
 const uint32_t DIR_X = 0;
 const uint32_t DIR_R = 1;
 const uint32_t DIR_L = 2;
 
-uint32_t player_face_dir = 0;
-uint32_t player_push_dir = 0;
-uint32_t player_real_dir = 0;
+typedef struct player_t player_t;
+struct player_t{
+    double fall_speed; // 7.0
+    double fall_accel; // 0.3
+    
+    double ground_speed; // 3.50
+    double ground_accel; // 0.25
+    double ground_decel; // 0.15
+    
+    double jump_force; // -6.5
+    double jump_brake; // -2.0
+    
+    body_t *body;
+    sprite_t *sprite;
 
-const double PLAYER_FALL_SPEED = 7.0;
-const double PLAYER_FALL_ACCEL = 0.3;
+    uint32_t face_dir;
+    uint32_t ctrl_dir;
+    uint32_t move_dir;
+};
 
-const double PLAYER_GROUND_SPEED = 3.5;
-const double PLAYER_GROUND_ACCEL = 0.35;
-const double PLAYER_GROUND_DECEL = 0.15;
+player_t *player_create(void){
+    player_t *player = malloc(sizeof(player_t));
+    
+    player->fall_speed = 7.0;
+    player->fall_accel = 0.3;
+    
+    player->ground_speed = 3.50;
+    player->ground_accel = 0.25;
+    player->ground_decel = 0.15;
+    
+    player->jump_force = -6.5;
+    player->jump_brake = -2.0;
+    
+    player->body = body_create();
+    player->sprite = sprite_create();
+    
+    player->face_dir = DIR_R;
+    player->ctrl_dir = DIR_X;
+    player->move_dir = DIR_X;
+    
+    return player;
+}
 
-const double PLAYER_JUMP_FORCE = -6.5;
-const double PLAYER_JUMP_BRAKE = -2.0;
+void player_delete(player_t *player){
+    sprite_delete(player->sprite);
+    body_delete(player->body);
+    free(player);
+}
+
+player_t *player;
 
 //self.dash_vel = 8
 //self.dash_timer = 0
@@ -115,18 +149,15 @@ game_t *game_create(core_t *core){
     load_platform_rects(game);
     
     game->phys_body_list = body_list_create();
-    body = body_list_get(game->phys_body_list);
-    body->rect->x = 64;
-    body->rect->y = 64;
-    body->rect->w = 28;
-    body->rect->h = 38;
+    
+    player = player_create();
+    
+    player->body->rect->x = 64;
+    player->body->rect->y = 64;
+    player->body->rect->w = 28;
+    player->body->rect->h = 38;
 
-    sprite = sprite_create();
-    sprite->rect->x = 32;
-    sprite->rect->y = 32;
-    sprite->rect->w = 64;
-    sprite->rect->h = 64;
-    sprite->anim = anim_wmap_get(game->anims, L"frost_f_idle_r");
+    sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_idle_r"));
 
     controller_reset(&game->controller);
     
@@ -134,7 +165,7 @@ game_t *game_create(core_t *core){
 }
 
 void game_delete(game_t *game){
-    sprite_delete(sprite);
+    player_delete(player);
     anim_wmap_delete(game->anims);
     fset_wmap_delete(game->fsets);
     font_delete(game->fonts);
@@ -142,104 +173,116 @@ void game_delete(game_t *game){
     free(game);
 }
 
-void game_fast_frame(game_t *game){
-    game->step += 1;
-    sprite->step += 1;
-    
-    body->flags &= ~PLAT_DROP;
+void player_update_controls(player_t *player, game_t *game){
+    player->body->flags &= ~PLAT_DROP;
 
-    if(body->vy < PLAYER_FALL_SPEED){
-        body->vy = fmin(PLAYER_FALL_SPEED, body->vy + PLAYER_FALL_ACCEL);
+    if(player->body->vy < player->fall_speed){
+        player->body->vy = fmin(player->fall_speed, player->body->vy + player->fall_accel);
     }
 
     if(controller_pressed(&game->controller, BTN_D | BTN_A)){
-        body->flags |= PLAT_DROP;
+        player->body->flags |= PLAT_DROP;
     }
     
     if(controller_just_pressed(&game->controller, BTN_A)){
-        if(body->flags & BLOCKED_D && controller_released(&game->controller, BTN_D)){
-            body->vy = PLAYER_JUMP_FORCE;
+        if(player->body->flags & BLOCKED_D && controller_released(&game->controller, BTN_D)){
+            player->body->vy = player->jump_force;
         }
     }else if(controller_just_released(&game->controller, BTN_A)){
-        if(body->vy < PLAYER_JUMP_BRAKE){
-            body->vy = PLAYER_JUMP_BRAKE;
+        if(player->body->vy < player->jump_brake){
+            player->body->vy = player->jump_brake;
         }
     }
     
     if(controller_pressed(&game->controller, BTN_R)){
-        player_face_dir = DIR_R;
-        player_push_dir = DIR_R;
-        if(body->vx < 0){
-            body->vx += PLAYER_GROUND_ACCEL;
-        }else if(body->vx < PLAYER_GROUND_SPEED){
-            body->vx = fmin(PLAYER_GROUND_SPEED, body->vx + PLAYER_GROUND_ACCEL);
+        player->face_dir = DIR_R;
+        player->ctrl_dir = DIR_R;
+        if(player->body->vx < 0){
+            player->body->vx += player->ground_accel;
+        }else if(player->body->vx < player->ground_speed){
+            player->body->vx = fmin(player->ground_speed, player->body->vx + player->ground_accel);
         }
     }else if(controller_pressed(&game->controller, BTN_L)){
-        player_face_dir = DIR_L;
-        player_push_dir = DIR_L;
-        if(body->vx > 0){
-            body->vx -= PLAYER_GROUND_ACCEL;
-        }else if(body->vx > -PLAYER_GROUND_SPEED){
-            body->vx = fmax(-PLAYER_GROUND_SPEED, body->vx - PLAYER_GROUND_ACCEL);
+        player->face_dir = DIR_L;
+        player->ctrl_dir = DIR_L;
+        if(player->body->vx > 0){
+            player->body->vx -= player->ground_accel;
+        }else if(player->body->vx > -player->ground_speed){
+            player->body->vx = fmax(-player->ground_speed, player->body->vx - player->ground_accel);
         }
     }else{
-        player_push_dir = DIR_X;
-        if(body->vx > 0.0){
-            body->vx = fmax(0.0, body->vx - PLAYER_GROUND_DECEL);
-        }else if(body->vx < 0.0){
-            body->vx = fmin(0.0, body->vx + PLAYER_GROUND_DECEL);
+        player->ctrl_dir = DIR_X;
+        if(player->body->vx > 0.0){
+            player->body->vx = fmax(0.0, player->body->vx - player->ground_decel);
+        }else if(player->body->vx < 0.0){
+            player->body->vx = fmin(0.0, player->body->vx + player->ground_decel);
         }
     }
     
-    if(body->vx > 0 && !(body->flags & BLOCKED_R)){
-        player_real_dir = DIR_R;
-    }else if(body->vx < 0 && !(body->flags & BLOCKED_L)){
-        player_real_dir = DIR_L;
+    if(player->body->vx > 0 && !(player->body->flags & BLOCKED_R)){
+        player->move_dir = DIR_R;
+    }else if(player->body->vx < 0 && !(player->body->flags & BLOCKED_L)){
+        player->move_dir = DIR_L;
     }else{
-        player_real_dir = DIR_X;
+        player->move_dir = DIR_X;
     }
+}
+
+void player_update_animation(player_t *player, game_t *game){
+    player->sprite->step += 1;
+
+    if(player->body->flags & BLOCKED_D){
+        if(player->move_dir == DIR_X){
+            if(player->face_dir == DIR_R){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_idle_r"));
+            }else if(player->face_dir == DIR_L){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_idle_l"));
+            }
+        }else if(player->move_dir == DIR_R){
+            if(player->ctrl_dir == DIR_R){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_move_r"));
+            }else{
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_skid_r"));
+            }
+        }else if(player->move_dir == DIR_L){
+            if(player->ctrl_dir == DIR_L){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_move_l"));
+            }else{
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_skid_l"));
+            }
+        }
+    }else{
+        if(player->face_dir == DIR_R){
+            if(player->body->vy < -1.0){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_jump_r"));
+            }else if(player->body->vy > 1.0){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_hang_r"));
+            }else{
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_fall_r"));
+            }
+        }else if(player->face_dir == DIR_L){
+            if(player->body->vy < -1.0){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_jump_l"));
+            }else if(player->body->vy > 1.0){
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_hang_l"));
+            }else{
+                sprite_set_anim(player->sprite, anim_wmap_get(game->anims, L"frost_f_fall_l"));
+            }
+        }
+    }
+}
+
+void player_update(player_t *player, game_t *game){
+    player_update_controls(player, game);
+    player_update_animation(player, game);
+    rect_move_to(player->sprite->rect, player->body->rect);
+    do_physics_to_it(player->body, game->terr_rect_list, game->plat_rect_list);
+}
+
+void game_fast_frame(game_t *game){
+    game->step += 1;
     
-    if(body->flags & BLOCKED_D){
-        if(player_real_dir == DIR_X){
-            if(player_face_dir == DIR_R){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_idle_r"));
-            }else if(player_face_dir == DIR_L){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_idle_l"));
-            }
-        }else if(player_real_dir == DIR_R){
-            if(player_push_dir == DIR_R){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_move_r"));
-            }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_skid_r"));
-            }
-        }else if(player_real_dir == DIR_L){
-            if(player_push_dir == DIR_L){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_move_l"));
-            }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_skid_l"));
-            }
-        }
-    }else{
-        if(player_face_dir == DIR_R){
-            if(body->vy < -1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_jump_r"));
-            }else if(body->vy > 1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_hang_r"));
-            }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_fall_r"));
-            }
-        }else if(player_face_dir == DIR_L){
-            if(body->vy < -1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_jump_l"));
-            }else if(body->vy > 1.0){
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_hang_l"));
-            }else{
-                sprite_set_anim(sprite, anim_wmap_get(game->anims, L"frost_f_fall_l"));
-            }
-        }
-    }
-        
-    do_physics_to_it(body, game->terr_rect_list, game->plat_rect_list);
+    player_update(player, game);
 }
 
 void game_full_frame(game_t *game){
@@ -248,13 +291,12 @@ void game_full_frame(game_t *game){
     draw_terrain_rects(game);
     draw_platform_rects(game);
 
-    swprintf(debug_message, 100, L"Body b_edge: %f", rect_get_b_edge(body->rect));
+    swprintf(debug_message, 100, L"Body b_edge: %f", rect_get_b_edge(player->body->rect));
     font_draw_string(game->fonts, debug_message, 24, 20, game->core->screen);
     
-    rect_move_to(sprite->rect, body->rect);
-    rect_copy_to_sdl(sprite->rect, &arect);
+    rect_copy_to_sdl(player->sprite->rect, &arect);
     if(sdl_rect_overlap(&arect, &game->core->active_rect)){
-        anim_draw(sprite->anim, sprite->step, game->core->screen, &arect);
+        anim_draw(player->sprite->anim, player->sprite->step, game->core->screen, &arect);
     }
 }
 
