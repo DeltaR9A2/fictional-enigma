@@ -15,6 +15,11 @@ void sprite_set_anim(sprite_t *sprite, anim_t *anim){
     if(sprite->anim != anim){
         sprite->anim = anim;
         sprite->step = 0;
+        
+        if(anim != NULL && anim->frames[0] != NULL){
+            sprite->rect->w = anim->frames[0]->w;
+            sprite->rect->h = anim->frames[0]->h;
+        }
     }
 }
 
