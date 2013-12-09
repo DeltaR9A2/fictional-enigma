@@ -3,6 +3,8 @@
 
 #include <math.h>
 
+typedef struct player_t player_t;
+
 #include "game.h"
 #include "body.h"
 #include "sprite.h"
@@ -12,7 +14,6 @@
 //self.dash_timer = 0
 //self.air_dash = False
 
-typedef struct player_t player_t;
 struct player_t{
     double fall_speed; // 7.0
     double fall_accel; // 0.3

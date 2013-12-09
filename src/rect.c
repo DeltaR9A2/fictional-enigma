@@ -79,6 +79,24 @@ double rect_range_to(rect_t *rect, rect_t *other){
                 pow(rect_get_mid_y(other) - rect_get_mid_y(rect), 2));
 }
 
+void rect_limit_to(rect_t *rect, rect_t *other){
+    if(rect->w >= other->w){
+        rect_set_mid_x(rect, rect_get_mid_x(other));
+    }else if(rect_get_l_edge(rect) < rect_get_l_edge(other)){
+        rect_set_l_edge(rect, rect_get_l_edge(other));
+    }else if(rect_get_r_edge(rect) > rect_get_r_edge(other)){
+        rect_set_r_edge(rect, rect_get_r_edge(other));
+    }
+
+    if(rect->h >= other->h){
+        rect_set_mid_y(rect, rect_get_mid_y(other));
+    }else if(rect_get_t_edge(rect) < rect_get_t_edge(other)){
+        rect_set_t_edge(rect, rect_get_t_edge(other));
+    }else if(rect_get_b_edge(rect) > rect_get_b_edge(other)){
+        rect_set_b_edge(rect, rect_get_b_edge(other));
+    }
+}
+
 void rect_match_to(rect_t *rect, rect_t *other){
     rect->x = other->x;
     rect->y = other->y;

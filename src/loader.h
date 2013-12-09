@@ -3,6 +3,7 @@
 
 #include "rect.h"
 #include "game.h"
+#include "cmap.h"
 
 #include "rect_list.h"
 #include "fset_wmap.h"

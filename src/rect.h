@@ -45,6 +45,7 @@ void rect_grow(rect_t *rect, double dw, double dh);
 
 void rect_move_to(rect_t *rect, rect_t *other);
 double rect_range_to(rect_t *rect, rect_t *other);
+void rect_limit_to(rect_t *rect, rect_t *other);
 void rect_match_to(rect_t *rect, rect_t *other);
 double rect_angle_to(rect_t *rect, rect_t *other);
 
