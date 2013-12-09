@@ -71,34 +71,29 @@ void camera_draw_player(camera_t *camera, player_t *player){
     anim_draw(player->sprite->anim, player->sprite->step, camera->buffer, &draw_rect);
 }
 
-void camera_draw_terrain_rects(camera_t *camera, game_t *game){
+void camera_fill_rect(camera_t *camera, rect_t *rect, int32_t color){
     SDL_Rect fill_rect;
 
+    rect_copy_to_sdl(rect, &fill_rect);
+    
+    fill_rect.x -= camera->view->x;
+    fill_rect.y -= camera->view->y;
+
+    SDL_FillRect(camera->buffer, &fill_rect, color);
+}
+
+void camera_draw_terrain_rects(camera_t *camera, game_t *game){
     rect_node_t *iter = game->terr_rect_list->head;
     while(iter != NULL){
-        rect_copy_to_sdl(iter->data, &fill_rect);
-        
-        fill_rect.x -= camera->view->x;
-        fill_rect.y -= camera->view->y;
-        
-        SDL_FillRect(camera->buffer, &fill_rect, 0x333366FF);
-        
+        camera_fill_rect(camera, iter->data, 0x333366FF);
         iter = iter->next;
     }
 }
 
 void camera_draw_platform_rects(camera_t *camera, game_t *game){
-    SDL_Rect fill_rect;
-
     rect_node_t *iter = game->plat_rect_list->head;
     while(iter != NULL){
-        rect_copy_to_sdl(iter->data, &fill_rect);
-        
-        fill_rect.x -= camera->view->x;
-        fill_rect.y -= camera->view->y;
-        
-        SDL_FillRect(camera->buffer, &fill_rect, 0x7777AAFF);
-
+        camera_fill_rect(camera, iter->data, 0x7777AAFF);
         iter = iter->next;
     }
 }
@@ -106,28 +101,30 @@ void camera_draw_platform_rects(camera_t *camera, game_t *game){
 #include <tgmath.h>
 
 void camera_draw_game(camera_t *camera, game_t *game){
-    SDL_FillRect(camera->buffer, NULL, 0xDDDDDDFF);
+    SDL_FillRect(camera->buffer, NULL, 0x000000FF);
+
+    camera_fill_rect(camera, game->bounds, 0xDDDDDDFF);
+    
     camera_draw_terrain_rects(camera, game);
     camera_draw_platform_rects(camera, game);
     camera_draw_player(camera, player);
     
-    int32_t mx, my;
-    core_get_mouse_pos(game->core, &mx, &my);
-    mx += camera->view->x;
-    my += camera->view->y;
-    mx = (floor(mx/8.0))*8;
-    my = (floor(my/8.0))*8;
+//    int32_t mx, my;
+//    core_get_mouse_pos(game->core, &mx, &my);
+//    mx += camera->view->x;
+//    my += camera->view->y;
+//    mx = (floor(mx/8.0))*8;
+//    my = (floor(my/8.0))*8;
     
-    SDL_Rect fill_rect;
-    fill_rect.w = 8;
-    fill_rect.h = 8;
-    fill_rect.x = mx;
-    fill_rect.y = my;
+//    fill_rect.w = 8;
+//    fill_rect.h = 8;
+//    fill_rect.x = mx;
+//    fill_rect.y = my;
     
-    fill_rect.x -= camera->view->x;
-    fill_rect.y -= camera->view->y;
+//    fill_rect.x -= camera->view->x;
+//    fill_rect.y -= camera->view->y;
     
-    SDL_FillRect(camera->buffer, &fill_rect, 0xFF0000FF);
+//    SDL_FillRect(camera->buffer, &fill_rect, 0xFF0000FF);
 }
 
 camera_t *camera;
@@ -139,6 +136,10 @@ game_t *game_create(core_t *core){
     
     game->core = core;
     game->step = 0;
+    
+    game->bounds = rect_create();
+    rect_init(game->bounds, 0, 0, 1000, 1000);
+    
     game->fonts = font_create("font_8bit_operator_black.png");
     
     game->fsets = fset_wmap_create();
@@ -148,15 +149,15 @@ game_t *game_create(core_t *core){
 
     load_framesets(game);
     load_animations(game);
-    //load_terrain_rects(game);
-    //load_platform_rects(game);
+    load_terrain_rects(game);
+    load_platform_rects(game);
     
     /////////////////////////
-    test_cmap = cmap_create();
-    cmap_init(test_cmap, 1, 20, 16, 16);
-    cmap_copy_data_from(test_cmap, test_cmap_data);
-    cmap_add_to_rect_list(test_cmap, game->terr_rect_list);
-    printf("Terrain Rect Count: %i\n", rect_list_length(game->terr_rect_list));
+    //test_cmap = cmap_create();
+    //cmap_init(test_cmap, 1, 20, 16, 16);
+    //cmap_copy_data_from(test_cmap, test_cmap_data);
+    //cmap_add_to_rect_list(test_cmap, game->terr_rect_list);
+    //printf("Terrain Rect Count: %i\n", rect_list_length(game->terr_rect_list));
     //////////////////////////
     
     //////////////////////////
@@ -183,7 +184,9 @@ game_t *game_create(core_t *core){
 void game_delete(game_t *game){
     player_delete(player);
     
-    cmap_delete(test_cmap);
+    camera_delete(camera);
+    
+    //cmap_delete(test_cmap);
 
     rect_list_delete(game->plat_rect_list);
     rect_list_delete(game->terr_rect_list);
@@ -191,6 +194,8 @@ void game_delete(game_t *game){
     fset_wmap_delete(game->fsets);
     
     font_delete(game->fonts);
+    
+    rect_delete(game->bounds);
     
     free(game);
 }

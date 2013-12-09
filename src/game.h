@@ -26,6 +26,8 @@ struct game_t{
     uint32_t step;
 
     controller_t controller;
+    
+    rect_t *bounds;
 
     fset_wmap_t *fsets;
     anim_wmap_t *anims;
