@@ -14,19 +14,27 @@ void _TYPE_node_delete(TYPE_node_t *node){
 
 TYPE_list_t *TYPE_list_create(void){
     TYPE_list_t *temp = malloc(sizeof(TYPE_list_t));
-    temp->head = _TYPE_node_create();
+    temp->head = NULL;
     return temp;
 }
 
 TYPE_t *TYPE_list_get(TYPE_list_t *list){
+    if(list->head == NULL){
+        list->head = _TYPE_node_create();
+        return list->head->data;
+    }
+    
     TYPE_node_t *iter = list->head;
     
-    while(iter->next != NULL){
+    while(iter != NULL){
+        if(iter->next == NULL){
+            iter->next = _TYPE_node_create();
+            return iter->next->data;
+        }
         iter = iter->next;
     }
-
-    iter->next = _TYPE_node_create();
-    return iter->next->data;
+    
+    return NULL; // Should not reach this unless shenanigans are afoot.
 }
 
 void TYPE_list_delete(TYPE_list_t *list){
@@ -50,6 +58,6 @@ int32_t TYPE_list_length(TYPE_list_t *list){
         count += 1;
         iter = iter->next;
     }
-    return count-1; // Exclude head
+    return count;
 }
 
