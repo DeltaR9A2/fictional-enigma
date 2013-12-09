@@ -50,15 +50,15 @@ void controller_poll_events(controller_t *c){
     while(SDL_PollEvent(&e)){
         if(e.type == SDL_KEYDOWN){
             switch(e.key.keysym.scancode){
-            case SDL_SCANCODE_UP:
+            case SDL_SCANCODE_W:
                 c->pressed |= BTN_U; break;
-            case SDL_SCANCODE_DOWN:
+            case SDL_SCANCODE_S:
                 c->pressed |= BTN_D; break;
-            case SDL_SCANCODE_LEFT:
+            case SDL_SCANCODE_A:
                 c->pressed |= BTN_L; break;
-            case SDL_SCANCODE_RIGHT:
+            case SDL_SCANCODE_D:
                 c->pressed |= BTN_R; break;
-            case SDL_SCANCODE_Z:
+            case SDL_SCANCODE_SPACE:
                 c->pressed |= BTN_A; break;
             case SDL_SCANCODE_X:
                 c->pressed |= BTN_B; break;
@@ -66,13 +66,13 @@ void controller_poll_events(controller_t *c){
                 c->pressed |= BTN_X; break;
             case SDL_SCANCODE_V:
                 c->pressed |= BTN_Y; break;
-            case SDL_SCANCODE_A:
+            case SDL_SCANCODE_Q:
                 c->pressed |= BTN_LB; break;
-            case SDL_SCANCODE_S:
+            case SDL_SCANCODE_E:
                 c->pressed |= BTN_RB; break;
-            case SDL_SCANCODE_D:
+            case SDL_SCANCODE_1:
                 c->pressed |= BTN_LT; break;
-            case SDL_SCANCODE_F:
+            case SDL_SCANCODE_3:
                 c->pressed |= BTN_RT; break;
             case SDL_SCANCODE_RETURN:
                 c->pressed |= BTN_NEXT; break;
@@ -83,15 +83,15 @@ void controller_poll_events(controller_t *c){
             }
         }else if(e.type == SDL_KEYUP){
             switch(e.key.keysym.scancode){
-            case SDL_SCANCODE_UP:
+            case SDL_SCANCODE_W:
                 c->pressed &= ~BTN_U; break;
-            case SDL_SCANCODE_DOWN:
+            case SDL_SCANCODE_S:
                 c->pressed &= ~BTN_D; break;
-            case SDL_SCANCODE_LEFT:
+            case SDL_SCANCODE_A:
                 c->pressed &= ~BTN_L; break;
-            case SDL_SCANCODE_RIGHT:
+            case SDL_SCANCODE_D:
                 c->pressed &= ~BTN_R; break;
-            case SDL_SCANCODE_Z:
+            case SDL_SCANCODE_SPACE:
                 c->pressed &= ~BTN_A; break;
             case SDL_SCANCODE_X:
                 c->pressed &= ~BTN_B; break;
@@ -99,13 +99,13 @@ void controller_poll_events(controller_t *c){
                 c->pressed &= ~BTN_X; break;
             case SDL_SCANCODE_V:
                 c->pressed &= ~BTN_Y; break;
-            case SDL_SCANCODE_A:
+            case SDL_SCANCODE_Q:
                 c->pressed &= ~BTN_LB; break;
-            case SDL_SCANCODE_S:
+            case SDL_SCANCODE_E:
                 c->pressed &= ~BTN_RB; break;
-            case SDL_SCANCODE_D:
+            case SDL_SCANCODE_1:
                 c->pressed &= ~BTN_LT; break;
-            case SDL_SCANCODE_F:
+            case SDL_SCANCODE_3:
                 c->pressed &= ~BTN_RT; break;
             case SDL_SCANCODE_RETURN:
                 c->pressed &= ~BTN_NEXT; break;
