@@ -36,8 +36,8 @@ void player_delete(player_t *player){
 void player_update(player_t *player, game_t *game){
     player_update_controls(player, game);
     player_update_animation(player, game);
-    rect_move_to(player->sprite->rect, player->body->rect);
     do_physics_to_it(player->body, game->terr_rect_list, game->plat_rect_list);
+    rect_move_to(player->sprite->rect, player->body->rect);
 }
 
 void player_update_controls(player_t *player, game_t *game){
