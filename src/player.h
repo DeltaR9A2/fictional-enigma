@@ -6,6 +6,7 @@
 #include "game.h"
 #include "body.h"
 #include "sprite.h"
+#include "physics.h"
 
 //self.dash_vel = 8
 //self.dash_timer = 0
