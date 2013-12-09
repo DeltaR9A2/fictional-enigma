@@ -33,6 +33,9 @@ struct controller_t{
     uint32_t previous;
 };
 
+controller_t *controller_create(void);
+void controller_delete(controller_t *controller);
+
 void controller_reset(controller_t *c);
 void controller_poll_events(controller_t *c);
 

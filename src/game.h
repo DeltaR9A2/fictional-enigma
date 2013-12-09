@@ -35,7 +35,7 @@ struct game_t{
     core_t *core;
     uint32_t step;
 
-    controller_t controller;
+    controller_t *controller;
     
     rect_t *mouse;
     rect_t *bounds;
@@ -50,7 +50,7 @@ struct game_t{
     rect_list_t *terr_rect_list;
     rect_list_t *plat_rect_list;
     
-    font_t *fonts;
+    font_t *font;
 };
 
 game_t *game_create(core_t *core);

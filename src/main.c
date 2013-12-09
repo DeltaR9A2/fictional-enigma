@@ -47,7 +47,7 @@ int main(int arc, char* argv[]){
         if(ms_accum > ms_per_frame){
             ms_accum -= ms_per_frame;
 
-            controller_poll_events(&game->controller);
+            controller_poll_events(game->controller);
             
             if(ms_accum > ms_per_frame){
                 game_fast_frame(game);

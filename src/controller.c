@@ -22,6 +22,19 @@ const uint32_t BTN_NEXT = 0x00008000;
 
 const uint32_t BTN_NONE = 0x00000000;
 
+controller_t *controller_create(void){
+    controller_t *controller = malloc(sizeof(controller_t));
+
+    controller->pressed = BTN_NONE;
+    controller->previous = BTN_NONE;
+    
+    return controller;
+}
+
+void controller_delete(controller_t *controller){
+    free(controller);
+}
+
 bool controller_pressed(controller_t *c, uint32_t buttons){
     return ((c->pressed & buttons) == buttons);
 }

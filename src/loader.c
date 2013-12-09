@@ -20,6 +20,16 @@ int8_t test_cmap_data[] = {
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 };
 
+    /////////////////////////
+    //test_cmap = cmap_create();
+    //cmap_init(test_cmap, 1, 20, 16, 16);
+    //cmap_copy_data_from(test_cmap, test_cmap_data);
+    //cmap_add_to_rect_list(test_cmap, game->terr_rect_list);
+    //printf("Terrain Rect Count: %i\n", rect_list_length(game->terr_rect_list));
+    //////////////////////////
+    //cmap_delete(test_cmap);
+    
+
 rect_t static_terrain[] = {
     {    0,     0, 40*16,    16},
     {    0, 21*16, 40*16,    16},

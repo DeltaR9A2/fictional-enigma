@@ -47,21 +47,21 @@ void player_update_controls(player_t *player, game_t *game){
         player->body->vy = fmin(player->fall_speed, player->body->vy + player->fall_accel);
     }
 
-    if(controller_pressed(&game->controller, BTN_D | BTN_A)){
+    if(controller_pressed(game->controller, BTN_D | BTN_A)){
         player->body->flags |= PLAT_DROP;
     }
     
-    if(controller_just_pressed(&game->controller, BTN_A)){
-        if(player->body->flags & BLOCKED_D && controller_released(&game->controller, BTN_D)){
+    if(controller_just_pressed(game->controller, BTN_A)){
+        if(player->body->flags & BLOCKED_D && controller_released(game->controller, BTN_D)){
             player->body->vy = player->jump_force;
         }
-    }else if(controller_just_released(&game->controller, BTN_A)){
+    }else if(controller_just_released(game->controller, BTN_A)){
         if(player->body->vy < player->jump_brake){
             player->body->vy = player->jump_brake;
         }
     }
     
-    if(controller_pressed(&game->controller, BTN_R)){
+    if(controller_pressed(game->controller, BTN_R)){
         player->face_dir = DIR_R;
         player->ctrl_dir = DIR_R;
         if(player->body->vx < 0){
@@ -69,7 +69,7 @@ void player_update_controls(player_t *player, game_t *game){
         }else if(player->body->vx < player->ground_speed){
             player->body->vx = fmin(player->ground_speed, player->body->vx + player->ground_accel);
         }
-    }else if(controller_pressed(&game->controller, BTN_L)){
+    }else if(controller_pressed(game->controller, BTN_L)){
         player->face_dir = DIR_L;
         player->ctrl_dir = DIR_L;
         if(player->body->vx > 0){
