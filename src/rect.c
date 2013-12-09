@@ -13,6 +13,13 @@ void rect_delete(rect_t *rect){
     free(rect);
 }
 
+void rect_init(rect_t *rect, double x, double y, double w, double h){
+    rect->x = x;
+    rect->y = y;
+    rect->w = w;
+    rect->h = h;
+}
+
 void rect_copy_to_sdl(rect_t *rect, SDL_Rect *sdl_rect){
     sdl_rect->x = rect->x;
     sdl_rect->y = rect->y;

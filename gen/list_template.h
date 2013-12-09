@@ -19,4 +19,6 @@ TYPE_list_t *TYPE_list_create(void);
 TYPE_t *TYPE_list_get(TYPE_list_t *list);
 void TYPE_list_delete(TYPE_list_t *list);
 
+int32_t TYPE_list_length(TYPE_list_t *list);
+
 #endif

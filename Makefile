@@ -1,9 +1,9 @@
 SHELL := /bin/bash
 
-CC      := gcc
-DB      := gdb
-CFLAGS  := -std=c99 -Wall -O0 -g -I./src -I./gen/out
-LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx
+export CC      := gcc
+export DB      := gdb
+export CFLAGS  := -std=c99 -Wall -O0 -g -pg -I./src -I./gen/out
+export LFLAGS  := -Wl,-rpath,. -g -pg -lm -lSDL2 -lSDL2_image -lSDL2_gfx
 
 BINDIR  := bin
 SRCDIR  := src
@@ -47,6 +47,7 @@ clean:
 run: all
 	@echo "Running build: "$(BINDIR)/$(TARGET)
 	@(cd $(BINDIR) && exec ./$(TARGET))
+	@(cd $(BINDIR) && exec gprof $(TARGET) > profile)
 
 debug: all
 	@echo "Debugging build: "$(BINDIR)/$(TARGET)

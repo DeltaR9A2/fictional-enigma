@@ -42,3 +42,14 @@ void TYPE_list_delete(TYPE_list_t *list){
     free(list);
 }
 
+int32_t TYPE_list_length(TYPE_list_t *list){
+    TYPE_node_t *iter = list->head;
+
+    int32_t count = 0;
+    while(iter != NULL){
+        count += 1;
+        iter = iter->next;
+    }
+    return count-1; // Exclude head
+}
+
