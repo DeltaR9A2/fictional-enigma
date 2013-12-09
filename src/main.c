@@ -28,6 +28,8 @@ int main(int arc, char* argv[]){
     core_t *core = core_create();
     game_t *game = game_create(core);
 
+    SDL_ShowCursor(SDL_DISABLE);
+
     SDL_AddEventWatch(&main_event_watch, game);
     
     double ms_per_frame = 16.66;

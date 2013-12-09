@@ -29,4 +29,7 @@ void core_window_redraw(core_t *core);
 void core_window_resize(core_t *core, int32_t w, int32_t h);
 void core_toggle_fullscreen(core_t *core);
 
+double core_get_scale(core_t *core);
+void core_get_mouse_pos(core_t *core, int32_t *x, int32_t *y);
+
 #endif

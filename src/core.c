@@ -46,13 +46,17 @@ void core_delete(core_t *core){
     free(core);
 }
 
+double core_get_scale(core_t *core){
+    double h_scale = (double)core->win_cw / (double)core->win_vw;
+    double v_scale = (double)core->win_ch / (double)core->win_vh;
+    return (h_scale < v_scale) ? h_scale : v_scale;
+}
+
 void core_window_resize(core_t *core, int32_t w, int32_t h){
     core->win_cw = w;
     core->win_ch = h;
     
-    double h_scale = (double)core->win_cw / (double)core->win_vw;
-    double v_scale = (double)core->win_ch / (double)core->win_vh;
-    double scale = (h_scale < v_scale) ? h_scale : v_scale;
+    double scale = core_get_scale(core);
     
     core->active_rect.w = scale * core->win_vw;
     core->active_rect.h = scale * core->win_vh;
@@ -79,3 +83,17 @@ void core_window_redraw(core_t *core){
     SDL_RenderPresent(core->rend);
 }
 
+void core_get_mouse_pos(core_t *core, int32_t *x, int32_t *y){
+    double scale = core_get_scale(core);
+
+    int mx, my;
+    SDL_GetMouseState(&mx, &my);
+    mx -= core->active_rect.x;
+    my -= core->active_rect.y;
+
+    mx = (int)((double)mx / scale);
+    my = (int)((double)my / scale);
+    
+    *x = mx;
+    *y = my;
+}
