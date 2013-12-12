@@ -1,35 +1,6 @@
 #include "loader.h"
 cmap_t *test_cmap;
 
-int8_t test_cmap_data[] = {
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-};
-
-    /////////////////////////
-    //test_cmap = cmap_create();
-    //cmap_init(test_cmap, 1, 20, 16, 16);
-    //cmap_copy_data_from(test_cmap, test_cmap_data);
-    //cmap_add_to_rect_list(test_cmap, game->terr_rect_list);
-    //printf("Terrain Rect Count: %i\n", rect_list_length(game->terr_rect_list));
-    //////////////////////////
-    //cmap_delete(test_cmap);
-    
-
 rect_t static_terrain[] = {
     {    0,     0, 40*16,    16},
     {    0, 21*16, 40*16,    16},
@@ -74,19 +45,62 @@ anim_def_t static_animations[] = {
 };
 
 void load_terrain_rects(game_t *game){
+    SDL_Surface *test_map_image = load_image("map_test.png");
+    cmap_t *test_cmap = cmap_create();
+
+    cmap_init(test_cmap, 0, 0, 128, 128);
+    
+    for(int i=0; i < test_map_image->w * test_map_image->h; i++){
+        uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
+        if(pixel == 0x333366FF){
+            test_cmap->data[i] = 1;
+        }else{
+            test_cmap->data[i] = 0;
+        }
+    }
+    
+    cmap_add_to_rect_list(test_cmap, game->terr_rect_list);
+    printf("Terrain Rect Count: %i\n", rect_list_length(game->terr_rect_list));
+
+    cmap_delete(test_cmap);
+    SDL_FreeSurface(test_map_image);
+/*
     rect_t *terrain;
     for(int i=0; rect_get_area(&static_terrain[i]); i++){
         terrain = rect_list_get(game->terr_rect_list);
         rect_match_to(terrain, &static_terrain[i]);
     }
+*/
 }
 
 void load_platform_rects(game_t *game){
+    SDL_Surface *test_map_image = load_image("map_test.png");
+    cmap_t *test_cmap = cmap_create();
+
+    cmap_init(test_cmap, 0, 0, 128, 128);
+    
+    for(int i=0; i < test_map_image->w * test_map_image->h; i++){
+        uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
+        if(pixel == 0x9999DDFF){
+            test_cmap->data[i] = 1;
+        }else{
+            test_cmap->data[i] = 0;
+        }
+    }
+    
+    cmap_add_to_rect_list(test_cmap, game->plat_rect_list);
+    printf("Platform Rect Count: %i\n", rect_list_length(game->terr_rect_list));
+
+    cmap_delete(test_cmap);
+    SDL_FreeSurface(test_map_image);
+
+/*
     rect_t *platform;
     for(int i=0; rect_get_area(&static_platforms[i]); i++){
         platform = rect_list_get(game->plat_rect_list);
         rect_match_to(platform, &static_platforms[i]);
     }
+*/
 }
    
 void load_framesets(game_t *game){

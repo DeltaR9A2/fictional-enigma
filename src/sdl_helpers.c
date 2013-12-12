@@ -11,6 +11,12 @@ SDL_Surface *convert_surface(SDL_Surface *src){
 SDL_Surface *load_image(const char *fn){
     SDL_Surface *tmp, *final;
     tmp = IMG_Load(fn);
+    
+    if(tmp == NULL){
+        printf("LOAD IMAGE FAILED %s\n", fn);    
+        return NULL;
+    }
+    
     final = convert_surface(tmp);
     SDL_FreeSurface(tmp);
     return final;

@@ -40,7 +40,7 @@ void camera_draw_game(camera_t *camera, game_t *game){
     camera_draw_platform_rects(camera, game);
     camera_draw_player(camera, game->player);
     
-    camera_fill_rect(camera, game->mouse, 0xFF0000FF);
+//    camera_fill_rect(camera, game->mouse, 0xFF0000FF);
 }
 
 void camera_draw_terrain_rects(camera_t *camera, game_t *game){

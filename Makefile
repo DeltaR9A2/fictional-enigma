@@ -21,14 +21,17 @@ PNGS := $(XCFS:$(RESDIR)/%.xcf=$(BINDIR)/%.png)
 
 REMOVE  := rm -f
 
-.PHONY: all gen clean run debug
+.PHONY: all gen ttf clean run debug
 
 all: $(BINDIR)/$(TARGET)
 
 gen:
 	$(MAKE) -C gen
 
-$(BINDIR)/$(TARGET): gen $(OBJECTS) $(PNGS)
+ttf:
+	$(MAKE) -C ttf
+
+$(BINDIR)/$(TARGET): gen ttf $(OBJECTS) $(PNGS)
 	@$(CC) ./obj/*.o $(LFLAGS) -o $@
 	@echo "Build complete: "$(BINDIR)/$(TARGET)
 	
@@ -42,6 +45,7 @@ $(PNGS): $(BINDIR)/%.png : $(RESDIR)/%.xcf
 
 clean:
 	$(MAKE) -C gen clean
+	$(MAKE) -C ttf clean
 	$(REMOVE) $(BINDIR)/* $(OBJECTS) 
 
 run: all

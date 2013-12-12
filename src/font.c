@@ -1,6 +1,8 @@
 #include "font.h"
 
-const wchar_t *glyph_order = L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+//const wchar_t *glyph_order = L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+
+const wchar_t *glyph_order = L" 1234567890-=!@#$%^&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\;',./{}|:\"<>?";
 
 font_t *font_create(const char *image_fn){
     font_t *font = malloc(sizeof(font_t));
@@ -78,5 +80,9 @@ void font_draw_string(font_t *font, const wchar_t *string, int32_t x, int32_t y,
         SDL_BlitSurface(font->glyphs[string[i]], NULL, target, &target_rect);
         target_rect.x += font->glyphs[string[i]]->w;
     }
+}
+
+int32_t font_get_height(font_t *font){
+    return font->glyphs[glyph_order[0]]->h;
 }
 
