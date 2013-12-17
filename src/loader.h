@@ -1,18 +1,18 @@
 #ifndef loader_h
 #define loader_h
 
-#include "rect.h"
+typedef struct fset_def_t fset_def_t;
+typedef struct anim_def_t anim_def_t;
+
 #include "game.h"
 #include "cmap.h"
 
+
 #include "rect_list.h"
-#include "fset_wmap.h"
-#include "anim_wmap.h"
+#include "fset_dict.h"
+#include "anim_dict.h"
+#include "target_list.h"
 
-void load_terrain_rects(game_t *game);
-void load_platform_rects(game_t *game);
-
-typedef struct fset_def_t fset_def_t;
 struct fset_def_t{
     wchar_t *name;
     char *filename;
@@ -23,7 +23,6 @@ struct fset_def_t{
 
 void load_framesets(game_t *game);
 
-typedef struct anim_def_t anim_def_t;
 struct anim_def_t{
     wchar_t *fset;
     wchar_t *name;
@@ -33,5 +32,10 @@ struct anim_def_t{
 };
 
 void load_animations(game_t *game);
+
+void load_terrain_rects(game_t *game);
+void load_platform_rects(game_t *game);
+
+void load_targets(game_t *game);
 
 #endif

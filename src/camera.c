@@ -1,9 +1,18 @@
 #include "camera.h"
 
+SDL_Surface *target_debug_image = NULL;
+
 camera_t *camera_create(void){
     camera_t *camera = malloc(sizeof(camera_t));
     camera->view = rect_create();
     camera->buffer = NULL;
+    
+    ///////////
+    if(target_debug_image == NULL){
+        target_debug_image = load_image("target.png");
+    }
+    ///////////
+    
     return camera;
 }
 
@@ -38,8 +47,10 @@ void camera_draw_game(camera_t *camera, game_t *game){
     
     camera_draw_terrain_rects(camera, game);
     camera_draw_platform_rects(camera, game);
+    camera_draw_targets(camera, game);
+
     camera_draw_player(camera, game->player);
-    
+   
 //    camera_fill_rect(camera, game->mouse, 0xFF0000FF);
 }
 
@@ -68,5 +79,21 @@ void camera_draw_player(camera_t *camera, player_t *player){
     draw_rect.y -= camera->view->y;
     
     anim_draw(player->sprite->anim, player->sprite->step, camera->buffer, &draw_rect);
+}
+
+void camera_draw_targets(camera_t *camera, game_t *game){
+    SDL_Rect draw_rect;
+
+    target_node_t *iter = game->targets->head;
+    while(iter != NULL){
+        rect_copy_to_sdl(iter->data->rect, &draw_rect);
+    
+        draw_rect.x -= camera->view->x;
+        draw_rect.y -= camera->view->y;
+        
+        SDL_BlitSurface(target_debug_image, NULL, camera->buffer, &draw_rect);
+        
+        iter = iter->next;
+    }
 }
 

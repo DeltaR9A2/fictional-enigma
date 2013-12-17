@@ -1,24 +1,6 @@
 #include "loader.h"
 cmap_t *test_cmap;
 
-rect_t static_terrain[] = {
-    {    0,     0, 40*16,    16},
-    {    0, 21*16, 40*16,    16},
-    {    0,     0,    16, 22*16},    
-    {39*16,     0,    16, 22*16},
-
-    {    0,     0,     0,     0},
-};
-
-rect_t static_platforms[] = {
-    {   16,  6*16, 38*16,    16},
-    {   16, 11*16,  5*16,    16},
-    {   16, 16*16,  5*16,    16},
-    {34*16, 11*16,  5*16,    16},
-    {34*16, 16*16,  5*16,    16},
-    {  0,   0,   0,   0},
-};
-
 fset_def_t static_framesets[] = {
     {L"p_frost_f_r", "player_frost_female.png",  8,  8, false},
     {L"p_frost_f_l", "player_frost_female.png",  8,  8, true },
@@ -64,13 +46,6 @@ void load_terrain_rects(game_t *game){
 
     cmap_delete(test_cmap);
     SDL_FreeSurface(test_map_image);
-/*
-    rect_t *terrain;
-    for(int i=0; rect_get_area(&static_terrain[i]); i++){
-        terrain = rect_list_get(game->terr_rect_list);
-        rect_match_to(terrain, &static_terrain[i]);
-    }
-*/
 }
 
 void load_platform_rects(game_t *game){
@@ -89,18 +64,10 @@ void load_platform_rects(game_t *game){
     }
     
     cmap_add_to_rect_list(test_cmap, game->plat_rect_list);
-    printf("Platform Rect Count: %i\n", rect_list_length(game->terr_rect_list));
+    printf("Platform Rect Count: %i\n", rect_list_length(game->plat_rect_list));
 
     cmap_delete(test_cmap);
     SDL_FreeSurface(test_map_image);
-
-/*
-    rect_t *platform;
-    for(int i=0; rect_get_area(&static_platforms[i]); i++){
-        platform = rect_list_get(game->plat_rect_list);
-        rect_match_to(platform, &static_platforms[i]);
-    }
-*/
 }
    
 void load_framesets(game_t *game){
@@ -108,7 +75,7 @@ void load_framesets(game_t *game){
     fset_def_t *def;
     for(int i=0; static_framesets[i].name != NULL; i++){
         def = &static_framesets[i];
-        fset = fset_wmap_get(game->fsets, def->name);
+        fset = fset_dict_get(game->fsets, def->name);
         fset_init(fset, def->filename, def->cols, def->rows, def->flip);
     }
 }
@@ -119,9 +86,20 @@ void load_animations(game_t *game){
     anim_def_t *def;
     for(int i=0; static_animations[i].name != NULL; i++){
         def = &static_animations[i];
-        fset = fset_wmap_get(game->fsets, def->fset);
-        anim = anim_wmap_get(game->anims, def->name);
+        fset = fset_dict_get(game->fsets, def->fset);
+        anim = anim_dict_get(game->anims, def->name);
         anim_init(anim, fset, def->start, def->len, def->fps);
     }
+}
+
+void load_targets(game_t *game){
+    target_t *target;
+    
+    target = target_list_get(game->targets);
+    
+    target->rect->x = 64;
+    target->rect->y = 64;
+    target->rect->w = 32;
+    target->rect->h = 32;
 }
 

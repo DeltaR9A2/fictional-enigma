@@ -25,15 +25,19 @@ typedef struct game_t game_t;
 
 #include "loader.h"
 
-#include "fset_wmap.h"
-#include "anim_wmap.h"
+#include "fset_dict.h"
+#include "anim_dict.h"
 
 #include "rect_list.h"
 #include "body_list.h"
 
+#include "target_list.h"
+
 struct game_t{
     core_t *core;
     uint32_t step;
+
+    font_t *font;
 
     controller_t *controller;
     
@@ -43,14 +47,14 @@ struct game_t{
     camera_t *camera;    
     player_t *player;
 
-    fset_wmap_t *fsets;
-    anim_wmap_t *anims;
+    fset_dict_t *fsets;
+    anim_dict_t *anims;
     
     body_list_t *phys_body_list;
     rect_list_t *terr_rect_list;
     rect_list_t *plat_rect_list;
     
-    font_t *font;
+    target_list_t *targets;
 };
 
 game_t *game_create(core_t *core);

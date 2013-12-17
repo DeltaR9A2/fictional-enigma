@@ -15,15 +15,15 @@ typedef struct player_t player_t;
 //self.air_dash = False
 
 struct player_t{
-    double fall_speed; // 7.0
-    double fall_accel; // 0.3
+    double fall_speed;
+    double fall_accel;
     
-    double ground_speed; // 3.50
-    double ground_accel; // 0.25
-    double ground_decel; // 0.15
+    double ground_speed;
+    double ground_accel;
+    double ground_decel;
     
-    double jump_force; // -6.5
-    double jump_brake; // -2.0
+    double jump_force;
+    double jump_brake;
     
     body_t *body;
     sprite_t *sprite;

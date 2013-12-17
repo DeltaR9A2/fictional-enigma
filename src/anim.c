@@ -19,9 +19,7 @@ void anim_init(anim_t *anim, fset_t *fset, int start, int len, int fps){
 }    
 
 void anim_delete(anim_t *anim){
-    if(anim->frames != NULL){
-        free(anim->frames);
-    }
+    free(anim->frames);
     free(anim);
 }
 

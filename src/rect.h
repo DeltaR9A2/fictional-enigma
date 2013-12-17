@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <tgmath.h>
 
 #include <SDL2/SDL.h>
 

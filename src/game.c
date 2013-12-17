@@ -9,19 +9,21 @@ game_t *game_create(core_t *core){
     game->core = core;
     game->step = 0;
     
+    game->font = font_create("font_8bit.png");
+
     game->controller = controller_create();
     game->mouse = rect_create();
     game->bounds = rect_create();
     game->camera = camera_create();
     game->player = player_create();
     
-    game->fsets = fset_wmap_create();
-    game->anims = anim_wmap_create();
+    game->fsets = fset_dict_create();
+    game->anims = anim_dict_create();
     game->terr_rect_list = rect_list_create();
     game->plat_rect_list = rect_list_create();
     game->phys_body_list = body_list_create();
 
-    game->font = font_create("font_8bit.png");
+    game->targets = target_list_create();
 
     rect_init(game->mouse, 0, 0, 8, 8);
     rect_init(game->bounds, 0, 0, 1024, 1024);
@@ -33,32 +35,35 @@ game_t *game_create(core_t *core){
     load_animations(game);
     load_terrain_rects(game);
     load_platform_rects(game);
+    load_targets(game);
     
     //////////////////////////
     game->player->body->rect->x = 64;
     game->player->body->rect->y = 64;
-    game->player->body->rect->w = 28;
+    game->player->body->rect->w = 24;
     game->player->body->rect->h = 38;
-    sprite_set_anim(game->player->sprite, anim_wmap_get(game->anims, L"frost_f_idle_r"));
+    sprite_set_anim(game->player->sprite, anim_dict_get(game->anims, L"frost_f_idle_r"));
     //////////////////////////
     
     return game;
 }
 
 void game_delete(game_t *game){
-    font_delete(game->font);
-    
+    target_list_delete(game->targets);
+
     body_list_delete(game->phys_body_list);
     rect_list_delete(game->plat_rect_list);
     rect_list_delete(game->terr_rect_list);
-    anim_wmap_delete(game->anims);
-    fset_wmap_delete(game->fsets);
+    anim_dict_delete(game->anims);
+    fset_dict_delete(game->fsets);
     
     player_delete(game->player);
     camera_delete(game->camera);
     rect_delete(game->bounds);
     rect_delete(game->mouse);
     controller_delete(game->controller);
+    
+    font_delete(game->font);
     
     free(game);
 }

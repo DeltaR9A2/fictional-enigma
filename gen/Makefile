@@ -4,16 +4,16 @@ COMMAND = sed s:TYPE:$(TYPE):g <$< >$@
 SRCDIR := ../src
 OBJDIR := ../obj
 
-LISTS := body rect
+LISTS := body rect target
 LIST_SOURCES := $(LISTS:%=$(SRCDIR)/%_list.c)
 LIST_HEADERS := $(LISTS:%=$(SRCDIR)/%_list.h)
 
-WMAPS := fset anim
-WMAP_SOURCES := $(WMAPS:%=$(SRCDIR)/%_wmap.c)
-WMAP_HEADERS := $(WMAPS:%=$(SRCDIR)/%_wmap.h)
+DICTS := fset anim
+DICT_SOURCES := $(DICTS:%=$(SRCDIR)/%_dict.c)
+DICT_HEADERS := $(DICTS:%=$(SRCDIR)/%_dict.h)
 
-ALL_HEADERS := $(LIST_HEADERS) $(WMAP_HEADERS)
-ALL_SOURCES := $(LIST_SOURCES) $(WMAP_SOURCES)
+ALL_HEADERS := $(LIST_HEADERS) $(DICT_HEADERS)
+ALL_SOURCES := $(LIST_SOURCES) $(DICT_SOURCES)
 
 OBJECTS := $(ALL_SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o) 
 
@@ -37,14 +37,14 @@ $(LIST_SOURCES): list_template.c
 	$(eval TYPE := $(@F:%_list.c=%))
 	$(COMMAND)
 
-$(WMAPS): $(WMAP_HEADERS) $(WMAP_SOURCES)
+$(DICTS): $(DICT_HEADERS) $(DICT_SOURCES)
 
-$(WMAP_HEADERS): wmap_template.h
-	$(eval TYPE := $(@F:%_wmap.h=%))
+$(DICT_HEADERS): dict_template.h
+	$(eval TYPE := $(@F:%_dict.h=%))
 	$(COMMAND)
 
-$(WMAP_SOURCES): wmap_template.c
-	$(eval TYPE := $(@F:%_wmap.c=%))
+$(DICT_SOURCES): dict_template.c
+	$(eval TYPE := $(@F:%_dict.c=%))
 	$(COMMAND)
 
 clean:

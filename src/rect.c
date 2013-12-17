@@ -21,10 +21,10 @@ void rect_init(rect_t *rect, double x, double y, double w, double h){
 }
 
 void rect_copy_to_sdl(rect_t *rect, SDL_Rect *sdl_rect){
-    sdl_rect->x = rect->x;
-    sdl_rect->y = rect->y;
-    sdl_rect->w = rect->w;
-    sdl_rect->h = rect->h;
+    sdl_rect->x = (rect->x);
+    sdl_rect->y = (rect->y);
+    sdl_rect->w = (rect->w);
+    sdl_rect->h = (rect->h);
 }
 
 double rect_get_l_edge(rect_t *rect){ return rect->x; }
