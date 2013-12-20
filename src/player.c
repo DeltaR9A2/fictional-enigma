@@ -7,6 +7,15 @@ const uint32_t DIR_L = 2;
 player_t *player_create(void){
     player_t *player = malloc(sizeof(player_t));
     
+    player->body = body_create();
+    player->sprite = sprite_create();
+    
+    player->weapon = rect_create();
+    player->weapon_life = 0;
+    player->weapon_delay = 0;
+    
+    player->flashing = 0;
+   
     player->fall_speed = 10.0;
     player->fall_accel = 0.35;
     
@@ -16,14 +25,11 @@ player_t *player_create(void){
     
     player->jump_force = -8.0;
     player->jump_brake = -3.0;
-    
-    player->body = body_create();
-    player->sprite = sprite_create();
-    
+
     player->face_dir = DIR_R;
     player->ctrl_dir = DIR_X;
     player->move_dir = DIR_X;
-    
+
     return player;
 }
 
@@ -34,6 +40,10 @@ void player_delete(player_t *player){
 }
 
 void player_update(player_t *player, game_t *game){
+    if(player->flashing > 0){
+        player->flashing -= 1;
+    }
+    
     player_update_controls(player, game);
     player_update_animation(player, game);
     do_physics_to_it(player->body, game->terr_rect_list, game->plat_rect_list);
@@ -46,6 +56,7 @@ void player_update_controls(player_t *player, game_t *game){
     if(player->body->vy < player->fall_speed){
         player->body->vy = fmin(player->fall_speed, player->body->vy + player->fall_accel);
     }
+
 
     if(controller_pressed(game->controller, BTN_D | BTN_A)){
         player->body->flags |= PLAT_DROP;
@@ -93,6 +104,43 @@ void player_update_controls(player_t *player, game_t *game){
     }else{
         player->move_dir = DIR_X;
     }
+    
+    //// update weapon
+    player->weapon->w = 0;
+    player->weapon->h = 0;
+
+    if(player->weapon_delay > 0){
+        player->weapon_delay -= 1;
+    }else if(player->weapon_life > 0){
+        player->weapon_life -= 1;
+        
+        if(controller_pressed(game->controller, BTN_D)){
+            player->weapon->w = 8;
+            player->weapon->h = 64;
+            rect_move_to(player->weapon, player->body->rect);
+            rect_set_t_edge(player->weapon, rect_get_mid_y(player->weapon));
+        }else if(controller_pressed(game->controller, BTN_U)){
+            player->weapon->w = 8;
+            player->weapon->h = 64;
+            rect_move_to(player->weapon, player->body->rect);
+            rect_set_b_edge(player->weapon, rect_get_mid_y(player->weapon));
+        }else{
+            player->weapon->w = 64;
+            player->weapon->h = 8;
+            rect_move_to(player->weapon, player->body->rect);
+            if(player->face_dir & DIR_R){
+                rect_set_l_edge(player->weapon, rect_get_mid_x(player->weapon));
+            }else if(player->face_dir & DIR_L){
+                rect_set_r_edge(player->weapon, rect_get_mid_x(player->weapon));
+            }
+       }
+    }else{
+        if(controller_just_pressed(game->controller, BTN_B)){
+            player->weapon_delay = 0;
+            player->weapon_life = 10;
+        }
+    }
+
 }
 
 void player_update_animation(player_t *player, game_t *game){

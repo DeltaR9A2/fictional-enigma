@@ -22,5 +22,6 @@ void camera_draw_game(camera_t *camera, game_t *game);
 void camera_draw_terrain_rects(camera_t *camera, game_t *game);
 void camera_draw_platform_rects(camera_t *camera, game_t *game);
 void camera_draw_player(camera_t *camera, player_t *player);
+void camera_draw_enemies(camera_t *camera, game_t *game);
 void camera_draw_targets(camera_t *camera, game_t *game);
 #endif

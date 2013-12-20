@@ -1,6 +1,8 @@
 #ifndef TYPE_list_h
 #define TYPE_list_h
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <wchar.h>
 #include "TYPE.h"
 

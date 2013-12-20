@@ -31,6 +31,7 @@ typedef struct game_t game_t;
 #include "rect_list.h"
 #include "body_list.h"
 
+#include "enemy_list.h"
 #include "target_list.h"
 
 struct game_t{
@@ -54,6 +55,7 @@ struct game_t{
     rect_list_t *terr_rect_list;
     rect_list_t *plat_rect_list;
     
+    enemy_list_t *enemies;
     target_list_t *targets;
 };
 

@@ -23,6 +23,7 @@ game_t *game_create(core_t *core){
     game->plat_rect_list = rect_list_create();
     game->phys_body_list = body_list_create();
 
+    game->enemies = enemy_list_create();
     game->targets = target_list_create();
 
     rect_init(game->mouse, 0, 0, 8, 8);
@@ -38,11 +39,16 @@ game_t *game_create(core_t *core){
     load_targets(game);
     
     //////////////////////////
+    enemy_t *temp = enemy_list_get(game->enemies);
+    enemy_init(temp, 512, 176, 24, 40);
+    
+    //////////////////////////
     game->player->body->rect->x = 64;
     game->player->body->rect->y = 64;
     game->player->body->rect->w = 24;
-    game->player->body->rect->h = 38;
+    game->player->body->rect->h = 40;
     sprite_set_anim(game->player->sprite, anim_dict_get(game->anims, L"frost_f_idle_r"));
+    
     //////////////////////////
     
     return game;
@@ -50,6 +56,7 @@ game_t *game_create(core_t *core){
 
 void game_delete(game_t *game){
     target_list_delete(game->targets);
+    enemy_list_delete(game->enemies);
 
     body_list_delete(game->phys_body_list);
     rect_list_delete(game->plat_rect_list);
@@ -68,6 +75,27 @@ void game_delete(game_t *game){
     free(game);
 }
 
+void game_check_enemies(game_t *game){
+    enemy_node_t *iter;
+    for(iter = game->enemies->head; iter; iter = iter->next){
+        if(iter->data->flashing > 0){
+            iter->data->flashing -= 1;
+        }else{
+            if(rect_overlap(iter->data->rect, game->player->weapon)){
+                iter->data->flashing = 15;
+                printf("Enemy hit by player.\n");
+            }
+        }
+
+        if(game->player->flashing == 0){
+            if(rect_overlap(iter->data->weapon, game->player->body->rect)){
+                game->player->flashing = 60;
+                printf("Player hit by enemy.\n");
+            }
+        }
+    }
+}
+
 void game_fast_frame(game_t *game){
     int32_t mx, my;
     core_get_mouse_pos(game->core, &mx, &my);
@@ -84,6 +112,8 @@ void game_fast_frame(game_t *game){
     game->step += 1;
     
     player_update(game->player, game);
+
+    game_check_enemies(game);
 }
 
 void game_full_frame(game_t *game){

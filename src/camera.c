@@ -39,6 +39,9 @@ void camera_fill_rect(camera_t *camera, rect_t *rect, int32_t color){
 }
 
 void camera_draw_game(camera_t *camera, game_t *game){
+    camera->view->x = floor(camera->view->x);
+    camera->view->y = floor(camera->view->y);
+
     SDL_FillRect(camera->buffer, NULL, 0x000000FF);
 
     rect_limit_to(camera->view, game->bounds);
@@ -48,6 +51,7 @@ void camera_draw_game(camera_t *camera, game_t *game){
     camera_draw_terrain_rects(camera, game);
     camera_draw_platform_rects(camera, game);
     camera_draw_targets(camera, game);
+    camera_draw_enemies(camera, game);
 
     camera_draw_player(camera, game->player);
    
@@ -78,7 +82,22 @@ void camera_draw_player(camera_t *camera, player_t *player){
     draw_rect.x -= camera->view->x;
     draw_rect.y -= camera->view->y;
     
-    anim_draw(player->sprite->anim, player->sprite->step, camera->buffer, &draw_rect);
+    if(player->flashing % 2 == 0){
+        camera_fill_rect(camera, player->body->rect, 0x2222DDFF);
+        anim_draw(player->sprite->anim, player->sprite->step, camera->buffer, &draw_rect);
+    }
+    
+    camera_fill_rect(camera, player->weapon, 0xDD9900FF);
+}
+
+void camera_draw_enemies(camera_t *camera, game_t *game){
+    enemy_node_t *iter = game->enemies->head;
+    while(iter != NULL){
+        if(iter->data->flashing % 2 == 0){
+            camera_fill_rect(camera, iter->data->rect, 0xDD3333FF);
+        }
+        iter = iter->next;
+    }
 }
 
 void camera_draw_targets(camera_t *camera, game_t *game){

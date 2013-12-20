@@ -123,6 +123,10 @@ void rect_move_toward(rect_t *rect, rect_t *other, double dist){
 }
 
 bool rect_overlap(rect_t *rect, rect_t *other){
+        if((rect->w == 0) || (rect->h == 0) || (other->w == 0) || (other->h == 0)){
+            return false;
+        }
+
         if((rect->x + rect->w) <= (other->x) || (rect->x) >= (other->x + other->w) ||
            (rect->y + rect->h) <= (other->y) || (rect->y) >= (other->y + other->h)){
             return false;

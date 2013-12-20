@@ -4,7 +4,7 @@ COMMAND = sed s:TYPE:$(TYPE):g <$< >$@
 SRCDIR := ../src
 OBJDIR := ../obj
 
-LISTS := body rect target
+LISTS := body rect target enemy
 LIST_SOURCES := $(LISTS:%=$(SRCDIR)/%_list.c)
 LIST_HEADERS := $(LISTS:%=$(SRCDIR)/%_list.h)
 

@@ -32,7 +32,7 @@ int main(int arc, char* argv[]){
 
     SDL_AddEventWatch(&main_event_watch, game);
     
-    double ms_per_frame = 16.66;
+    double ms_per_frame = 16.6;
     double curr_ms = SDL_GetTicks();
     double prev_ms = curr_ms;
     double ms_delta = 0;
