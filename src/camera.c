@@ -59,7 +59,7 @@ void camera_draw_game(camera_t *camera, game_t *game){
 }
 
 void camera_draw_terrain_rects(camera_t *camera, game_t *game){
-    rect_node_t *iter = game->terr_rect_list->head;
+    rect_node_t *iter = game->terrain_rects->head;
     while(iter != NULL){
         camera_fill_rect(camera, iter->data, 0x333366FF);
         iter = iter->next;
@@ -67,7 +67,7 @@ void camera_draw_terrain_rects(camera_t *camera, game_t *game){
 }
 
 void camera_draw_platform_rects(camera_t *camera, game_t *game){
-    rect_node_t *iter = game->plat_rect_list->head;
+    rect_node_t *iter = game->platform_rects->head;
     while(iter != NULL){
         camera_fill_rect(camera, iter->data, 0x7777AAFF);
         iter = iter->next;

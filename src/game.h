@@ -51,9 +51,8 @@ struct game_t{
     fset_dict_t *fsets;
     anim_dict_t *anims;
     
-    body_list_t *phys_body_list;
-    rect_list_t *terr_rect_list;
-    rect_list_t *plat_rect_list;
+    rect_list_t *terrain_rects;
+    rect_list_t *platform_rects;
     
     enemy_list_t *enemies;
     target_list_t *targets;

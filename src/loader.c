@@ -41,8 +41,8 @@ void load_terrain_rects(game_t *game){
         }
     }
     
-    cmap_add_to_rect_list(test_cmap, game->terr_rect_list);
-    printf("Terrain Rect Count: %i\n", rect_list_length(game->terr_rect_list));
+    cmap_add_to_rect_list(test_cmap, game->terrain_rects);
+    printf("Terrain Rect Count: %i\n", rect_list_length(game->terrain_rects));
 
     cmap_delete(test_cmap);
     SDL_FreeSurface(test_map_image);
@@ -63,8 +63,8 @@ void load_platform_rects(game_t *game){
         }
     }
     
-    cmap_add_to_rect_list(test_cmap, game->plat_rect_list);
-    printf("Platform Rect Count: %i\n", rect_list_length(game->plat_rect_list));
+    cmap_add_to_rect_list(test_cmap, game->platform_rects);
+    printf("Platform Rect Count: %i\n", rect_list_length(game->platform_rects));
 
     cmap_delete(test_cmap);
     SDL_FreeSurface(test_map_image);

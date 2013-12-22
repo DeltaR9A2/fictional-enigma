@@ -16,6 +16,11 @@ player_t *player_create(void){
     
     player->flashing = 0;
    
+    player->body->rect->x = 64;
+    player->body->rect->y = 64;
+    player->body->rect->w = 22;
+    player->body->rect->h = 38;
+    
     player->fall_speed = 10.0;
     player->fall_accel = 0.35;
     
@@ -46,7 +51,7 @@ void player_update(player_t *player, game_t *game){
     
     player_update_controls(player, game);
     player_update_animation(player, game);
-    do_physics_to_it(player->body, game->terr_rect_list, game->plat_rect_list);
+    do_physics_to_it(player->body, game->terrain_rects, game->platform_rects);
     rect_move_to(player->sprite->rect, player->body->rect);
 }
 

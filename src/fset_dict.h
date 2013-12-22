@@ -1,17 +1,18 @@
 #ifndef fset_dict_h
 #define fset_dict_h
 
+typedef struct fset_node_t fset_node_t;
+typedef struct fset_dict_t fset_dict_t;
+
 #include <wchar.h>
 #include "fset.h"
 
-typedef struct fset_node_t fset_node_t;
 struct fset_node_t{
     fset_t *data;
     fset_node_t *next;
     wchar_t name[32];
 };
 
-typedef struct fset_dict_t fset_dict_t;
 struct fset_dict_t{
     fset_node_t *head;
 };
