@@ -7,30 +7,19 @@
 #include <tgmath.h>
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL2_rotozoom.h>
 
 typedef struct game_t game_t;
 
 #include "core.h"
-#include "rect.h"
 
+#include "rect.h"
 #include "font.h"
-#include "anim.h"
-#include "sprite.h"
 #include "camera.h"
 #include "player.h"
-
 #include "controller.h"
-
-#include "loader.h"
-
 #include "fset_dict.h"
 #include "anim_dict.h"
-
 #include "rect_list.h"
-#include "body_list.h"
-
 #include "enemy_list.h"
 #include "target_list.h"
 
@@ -60,9 +49,6 @@ struct game_t{
 
 game_t *game_create(core_t *core);
 void game_delete(game_t *game);
-
-void game_create_data_structures(game_t *game);
-void game_delete_data_structures(game_t *game);
 
 void game_fast_frame(game_t *game);
 void game_full_frame(game_t *game);

@@ -2,7 +2,8 @@ SHELL := /bin/bash
 
 export CC      := gcc
 export DB      := gdb
-export CFLAGS  := -std=c99 -Wall -O0 -g -pg -I./src -I./gen/out
+export CFLAGS  := -std=c99 -Wall -O0 -g -pg -I./src -I./gen/out -Werror
+export DEFINE  := -D DEBUG
 export LFLAGS  := -Wl,-rpath,. -g -pg -lm -lSDL2 -lSDL2_image -lSDL2_gfx
 
 BINDIR  := bin
@@ -36,7 +37,7 @@ $(BINDIR)/$(TARGET): gen ttf $(OBJECTS) $(PNGS)
 	@echo "Build complete: "$(BINDIR)/$(TARGET)
 	
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(DEFINE) -c $< -o $@
 	@echo "Compiled "$<"..."
 
 $(PNGS): $(BINDIR)/%.png : $(RESDIR)/%.xcf

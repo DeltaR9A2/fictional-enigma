@@ -1,5 +1,27 @@
 #include "loader.h"
-cmap_t *test_cmap;
+
+#include <wchar.h>
+#include <stdbool.h>
+#include "cmap.h"
+
+typedef struct fset_def_t fset_def_t;
+struct fset_def_t{
+    wchar_t *name;
+    char *filename;
+    int cols;
+    int rows;
+    bool flip;
+};
+
+
+typedef struct anim_def_t anim_def_t;
+struct anim_def_t{
+    wchar_t *fset;
+    wchar_t *name;
+    int start;
+    int len;
+    int fps;
+};
 
 fset_def_t static_framesets[] = {
     {L"p_frost_f_r", "player_frost_female.png",  8,  8, false},
@@ -94,7 +116,6 @@ void load_animations(game_t *game){
 
 void load_targets(game_t *game){
     SDL_Surface *test_map_image = load_image("map_targets.png");
-    cmap_t *test_cmap = cmap_create();
 
     for(int i=0; i < test_map_image->w * test_map_image->h; i++){
         uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
@@ -109,5 +130,13 @@ void load_targets(game_t *game){
     }
     
     SDL_FreeSurface(test_map_image);
+}
+
+void load_game(game_t *game){
+    load_terrain_rects(game);
+    load_platform_rects(game);
+    load_framesets(game);
+    load_animations(game);
+    load_targets(game);
 }
 

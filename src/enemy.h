@@ -4,6 +4,7 @@
 typedef struct enemy_t enemy_t;
 
 #include "rect.h"
+#include "body.h"
 #include "game.h"
 
 struct enemy_t{
