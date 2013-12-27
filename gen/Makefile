@@ -24,7 +24,7 @@ REMOVE  := rm -f
 all: $(ALL_FILES)
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) $(DEFINE) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<"..."
 
 $(LISTS): $(LIST_HEADERS) $(LIST_SOURCES)

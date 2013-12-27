@@ -1,10 +1,16 @@
 SHELL := /bin/bash
 
 export CC      := gcc
-export DB      := gdb
-export CFLAGS  := -std=c99 -Wall -O0 -g -pg -I./src -I./gen/out -Werror
-export DEFINE  := -D DEBUG
-export LFLAGS  := -Wl,-rpath,. -g -pg -lm -lSDL2 -lSDL2_image -lSDL2_gfx
+
+# Debug Flags #####
+#export CFLAGS  := -std=c99 -O0 -g -pg -I./src -Wall -Werror -D DEBUG
+#export LFLAGS  := -Wl,-rpath,. -g -pg -lm -lSDL2 -lSDL2_image -lSDL2_gfx
+###################
+
+# Release Flags #####
+export CFLAGS  := -std=c99 -O2 -I./src
+export LFLAGS  := -Wl,-rpath,. -lm -lSDL2 -lSDL2_image -lSDL2_gfx
+#####################
 
 BINDIR  := bin
 SRCDIR  := src
@@ -33,11 +39,11 @@ ttf:
 	$(MAKE) -C ttf
 
 $(BINDIR)/$(TARGET): gen ttf $(OBJECTS) $(PNGS)
-	@$(CC) ./obj/*.o $(LFLAGS) -o $@
+	@$(CC) $(LFLAGS) ./obj/*.o -o $@ 
 	@echo "Build complete: "$(BINDIR)/$(TARGET)
 	
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) $(DEFINE) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<"..."
 
 $(PNGS): $(BINDIR)/%.png : $(RESDIR)/%.xcf
@@ -52,8 +58,4 @@ clean:
 run: all
 	@echo "Running build: "$(BINDIR)/$(TARGET)
 	@(cd $(BINDIR) && exec ./$(TARGET))
-	@(cd $(BINDIR) && exec gprof $(TARGET) > profile)
 
-debug: all
-	@echo "Debugging build: "$(BINDIR)/$(TARGET)
-	@(cd $(BINDIR) && exec $(DB) ./$(TARGET))
