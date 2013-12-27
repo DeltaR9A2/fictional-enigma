@@ -93,13 +93,21 @@ void load_animations(game_t *game){
 }
 
 void load_targets(game_t *game){
-    target_t *target;
+    SDL_Surface *test_map_image = load_image("map_targets.png");
+    cmap_t *test_cmap = cmap_create();
+
+    for(int i=0; i < test_map_image->w * test_map_image->h; i++){
+        uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
+        if(pixel != 0xFFFFFFFF){
+            target_t *target = target_list_get(game->targets);
+            target->rect->x = (i % 128) * 8;
+            target->rect->y = (i / 128) * 8;
+            target->rect->w = 8;
+            target->rect->h = 8;
+            target->color = pixel;
+        }
+    }
     
-    target = target_list_get(game->targets);
-    
-    target->rect->x = 64;
-    target->rect->y = 64;
-    target->rect->w = 32;
-    target->rect->h = 32;
+    SDL_FreeSurface(test_map_image);
 }
 

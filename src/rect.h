@@ -1,6 +1,8 @@
 #ifndef rect_h
 #define rect_h
 
+typedef struct rect_t rect_t;
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
@@ -8,7 +10,6 @@
 
 #include <SDL2/SDL.h>
 
-typedef struct rect_t rect_t;
 struct rect_t{
     double x, y, w, h;
 };

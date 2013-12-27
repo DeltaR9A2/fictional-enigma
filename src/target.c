@@ -10,13 +10,17 @@ target_t *target_create(void){
 
     target->type = TARGET_NONE;
     target->rect = rect_create();
-    target->data = NULL;
-    
+    target->color = 0x00000000;
+    target->action = &target_activate;
     return target;
 }
 
 void target_delete(target_t *target){
     rect_delete(target->rect);
     free(target);
+}
+
+void target_activate(target_t *target, game_t *game){
+    printf("target_activate\n");
 }
 

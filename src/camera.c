@@ -1,17 +1,9 @@
 #include "camera.h"
 
-SDL_Surface *target_debug_image = NULL;
-
 camera_t *camera_create(void){
     camera_t *camera = malloc(sizeof(camera_t));
     camera->view = rect_create();
     camera->buffer = NULL;
-    
-    ///////////
-    if(target_debug_image == NULL){
-        target_debug_image = load_image("target.png");
-    }
-    ///////////
     
     return camera;
 }
@@ -38,6 +30,17 @@ void camera_fill_rect(camera_t *camera, rect_t *rect, int32_t color){
     SDL_FillRect(camera->buffer, &fill_rect, color);
 }
 
+void camera_draw_sprite(camera_t *camera, sprite_t *sprite){
+    SDL_Rect draw_rect;
+
+    rect_copy_to_sdl(sprite->rect, &draw_rect);
+    
+    draw_rect.x -= camera->view->x;
+    draw_rect.y -= camera->view->y;
+
+    anim_draw(sprite->anim, sprite->step, camera->buffer, &draw_rect);
+}
+
 void camera_draw_game(camera_t *camera, game_t *game){
     camera->view->x = floor(camera->view->x);
     camera->view->y = floor(camera->view->y);
@@ -55,7 +58,7 @@ void camera_draw_game(camera_t *camera, game_t *game){
 
     camera_draw_player(camera, game->player);
    
-//    camera_fill_rect(camera, game->mouse, 0xFF0000FF);
+    camera_fill_rect(camera, game->mouse, 0xFF0000FF);
 }
 
 void camera_draw_terrain_rects(camera_t *camera, game_t *game){
@@ -75,16 +78,10 @@ void camera_draw_platform_rects(camera_t *camera, game_t *game){
 }
 
 void camera_draw_player(camera_t *camera, player_t *player){
-    SDL_Rect draw_rect;
-
-    rect_copy_to_sdl(player->sprite->rect, &draw_rect);
-    
-    draw_rect.x -= camera->view->x;
-    draw_rect.y -= camera->view->y;
     
     if(player->flashing % 2 == 0){
         camera_fill_rect(camera, player->body->rect, 0x2222DDFF);
-        anim_draw(player->sprite->anim, player->sprite->step, camera->buffer, &draw_rect);
+        camera_draw_sprite(camera, player->sprite);
     }
     
     camera_fill_rect(camera, player->weapon, 0xDD9900FF);
@@ -101,17 +98,9 @@ void camera_draw_enemies(camera_t *camera, game_t *game){
 }
 
 void camera_draw_targets(camera_t *camera, game_t *game){
-    SDL_Rect draw_rect;
-
     target_node_t *iter = game->targets->head;
     while(iter != NULL){
-        rect_copy_to_sdl(iter->data->rect, &draw_rect);
-    
-        draw_rect.x -= camera->view->x;
-        draw_rect.y -= camera->view->y;
-        
-        SDL_BlitSurface(target_debug_image, NULL, camera->buffer, &draw_rect);
-        
+        camera_fill_rect(camera, iter->data->rect, iter->data->color);
         iter = iter->next;
     }
 }

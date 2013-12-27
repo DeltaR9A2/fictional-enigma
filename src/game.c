@@ -9,22 +9,9 @@ game_t *game_create(core_t *core){
     game->core = core;
     game->step = 0;
     
+    game_create_data_structures(game);
+
     game->font = font_create("font_8bit.png");
-
-    game->controller = controller_create();
-    game->mouse = rect_create();
-    game->bounds = rect_create();
-    game->camera = camera_create();
-    game->player = player_create();
-    
-    game->fsets = fset_dict_create();
-    game->anims = anim_dict_create();
-
-    game->terrain_rects = rect_list_create();
-    game->platform_rects = rect_list_create();
-
-    game->enemies = enemy_list_create();
-    game->targets = target_list_create();
 
     rect_init(game->mouse, 0, 0, 8, 8);
     rect_init(game->bounds, 0, 0, 1024, 1024);
@@ -42,30 +29,23 @@ game_t *game_create(core_t *core){
 }
 
 void game_delete(game_t *game){
-    target_list_delete(game->targets);
-    enemy_list_delete(game->enemies);
-
-    rect_list_delete(game->platform_rects);
-    rect_list_delete(game->terrain_rects);
-    anim_dict_delete(game->anims);
-    fset_dict_delete(game->fsets);
-    
-    player_delete(game->player);
-    camera_delete(game->camera);
-    rect_delete(game->bounds);
-    rect_delete(game->mouse);
-    controller_delete(game->controller);
-    
     font_delete(game->font);
     
+    game_delete_data_structures(game);
+    
     free(game);
+}
+
+void game_update_enemies(game_t *game){
+    enemy_node_t *iter;
+    for(iter = game->enemies->head; iter; iter = iter->next){
+        enemy_update(iter->data, game);
+    }
 }
 
 void game_check_enemies(game_t *game){
     enemy_node_t *iter;
     for(iter = game->enemies->head; iter; iter = iter->next){
-        enemy_update(iter->data, game);
-        
         if(iter->data->flashing > 0){
             iter->data->flashing -= 1;
         }else{
@@ -84,12 +64,26 @@ void game_check_enemies(game_t *game){
     }
 }
 
+void game_check_targets(game_t *game){
+    for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
+        if(rect_overlap(iter->data->rect, game->player->body->rect)){
+            if(controller_just_pressed(game->controller, BTN_X)){
+                (*iter->data->action)(iter->data, game);
+                //printf("Player activated target.\n");
+            }
+        }
+    }
+}
+
 void game_fast_frame(game_t *game){
     game->step += 1;
     
     player_update(game->player, game);
-
+    game_update_enemies(game);
+    
     game_check_enemies(game);
+    
+    game_check_targets(game);
 }
 
 void game_full_frame(game_t *game){
@@ -103,5 +97,38 @@ void game_full_frame(game_t *game){
     SDL_FillRect(debug_message_surface, NULL, 0x000000AA);
     font_draw_string(game->font, debug_message, 4, 2, debug_message_surface);
     SDL_BlitSurface(debug_message_surface, NULL, game->core->screen, NULL);
+}
+
+void game_create_data_structures(game_t *game){
+    game->controller = controller_create();
+    game->mouse = rect_create();
+    game->bounds = rect_create();
+    game->camera = camera_create();
+    game->player = player_create();
+    
+    game->fsets = fset_dict_create();
+    game->anims = anim_dict_create();
+
+    game->terrain_rects = rect_list_create();
+    game->platform_rects = rect_list_create();
+
+    game->enemies = enemy_list_create();
+    game->targets = target_list_create();
+}
+
+void game_delete_data_structures(game_t *game){
+    target_list_delete(game->targets);
+    enemy_list_delete(game->enemies);
+
+    rect_list_delete(game->platform_rects);
+    rect_list_delete(game->terrain_rects);
+    anim_dict_delete(game->anims);
+    fset_dict_delete(game->fsets);
+    
+    player_delete(game->player);
+    camera_delete(game->camera);
+    rect_delete(game->bounds);
+    rect_delete(game->mouse);
+    controller_delete(game->controller);
 }
 

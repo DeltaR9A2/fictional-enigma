@@ -61,6 +61,9 @@ struct game_t{
 game_t *game_create(core_t *core);
 void game_delete(game_t *game);
 
+void game_create_data_structures(game_t *game);
+void game_delete_data_structures(game_t *game);
+
 void game_fast_frame(game_t *game);
 void game_full_frame(game_t *game);
 
