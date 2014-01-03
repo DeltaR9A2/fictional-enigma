@@ -64,7 +64,6 @@ void load_terrain_rects(game_t *game){
     }
     
     cmap_add_to_rect_list(test_cmap, game->terrain_rects);
-    printf("Terrain Rect Count: %i\n", rect_list_length(game->terrain_rects));
 
     cmap_delete(test_cmap);
     SDL_FreeSurface(test_map_image);
@@ -86,7 +85,6 @@ void load_platform_rects(game_t *game){
     }
     
     cmap_add_to_rect_list(test_cmap, game->platform_rects);
-    printf("Platform Rect Count: %i\n", rect_list_length(game->platform_rects));
 
     cmap_delete(test_cmap);
     SDL_FreeSurface(test_map_image);
@@ -120,16 +118,22 @@ void load_targets(game_t *game){
     for(int i=0; i < test_map_image->w * test_map_image->h; i++){
         uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
         if(pixel != 0xFFFFFFFF){
+            printf("Target color: %08X\n", pixel);
             target_t *target = target_list_get(game->targets);
             target->rect->x = (i % 128) * 8;
             target->rect->y = (i / 128) * 8;
             target->rect->w = 8;
             target->rect->h = 8;
             target->color = pixel;
+
         }
     }
     
     SDL_FreeSurface(test_map_image);
+    
+    // 0x55DDCCFF teal
+    // 0xFF00FFFF magenta
+    // 0xDDCC00FF gold
 }
 
 void load_game(game_t *game){

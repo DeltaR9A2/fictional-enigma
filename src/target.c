@@ -21,6 +21,6 @@ void target_delete(target_t *target){
 }
 
 void target_activate(target_t *target, game_t *game){
-    printf("target_activate\n");
+    printf("Target Activate %08X\n", target->color);
 }
 

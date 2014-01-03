@@ -18,4 +18,8 @@ void target_delete(target_t *target);
 
 void target_activate(target_t *target, game_t *game);
 
+void target_activate_teal(target_t *target, game_t *game);
+void target_activate_gold(target_t *target, game_t *game);
+void target_activate_magenta(target_t *target, game_t *game);
+
 #endif

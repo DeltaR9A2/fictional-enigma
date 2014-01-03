@@ -14,9 +14,11 @@ typedef struct game_t game_t;
 
 #include "rect.h"
 #include "font.h"
+#include "mixer.h"
 #include "camera.h"
 #include "player.h"
 #include "controller.h"
+
 #include "fset_dict.h"
 #include "anim_dict.h"
 #include "rect_list.h"
@@ -31,9 +33,9 @@ struct game_t{
 
     controller_t *controller;
     
-    rect_t *mouse;
     rect_t *bounds;
     
+    mixer_t *mixer;
     camera_t *camera;    
     player_t *player;
 

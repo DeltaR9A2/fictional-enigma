@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "core.h"
 #include "game.h"
@@ -24,11 +25,9 @@ int main_event_watch(void *data, SDL_Event *e){
 
 int main(int arc, char* argv[]){
     SDL_Init(SDL_INIT_EVERYTHING);
-
+    
     core_t *core = core_create();
     game_t *game = game_create(core);
-
-    //SDL_ShowCursor(SDL_DISABLE);
 
     SDL_AddEventWatch(&main_event_watch, game);
     
