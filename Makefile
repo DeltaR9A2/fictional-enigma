@@ -11,49 +11,33 @@ export LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixe
 #export LFLAGS  := -Wl,-rpath,. -lm -lSDL2 -lSDL2_image -lSDL2_gfx
 #####################
 
-BINDIR  := bin
-SRCDIR  := src
-OBJDIR  := obj
-LIBDIR  := lib
-RESDIR  := res
-GENDIR  := gen
-
 TARGET := main
-SOURCES := $(wildcard $(SRCDIR)/*.c)
-OBJECTS := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o) 
 
 export REMOVE  := rm -f
 
-.PHONY: all src res gen clean run debug rebuild
+.PHONY: all src res clean_src clean_res clean run
 
-all: $(BINDIR)/$(TARGET)
-
-gen:
-	$(MAKE) -C gen
+all: src res $(TARGET)
 
 res:
 	$(MAKE) -C res
 
-$(BINDIR)/$(TARGET): gen res $(OBJECTS)
-	@$(CC) $(LFLAGS) ./obj/*.o -o $@ 
-	@echo "Build complete: "$(BINDIR)/$(TARGET)
-	
-$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "Compiled "$<"..."
+src:
+	$(MAKE) -C src
+
+$(TARGET):
+	$(CC) $(LFLAGS) ./obj/*.o -o ./bin/$@
 
 run: all
-	@echo "Running build: "$(BINDIR)/$(TARGET)
-	@(cd $(BINDIR) && exec ./$(TARGET))
+	@(cd bin && exec ./$(TARGET))
 
-src_clean:
-	$(MAKE) -C gen clean
-	$(REMOVE) $(BINDIR)/$(TARGET) $(OBJECTS)
+clean_src:
+	$(MAKE) -C src clean
+	$(REMOVE) ./bin/$(TARGET)
 
-res_clean:
+clean_res:
 	$(MAKE) -C res clean
 
-clean: src_clean res_clean
+clean: clean_src clean_res
 
-rebuild: src_clean all
 
