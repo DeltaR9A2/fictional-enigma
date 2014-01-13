@@ -2,8 +2,8 @@
 export CC      := gcc
 
 # Debug Flags #####
-export CFLAGS  := -std=c11 -O0 -g -pg -I./src -Wall -Werror -D DEBUG
-export LFLAGS  := -Wl,-rpath,. -g -pg -lm -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+export CFLAGS  := -std=c11 -O0 -g -I./src -Wall -Werror -D DEBUG
+export LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
 ###################
 
 # Release Flags #####
@@ -22,25 +22,19 @@ TARGET := main
 SOURCES := $(wildcard $(SRCDIR)/*.c)
 OBJECTS := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o) 
 
-XCFS := $(wildcard $(RESDIR)/*.xcf)
-PNGS := $(XCFS:$(RESDIR)/%.xcf=$(BINDIR)/%.png) 
+export REMOVE  := rm -f
 
-MP3S := $(wildcard $(RESDIR)/*.mp3)
-OGGS := $(MP3S:$(RESDIR)/%.mp3=$(BINDIR)/%.ogg)
-
-REMOVE  := rm -f
-
-.PHONY: all gen ttf clean run debug
+.PHONY: all src res gen clean run debug rebuild
 
 all: $(BINDIR)/$(TARGET)
 
 gen:
 	$(MAKE) -C gen
 
-ttf:
-	$(MAKE) -C ttf
+res:
+	$(MAKE) -C res
 
-$(BINDIR)/$(TARGET): gen ttf $(OBJECTS) $(PNGS) $(OGGS)
+$(BINDIR)/$(TARGET): gen res $(OBJECTS)
 	@$(CC) $(LFLAGS) ./obj/*.o -o $@ 
 	@echo "Build complete: "$(BINDIR)/$(TARGET)
 	
@@ -48,20 +42,18 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<"..."
 
-$(PNGS): $(BINDIR)/%.png : $(RESDIR)/%.xcf
-	@convert $< -background none -flatten $@
-	@echo "Converted "$<"..."
-
-$(OGGS): $(BINDIR)/%.ogg : $(RESDIR)/%.mp3
-	@ffmpeg -i $< -codec:a libvorbis $@
-	@echo "Converted "$<"..."
-
-clean:
-	$(MAKE) -C gen clean
-	$(MAKE) -C ttf clean
-	$(REMOVE) $(BINDIR)/* $(OBJECTS) 
-
 run: all
 	@echo "Running build: "$(BINDIR)/$(TARGET)
 	@(cd $(BINDIR) && exec ./$(TARGET))
+
+src_clean:
+	$(MAKE) -C gen clean
+	$(REMOVE) $(BINDIR)/$(TARGET) $(OBJECTS)
+
+res_clean:
+	$(MAKE) -C res clean
+
+clean: src_clean res_clean
+
+rebuild: src_clean all
 
