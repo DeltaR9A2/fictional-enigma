@@ -1,8 +1,8 @@
 
 COMMAND = sed s:TYPE:$(TYPE):g <$< >$@
 
-SRCDIR := ../src
-OBJDIR := ../obj
+SRCDIR := ../
+OBJDIR := ../../obj
 
 LISTS := rect target enemy
 LIST_SOURCES := $(LISTS:%=$(SRCDIR)/%_list.c)
@@ -24,8 +24,7 @@ REMOVE  := rm -f
 all: $(ALL_FILES)
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "Compiled "$<"..."
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LISTS): $(LIST_HEADERS) $(LIST_SOURCES)
 
