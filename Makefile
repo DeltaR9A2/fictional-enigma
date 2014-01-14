@@ -3,7 +3,7 @@ export CC      := gcc
 
 # Debug Flags #####
 export CFLAGS  := -std=c11 -O0 -g -I./src -Wall -Werror -D DEBUG
-export LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+export LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer -llua
 ###################
 
 # Release Flags #####
