@@ -16,7 +16,7 @@ REMOVE  := rm -f
 
 .PHONY: all src res clean_src clean_res clean run
 
-all: src res $(TARGET)
+all: src res ./bin/$(TARGET)
 
 res:
 	$(MAKE) -C res
@@ -24,8 +24,8 @@ res:
 src:
 	$(MAKE) -C src
 
-$(TARGET): ./bin/$(TARGET)
-	$(CC) $(LFLAGS) ./obj/*.o -o ./bin/$@
+./bin/$(TARGET):
+	$(CC) $(LFLAGS) ./obj/*.o -o $@
 
 run: all
 	@(cd bin && exec ./$(TARGET))

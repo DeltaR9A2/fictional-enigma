@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "fset_dict.h"
 
 fset_node_t *_fset_node_create(const wchar_t *name){

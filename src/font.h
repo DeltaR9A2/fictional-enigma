@@ -1,11 +1,9 @@
 #ifndef font_h
 #define font_h
 
-#include <stdlib.h>
 #include <wchar.h>
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 
 #include "sdl_helpers.h"
 

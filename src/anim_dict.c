@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "anim_dict.h"
 
 anim_node_t *_anim_node_create(const wchar_t *name){

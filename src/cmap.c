@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "cmap.h"
 
 const static int32_t GRID_SIZE = 8;

@@ -1,13 +1,6 @@
 #ifndef game_h
 #define game_h
 
-#include <stdlib.h>
-#include <string.h>
-#include <wchar.h>
-#include <tgmath.h>
-
-#include <SDL2/SDL.h>
-
 typedef struct game_t game_t;
 
 #include "core.h"

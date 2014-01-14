@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "core.h"
 
 core_t *core_create(void){

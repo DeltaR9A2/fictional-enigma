@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "TYPE_list.h"
 
 TYPE_node_t *_TYPE_node_create(void){

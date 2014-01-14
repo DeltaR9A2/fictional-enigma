@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "enemy.h"
 
 enemy_t *enemy_create(void){

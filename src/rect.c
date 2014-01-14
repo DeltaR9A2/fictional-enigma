@@ -1,3 +1,7 @@
+#include <stdlib.h>
+#include <math.h>
+#include <tgmath.h>
+
 #include "rect.h"
 
 rect_t *rect_create(void){

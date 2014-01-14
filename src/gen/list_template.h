@@ -4,9 +4,6 @@
 typedef struct TYPE_node_t TYPE_node_t;
 typedef struct TYPE_list_t TYPE_list_t;
 
-#include <stdlib.h>
-#include <stdint.h>
-#include <wchar.h>
 #include "TYPE.h"
 
 struct TYPE_node_t{

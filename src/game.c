@@ -1,5 +1,11 @@
-#include "game.h"
+#include <stdlib.h>
+#include <string.h>
+#include <wchar.h>
+#include <tgmath.h>
 
+#include <SDL2/SDL.h>
+
+#include "game.h"
 #include "loader.h"
 
 void game_create_data_structures(game_t *game);

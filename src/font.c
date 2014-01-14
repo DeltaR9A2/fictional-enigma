@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <SDL2/SDL_image.h>
+
 #include "font.h"
 
 //const wchar_t *glyph_order = L" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";

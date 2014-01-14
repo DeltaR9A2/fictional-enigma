@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "controller.h"
 
 const uint32_t BTN_L =    0x00000001;

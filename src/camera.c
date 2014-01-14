@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "camera.h"
 
 camera_t *camera_create(void){

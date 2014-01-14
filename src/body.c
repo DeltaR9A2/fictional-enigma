@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "body.h"
 
 const uint32_t BLOCKED_L =    0x00000001;

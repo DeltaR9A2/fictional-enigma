@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "fset.h"
 
 fset_t *fset_create(void){

@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "player.h"
 
 const uint32_t DIR_X = 0;

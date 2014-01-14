@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "anim.h"
 
 anim_t *anim_create(void){

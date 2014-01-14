@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "mixer.h"
 
 mixer_t *mixer_create(void){

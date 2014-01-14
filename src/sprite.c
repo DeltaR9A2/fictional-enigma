@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "sprite.h"
 
 sprite_t *sprite_create(){
