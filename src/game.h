@@ -5,7 +5,6 @@ typedef struct game_t game_t;
 
 #include "core.h"
 
-#include "rect.h"
 #include "font.h"
 #include "mixer.h"
 #include "camera.h"
@@ -26,10 +25,8 @@ struct game_t{
 
     controller_t *controller;
     
-    rect_t *bounds;
-    
     mixer_t *mixer;
-    camera_t *camera;    
+    camera_t *camera;   
     player_t *player;
 
     fset_dict_t *fsets;

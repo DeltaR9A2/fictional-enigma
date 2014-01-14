@@ -2,9 +2,17 @@
 
 #include "camera.h"
 
+void camera_fill_rect(camera_t *camera, rect_t *rect, int32_t color);
+void camera_draw_terrain_rects(camera_t *camera, game_t *game);
+void camera_draw_platform_rects(camera_t *camera, game_t *game);
+void camera_draw_player(camera_t *camera, player_t *player);
+void camera_draw_enemies(camera_t *camera, game_t *game);
+void camera_draw_targets(camera_t *camera, game_t *game);
+
 camera_t *camera_create(void){
     camera_t *camera = malloc(sizeof(camera_t));
     camera->view = rect_create();
+    camera->bounds = rect_create();
     camera->buffer = NULL;
     
     return camera;
@@ -47,12 +55,10 @@ void camera_draw_game(camera_t *camera, game_t *game){
     camera->view->x = floor(camera->view->x);
     camera->view->y = floor(camera->view->y);
 
-    SDL_FillRect(camera->buffer, NULL, 0x000000FF);
+    SDL_FillRect(camera->buffer, NULL, 0xDDDDDDFF);
 
-    rect_limit_to(camera->view, game->bounds);
+    rect_limit_to(camera->view, camera->bounds);
 
-    camera_fill_rect(camera, game->bounds, 0xDDDDDDFF);
-    
     camera_draw_terrain_rects(camera, game);
     camera_draw_platform_rects(camera, game);
     camera_draw_targets(camera, game);
@@ -80,7 +86,10 @@ void camera_draw_platform_rects(camera_t *camera, game_t *game){
 void camera_draw_player(camera_t *camera, player_t *player){
     
     if(player->flashing % 2 == 0){
+    	#ifdef DEBUG
         camera_fill_rect(camera, player->body->rect, 0x2222DDFF);
+        #endif
+        
         camera_draw_sprite(camera, player->sprite);
     }
     

@@ -7,6 +7,7 @@
 
 #include "game.h"
 #include "loader.h"
+#include "rect.h"
 
 void game_create_data_structures(game_t *game);
 void game_delete_data_structures(game_t *game);
@@ -26,8 +27,8 @@ game_t *game_create(core_t *core){
 
     game->font = font_create("font_8bit.png");
 
-    rect_init(game->bounds, 0, 0, 1024, 1024);
     camera_init(game->camera, 640, 360);
+    rect_init(game->camera->bounds, 0, 0, 1024, 1024);
     
     load_game(game);
     
@@ -111,7 +112,6 @@ void game_full_frame(game_t *game){
 
 void game_create_data_structures(game_t *game){
     game->controller = controller_create();
-    game->bounds = rect_create();
     game->mixer = mixer_create();
     game->camera = camera_create();
     game->player = player_create();
@@ -138,7 +138,6 @@ void game_delete_data_structures(game_t *game){
     player_delete(game->player);
     camera_delete(game->camera);
     mixer_delete(game->mixer);
-    rect_delete(game->bounds);
     controller_delete(game->controller);
 }
 
