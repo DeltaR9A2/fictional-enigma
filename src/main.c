@@ -27,19 +27,7 @@ int main_event_watch(void *data, SDL_Event *e){
     return 0;
 }
 
-/////////////////////////
-lua_State *LUA;
-/////////////////////////
-
 int main(int arc, char* argv[]){
-	/////////////////////////
-	LUA = luaL_newstate();
-	luaL_openlibs(LUA);
-	luaL_loadfile(LUA, "test.lua");
-	lua_pcall(LUA, 0, LUA_MULTRET, 0);
-	lua_close(LUA);
-	/////////////////////////
-
     SDL_Init(SDL_INIT_EVERYTHING);
     
     core_t *core = core_create();
