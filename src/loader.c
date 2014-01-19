@@ -2,6 +2,10 @@
 
 #include <wchar.h>
 #include <stdbool.h>
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+
 #include "cmap.h"
 
 typedef struct fset_def_t fset_def_t;
@@ -23,30 +27,6 @@ struct anim_def_t{
     int fps;
 };
 
-fset_def_t static_framesets[] = {
-    {L"p_frost_f_r", "player_frost_female.png",  8,  8, false},
-    {L"p_frost_f_l", "player_frost_female.png",  8,  8, true },
-    {NULL, NULL, 0, 0},
-};
-
-anim_def_t static_animations[] = {
-    {L"p_frost_f_r", L"frost_f_idle_r",  0,  4,  5},
-    {L"p_frost_f_r", L"frost_f_duck_r",  4,  4,  5},
-    {L"p_frost_f_r", L"frost_f_move_r",  8,  8, 10},
-    {L"p_frost_f_r", L"frost_f_jump_r", 16,  2,  8},
-    {L"p_frost_f_r", L"frost_f_hang_r", 18,  2,  8},
-    {L"p_frost_f_r", L"frost_f_fall_r", 20,  2,  8},
-    {L"p_frost_f_r", L"frost_f_skid_r", 22,  2,  8},
-
-    {L"p_frost_f_l", L"frost_f_idle_l",  0,  4,  5},
-    {L"p_frost_f_l", L"frost_f_duck_l",  4,  4,  5},
-    {L"p_frost_f_l", L"frost_f_move_l",  8,  8, 10},
-    {L"p_frost_f_l", L"frost_f_jump_l", 16,  2,  8},
-    {L"p_frost_f_l", L"frost_f_hang_l", 18,  2,  8},
-    {L"p_frost_f_l", L"frost_f_fall_l", 20,  2,  8},
-    {L"p_frost_f_l", L"frost_f_skid_l", 22,  2,  8},
-    {NULL, NULL, 0, 0, 0},
-};
 
 void load_terrain_rects(game_t *game){
     SDL_Surface *test_map_image = load_image("map_test.png");
@@ -90,35 +70,13 @@ void load_platform_rects(game_t *game){
     SDL_FreeSurface(test_map_image);
 }
    
-void load_framesets(game_t *game){
-    fset_t *fset;
-    fset_def_t *def;
-    for(int i=0; static_framesets[i].name != NULL; i++){
-        def = &static_framesets[i];
-        fset = fset_dict_get(game->fsets, def->name);
-        fset_init(fset, def->filename, def->cols, def->rows, def->flip);
-    }
-}
-
-void load_animations(game_t *game){
-    fset_t *fset;
-    anim_t *anim;
-    anim_def_t *def;
-    for(int i=0; static_animations[i].name != NULL; i++){
-        def = &static_animations[i];
-        fset = fset_dict_get(game->fsets, def->fset);
-        anim = anim_dict_get(game->anims, def->name);
-        anim_init(anim, fset, def->start, def->len, def->fps);
-    }
-}
-
 void load_targets(game_t *game){
     SDL_Surface *test_map_image = load_image("map_targets.png");
 
     for(int i=0; i < test_map_image->w * test_map_image->h; i++){
         uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
         if(pixel != 0xFFFFFFFF){
-            printf("Target color: %08X\n", pixel);
+            //printf("Target color: %08X\n", pixel);
             target_t *target = target_list_get(game->targets);
             target->rect->x = (i % 128) * 8;
             target->rect->y = (i / 128) * 8;
@@ -136,11 +94,72 @@ void load_targets(game_t *game){
     // 0xDDCC00FF gold
 }
 
+static game_t *GAME;
+
+static int lua_add_fset(lua_State *L){
+	char *fset_name = luaL_checkstring(L,1);
+	char *file_name = luaL_checkstring(L,2);
+	int cols = luaL_checkint(L,3);
+	int rows = luaL_checkint(L,4);
+	bool flip = lua_toboolean(L,5);
+	printf("%s %s %i %i %i \n", fset_name, file_name, cols, rows, flip);
+
+	wchar_t real_name[32];
+	swprintf(real_name, 32, L"%s", fset_name);
+
+    fset_t *fset = fset_dict_get(GAME->fsets, real_name);
+    fset_init(fset, file_name, cols, rows, flip);
+    
+	return 0;
+}
+
+static int lua_add_anim(lua_State *L){
+	char *fset_name = luaL_checkstring(L,1);
+	char *anim_name = luaL_checkstring(L,2);
+	int start = luaL_checkint(L,3);
+	int length = luaL_checkint(L,4);
+	int rate = luaL_checkint(L,5);
+	
+	printf("%s %s %i %i %i \n", fset_name, anim_name, start, length, rate);
+
+	wchar_t w_fset_name[32];
+	swprintf(w_fset_name, 32, L"%s", fset_name);
+
+	wchar_t w_anim_name[32];
+	swprintf(w_anim_name, 32, L"%s", anim_name);
+
+    fset_t *fset = fset_dict_get(GAME->fsets, w_fset_name);
+    anim_t *anim = anim_dict_get(GAME->anims, w_anim_name);
+
+    anim_init(anim, fset, start, length, rate);
+    
+	return 0;
+}
+
+
+void load_scripts(game_t *game){
+	lua_State *LUA = luaL_newstate();
+	luaL_openlibs(LUA);
+
+	lua_pushcfunction(LUA, lua_add_fset);
+	lua_setglobal(LUA, "add_fset");
+
+	lua_pushcfunction(LUA, lua_add_anim);
+	lua_setglobal(LUA, "add_anim");
+	
+	luaL_loadfile(LUA, "test.lua");
+	lua_pcall(LUA, 0, LUA_MULTRET, 0);
+
+	lua_close(LUA);
+}
+
 void load_game(game_t *game){
+	GAME = game;
+	printf("Loading game...\n");
+    load_scripts(game);
+	printf("Scripts loaded.\n");
     load_terrain_rects(game);
     load_platform_rects(game);
-    load_framesets(game);
-    load_animations(game);
     load_targets(game);
 }
 
