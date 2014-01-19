@@ -14,9 +14,9 @@ export LFLAGS  := -Wl,-rpath,. -g -lm -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixe
 TARGET := main
 REMOVE  := rm -f
 
-.PHONY: all src res clean_src clean_res clean run
+.PHONY: all src res clean_src clean_res clean run $(TARGET)
 
-all: src res ./bin/$(TARGET)
+all: src res $(TARGET)
 
 res:
 	$(MAKE) -C res
@@ -24,8 +24,8 @@ res:
 src:
 	$(MAKE) -C src
 
-./bin/$(TARGET):
-	$(CC) $(LFLAGS) ./obj/*.o -o $@
+$(TARGET):
+	$(CC) $(LFLAGS) ./obj/*.o -o ./bin/$@
 
 run: all
 	@(cd bin && exec ./$(TARGET))
