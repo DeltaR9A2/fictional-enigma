@@ -13,7 +13,10 @@ mixer_t *mixer_create(void){
     Mix_AllocateChannels(mixer->channels);
 
     mixer->test_sound = Mix_LoadWAV("WhiteSands.ogg");
+    
+    #ifndef DEBUG
     Mix_PlayChannel(-1, mixer->test_sound, -1);        
+    #endif
     
     return mixer;
 }
