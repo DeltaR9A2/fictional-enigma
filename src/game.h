@@ -6,6 +6,7 @@ typedef struct game_t game_t;
 #include "core.h"
 
 #include "font.h"
+#include "menu.h"
 #include "mixer.h"
 #include "camera.h"
 #include "player.h"
@@ -17,13 +18,17 @@ typedef struct game_t game_t;
 #include "enemy_list.h"
 #include "target_list.h"
 
+
 struct game_t{
     core_t *core;
     uint32_t step;
+    uint32_t mode;
 
     font_t *font;
 
     controller_t *controller;
+    
+    menu_t *menu;
     
     mixer_t *mixer;
     camera_t *camera;   

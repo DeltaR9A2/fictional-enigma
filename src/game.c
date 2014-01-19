@@ -9,21 +9,57 @@
 #include "loader.h"
 #include "rect.h"
 
+static const uint32_t MODE_MENU = 0;
+static const uint32_t MODE_PLAY = 1;
+
 void game_create_data_structures(game_t *game);
 void game_delete_data_structures(game_t *game);
 
 #ifdef DEBUG
-wchar_t debug_message[128];
+#define DEBUG_MSG_LEN 128
+uint32_t debug_message_timeout = 0;
+wchar_t debug_message[DEBUG_MSG_LEN];
 SDL_Surface *debug_message_surface;
+
+void set_debug_message(const wchar_t *text){
+	debug_message_timeout = 240;
+	swprintf(debug_message, DEBUG_MSG_LEN, text);
+}
+#else
+void set_debug_message(const wchar_t *text){
+	return;
+}
 #endif
+
+void game_exit(game_t *game){
+	game->core->running = false;
+}
+
+void game_new_game(game_t *game){
+	game->mode = MODE_PLAY;
+}
+
+void game_load_game(game_t *game){
+	set_debug_message(L"'Load Game' not implemented yet.");
+}
+
+void game_options_menu(game_t *game){
+	set_debug_message(L"'Options' not implemented yet.");
+}
 
 game_t *game_create(core_t *core){
     game_t *game = malloc(sizeof(game_t));
     
     game->core = core;
     game->step = 0;
+    game->mode = MODE_MENU;
     
     game_create_data_structures(game);
+
+	menu_add_option(game->menu, L"New Game", &game_new_game);
+	menu_add_option(game->menu, L"Load Game", &game_load_game);
+	menu_add_option(game->menu, L"Options", &game_options_menu);
+	menu_add_option(game->menu, L"Exit", &game_exit);
 
     game->font = font_create("font_8bit.png");
 
@@ -87,30 +123,55 @@ void game_check_targets(game_t *game){
 
 void game_fast_frame(game_t *game){
     game->step += 1;
-    
-    player_update(game->player, game);
 
-    game_update_enemies(game);
-    game_check_enemies(game);
-    game_check_targets(game);
+	if(game->mode == MODE_MENU){
+		if(controller_just_pressed(game->controller, BTN_U)){
+			menu_up(game->menu);
+		}
+		if(controller_just_pressed(game->controller, BTN_D)){
+			menu_down(game->menu);
+		}
+		if(controller_just_pressed(game->controller, BTN_A)){
+			menu_activate(game->menu);
+		}
+	}
+	
+	if(game->mode == MODE_PLAY){
+		player_update(game->player, game);
+		game_update_enemies(game);
+		game_check_enemies(game);
+		game_check_targets(game);
+	}
 }
 
 void game_full_frame(game_t *game){
     game_fast_frame(game);
     
-    rect_move_to(game->camera->view, game->player->body->rect);
-    camera_draw_game(game->camera, game);
-    SDL_BlitSurface(game->camera->buffer, NULL, game->core->screen, NULL);
+    if(game->mode == MODE_MENU){
+		SDL_FillRect(game->core->screen, NULL, 0x000000FF);
+		menu_draw(game->menu, game->core->screen);
+    }
+    
+    if(game->mode == MODE_PLAY){
+		rect_move_to(game->camera->view, game->player->body->rect);
+		camera_draw_game(game->camera, game);
+		SDL_BlitSurface(game->camera->buffer, NULL, game->core->screen, NULL);
+	}
 
-    #ifdef DEBUG
-    swprintf(debug_message, 100, L"Current Step: %i", game->step);
-    SDL_FillRect(debug_message_surface, NULL, 0x000000AA);
-    font_draw_string(game->font, debug_message, 4, 2, debug_message_surface);
-    SDL_BlitSurface(debug_message_surface, NULL, game->core->screen, NULL);
-    #endif
+	#ifdef DEBUG
+	if(debug_message_timeout > 0){
+		debug_message_timeout -= 1;
+		SDL_FillRect(debug_message_surface, NULL, 0x000000AA);
+		font_draw_string(game->font, debug_message, 4, 2, debug_message_surface);
+		SDL_BlitSurface(debug_message_surface, NULL, game->core->screen, NULL);
+	}
+	#endif
+	
 }
 
 void game_create_data_structures(game_t *game){
+	game->menu = menu_create(game);
+	
     game->controller = controller_create();
     game->mixer = mixer_create();
     game->camera = camera_create();
@@ -139,5 +200,7 @@ void game_delete_data_structures(game_t *game){
     camera_delete(game->camera);
     mixer_delete(game->mixer);
     controller_delete(game->controller);
+    
+    menu_delete(game->menu);
 }
 
