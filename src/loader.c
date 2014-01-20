@@ -8,26 +8,6 @@
 
 #include "cmap.h"
 
-typedef struct fset_def_t fset_def_t;
-struct fset_def_t{
-    wchar_t *name;
-    char *filename;
-    int cols;
-    int rows;
-    bool flip;
-};
-
-
-typedef struct anim_def_t anim_def_t;
-struct anim_def_t{
-    wchar_t *fset;
-    wchar_t *name;
-    int start;
-    int len;
-    int fps;
-};
-
-
 void load_terrain_rects(game_t *game){
     SDL_Surface *test_map_image = load_image("map_test.png");
     cmap_t *test_cmap = cmap_create();
