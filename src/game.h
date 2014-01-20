@@ -1,7 +1,14 @@
 #ifndef game_h
 #define game_h
 
+#include <stdint.h>
+
 typedef struct game_t game_t;
+
+extern const uint32_t GAME_MODE_MENU;
+extern const uint32_t GAME_MODE_PLAY;
+
+extern const uint32_t GAME_MESSAGE_LEN;
 
 #include "core.h"
 
@@ -17,7 +24,6 @@ typedef struct game_t game_t;
 #include "rect_list.h"
 #include "enemy_list.h"
 #include "target_list.h"
-
 
 struct game_t{
     core_t *core;
@@ -40,8 +46,11 @@ struct game_t{
     rect_list_t *terrain_rects;
     rect_list_t *platform_rects;
     
-    enemy_list_t *enemies;
     target_list_t *targets;
+
+	wchar_t *message;
+	uint32_t message_timeout;
+	SDL_Surface *message_surface;
 };
 
 game_t *game_create(core_t *core);
@@ -50,4 +59,5 @@ void game_delete(game_t *game);
 void game_fast_frame(game_t *game);
 void game_full_frame(game_t *game);
 
+void game_set_message(game_t *game, const wchar_t *text);
 #endif

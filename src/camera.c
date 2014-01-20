@@ -62,7 +62,6 @@ void camera_draw_game(camera_t *camera, game_t *game){
     camera_draw_terrain_rects(camera, game);
     camera_draw_platform_rects(camera, game);
     camera_draw_targets(camera, game);
-    camera_draw_enemies(camera, game);
 
     camera_draw_player(camera, game->player);
 }
@@ -94,16 +93,6 @@ void camera_draw_player(camera_t *camera, player_t *player){
     }
     
     camera_fill_rect(camera, player->weapon, 0xDD9900FF);
-}
-
-void camera_draw_enemies(camera_t *camera, game_t *game){
-    enemy_node_t *iter = game->enemies->head;
-    while(iter != NULL){
-        if(iter->data->flashing % 2 == 0){
-            camera_fill_rect(camera, iter->data->rect, 0xDD3333FF);
-        }
-        iter = iter->next;
-    }
 }
 
 void camera_draw_targets(camera_t *camera, game_t *game){

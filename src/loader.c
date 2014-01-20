@@ -102,7 +102,6 @@ static int lua_add_fset(lua_State *L){
 	int cols = luaL_checkint(L,3);
 	int rows = luaL_checkint(L,4);
 	bool flip = lua_toboolean(L,5);
-	printf("%s %s %i %i %i \n", fset_name, file_name, cols, rows, flip);
 
 	wchar_t real_name[32];
 	swprintf(real_name, 32, L"%s", fset_name);
@@ -120,8 +119,6 @@ static int lua_add_anim(lua_State *L){
 	int length = luaL_checkint(L,4);
 	int rate = luaL_checkint(L,5);
 	
-	printf("%s %s %i %i %i \n", fset_name, anim_name, start, length, rate);
-
 	wchar_t w_fset_name[32];
 	swprintf(w_fset_name, 32, L"%s", fset_name);
 
@@ -155,9 +152,7 @@ void load_scripts(game_t *game){
 
 void load_game(game_t *game){
 	GAME = game;
-	printf("Loading game...\n");
     load_scripts(game);
-	printf("Scripts loaded.\n");
     load_terrain_rects(game);
     load_platform_rects(game);
     load_targets(game);

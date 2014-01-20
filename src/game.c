@@ -9,42 +9,17 @@
 #include "loader.h"
 #include "rect.h"
 
-static const uint32_t MODE_MENU = 0;
-static const uint32_t MODE_PLAY = 1;
+const uint32_t GAME_MODE_MENU = 0;
+const uint32_t GAME_MODE_PLAY = 1;
+
+const uint32_t GAME_MESSAGE_LEN = 128;
 
 void game_create_data_structures(game_t *game);
 void game_delete_data_structures(game_t *game);
 
-#ifdef DEBUG
-#define DEBUG_MSG_LEN 128
-uint32_t debug_message_timeout = 0;
-wchar_t debug_message[DEBUG_MSG_LEN];
-SDL_Surface *debug_message_surface;
-
-void set_debug_message(const wchar_t *text){
-	debug_message_timeout = 240;
-	swprintf(debug_message, DEBUG_MSG_LEN, text);
-}
-#else
-void set_debug_message(const wchar_t *text){
-	return;
-}
-#endif
-
-void game_exit(game_t *game){
-	game->core->running = false;
-}
-
-void game_new_game(game_t *game){
-	game->mode = MODE_PLAY;
-}
-
-void game_load_game(game_t *game){
-	set_debug_message(L"'Load Game' not implemented yet.");
-}
-
-void game_options_menu(game_t *game){
-	set_debug_message(L"'Options' not implemented yet.");
+void game_set_message(game_t *game, const wchar_t *text){
+	game->message_timeout = 240;
+	swprintf(game->message, GAME_MESSAGE_LEN, text);
 }
 
 game_t *game_create(core_t *core){
@@ -52,63 +27,34 @@ game_t *game_create(core_t *core){
     
     game->core = core;
     game->step = 0;
-    game->mode = MODE_MENU;
-    
+    game->mode = GAME_MODE_MENU;
+
     game_create_data_structures(game);
 
-	menu_add_option(game->menu, L"New Game", &game_new_game);
-	menu_add_option(game->menu, L"Load Game", &game_load_game);
-	menu_add_option(game->menu, L"Options", &game_options_menu);
-	menu_add_option(game->menu, L"Exit", &game_exit);
-
     game->font = font_create("font_8bit.png");
+    game->menu = menu_create_main_menu(game);
 
     camera_init(game->camera, 640, 360);
     rect_init(game->camera->bounds, 0, 0, 1024, 1024);
     
     load_game(game);
     
-    #ifdef DEBUG
-    debug_message_surface = create_surface(640, 3+font_get_height(game->font));
-    #endif
+    game->message = calloc(GAME_MESSAGE_LEN, sizeof(wchar_t));
+    game->message_surface = create_surface(640, 3+font_get_height(game->font));
+	game->message_timeout = 0;
 
     return game;
 }
 
 void game_delete(game_t *game){
+	free(game->message);
+
+	menu_delete(game->menu);	
     font_delete(game->font);
-    
-    game_delete_data_structures(game);
+	
+	game_delete_data_structures(game);
     
     free(game);
-}
-
-void game_update_enemies(game_t *game){
-    enemy_node_t *iter;
-    for(iter = game->enemies->head; iter; iter = iter->next){
-        enemy_update(iter->data, game);
-    }
-}
-
-void game_check_enemies(game_t *game){
-    enemy_node_t *iter;
-    for(iter = game->enemies->head; iter; iter = iter->next){
-        if(iter->data->flashing > 0){
-            iter->data->flashing -= 1;
-        }else{
-            if(rect_overlap(iter->data->rect, game->player->weapon)){
-                iter->data->flashing = 15;
-                printf("Enemy hit by player.\n");
-            }
-        }
-
-        if(game->player->flashing == 0){
-            if(rect_overlap(iter->data->weapon, game->player->body->rect)){
-                game->player->flashing = 60;
-                printf("Player hit by enemy.\n");
-            }
-        }
-    }
 }
 
 void game_check_targets(game_t *game){
@@ -124,7 +70,7 @@ void game_check_targets(game_t *game){
 void game_fast_frame(game_t *game){
     game->step += 1;
 
-	if(game->mode == MODE_MENU){
+	if(game->mode == GAME_MODE_MENU){
 		if(controller_just_pressed(game->controller, BTN_U)){
 			menu_up(game->menu);
 		}
@@ -136,10 +82,8 @@ void game_fast_frame(game_t *game){
 		}
 	}
 	
-	if(game->mode == MODE_PLAY){
+	if(game->mode == GAME_MODE_PLAY){
 		player_update(game->player, game);
-		game_update_enemies(game);
-		game_check_enemies(game);
 		game_check_targets(game);
 	}
 }
@@ -147,31 +91,26 @@ void game_fast_frame(game_t *game){
 void game_full_frame(game_t *game){
     game_fast_frame(game);
     
-    if(game->mode == MODE_MENU){
+    if(game->mode == GAME_MODE_MENU){
 		SDL_FillRect(game->core->screen, NULL, 0x000000FF);
 		menu_draw(game->menu, game->core->screen);
     }
     
-    if(game->mode == MODE_PLAY){
+    if(game->mode == GAME_MODE_PLAY){
 		rect_move_to(game->camera->view, game->player->body->rect);
 		camera_draw_game(game->camera, game);
 		SDL_BlitSurface(game->camera->buffer, NULL, game->core->screen, NULL);
 	}
 
-	#ifdef DEBUG
-	if(debug_message_timeout > 0){
-		debug_message_timeout -= 1;
-		SDL_FillRect(debug_message_surface, NULL, 0x000000AA);
-		font_draw_string(game->font, debug_message, 4, 2, debug_message_surface);
-		SDL_BlitSurface(debug_message_surface, NULL, game->core->screen, NULL);
+	if(game->message_timeout > 0){
+		game->message_timeout -= 1;
+		SDL_FillRect(game->message_surface, NULL, 0x000000AA);
+		font_draw_string(game->font, game->message, 4, 2, game->message_surface);
+		SDL_BlitSurface(game->message_surface, NULL, game->core->screen, NULL);
 	}
-	#endif
-	
 }
 
 void game_create_data_structures(game_t *game){
-	game->menu = menu_create(game);
-	
     game->controller = controller_create();
     game->mixer = mixer_create();
     game->camera = camera_create();
@@ -183,13 +122,11 @@ void game_create_data_structures(game_t *game){
     game->terrain_rects = rect_list_create();
     game->platform_rects = rect_list_create();
 
-    game->enemies = enemy_list_create();
     game->targets = target_list_create();
 }
 
 void game_delete_data_structures(game_t *game){
     target_list_delete(game->targets);
-    enemy_list_delete(game->enemies);
 
     rect_list_delete(game->platform_rects);
     rect_list_delete(game->terrain_rects);
@@ -200,7 +137,5 @@ void game_delete_data_structures(game_t *game){
     camera_delete(game->camera);
     mixer_delete(game->mixer);
     controller_delete(game->controller);
-    
-    menu_delete(game->menu);
 }
 
