@@ -37,16 +37,16 @@ struct game_t{
     menu_t *menu;
     
     mixer_t *mixer;
-    camera_t *camera;   
-    player_t *player;
 
+    camera_t *camera;   
     fset_dict_t *fsets;
     anim_dict_t *anims;
     
+    player_t *player;
+    target_list_t *targets;
     rect_list_t *terrain_rects;
     rect_list_t *platform_rects;
     
-    target_list_t *targets;
 
 	wchar_t *message;
 	uint32_t message_timeout;
