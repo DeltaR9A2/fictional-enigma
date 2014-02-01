@@ -20,6 +20,21 @@ void game_delete_data_structures(game_t *game);
 void game_set_message(game_t *game, const wchar_t *text){
 	game->message_timeout = 240;
 	swprintf(game->message, GAME_MESSAGE_LEN, text);
+
+	SDL_Rect fill_rect;
+	fill_rect.x = 0;
+	fill_rect.y = 0;
+	fill_rect.w = game->message_surface->w;
+	fill_rect.h = game->message_surface->h;
+	SDL_FillRect(game->message_surface, &fill_rect, 0x666666FF);
+
+	fill_rect.x += 2;
+	fill_rect.y += 2;
+	fill_rect.w -= 4;
+	fill_rect.h -= 4;
+	SDL_FillRect(game->message_surface, &fill_rect, 0x333333FF);
+
+	font_draw_string(game->font, game->message, 8, 3, game->message_surface);
 }
 
 game_t *game_create(core_t *core){
@@ -35,12 +50,12 @@ game_t *game_create(core_t *core){
     game->menu = menu_create_main_menu(game);
 
     camera_init(game->camera, 640, 360);
-    rect_init(game->camera->bounds, 0, 0, 1024, 1024);
+    rect_init(game->camera->bounds, -128, -128, 1280, 1280);
     
     load_game(game);
     
     game->message = calloc(GAME_MESSAGE_LEN, sizeof(wchar_t));
-    game->message_surface = create_surface(640, 3+font_get_height(game->font));
+    game->message_surface = create_surface(640-16, 6+font_get_height(game->font));
 	game->message_timeout = 0;
 
     return game;
@@ -104,9 +119,11 @@ void game_full_frame(game_t *game){
 
 	if(game->message_timeout > 0){
 		game->message_timeout -= 1;
-		SDL_FillRect(game->message_surface, NULL, 0x000000AA);
-		font_draw_string(game->font, game->message, 4, 2, game->message_surface);
-		SDL_BlitSurface(game->message_surface, NULL, game->core->screen, NULL);
+		SDL_Rect draw_rect;
+		draw_rect.x = 8;
+		draw_rect.y = 8;
+		
+		SDL_BlitSurface(game->message_surface, NULL, game->core->screen, &draw_rect);
 	}
 }
 
