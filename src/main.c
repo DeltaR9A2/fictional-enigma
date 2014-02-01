@@ -27,6 +27,40 @@ int main_event_watch(void *data, SDL_Event *e){
     return 0;
 }
 
+////////////////////////////
+uint32_t filter_negative(uint32_t pixel, SDL_PixelFormat *format){
+	uint8_t r, g, b, a;
+	SDL_GetRGBA(pixel, format, &r, &g, &b, &a);
+	
+	r = 255 - r;
+	g = 255 - g;
+	b = 255 - b;
+	
+	return SDL_MapRGBA(format, r, g, b, a);
+}
+
+uint32_t filter_grayscale(uint32_t pixel, SDL_PixelFormat *format){
+	uint8_t r, g, b, a;
+	SDL_GetRGBA(pixel, format, &r, &g, &b, &a);
+
+	r = g = b = ((r+g+b)/3);
+	
+	return SDL_MapRGBA(format, r, g, b, a);
+}
+
+void video_filter(SDL_Surface *surface, uint32_t (*function)(uint32_t, SDL_PixelFormat*)){
+	SDL_LockSurface(surface);
+
+	uint32_t *pixels = (uint32_t*)surface->pixels;
+	for(int i = 0; i < surface->w * surface->h; i++){
+		pixels[i] = function(pixels[i], surface->format);
+	}
+	
+	SDL_UnlockSurface(surface);
+}
+
+////////////////////////////
+
 int main(int arc, char* argv[]){
     SDL_Init(SDL_INIT_EVERYTHING);
     
@@ -56,6 +90,12 @@ int main(int arc, char* argv[]){
                 game_fast_frame(game);
             }else{
                 game_full_frame(game);
+
+                ////////////////////////////
+                //video_filter(core->screen, &filter_grayscale);
+                //video_filter(core->screen, &filter_negative);
+                ////////////////////////////
+
                 core_window_redraw(core);
             }
         }
@@ -68,4 +108,5 @@ int main(int arc, char* argv[]){
     
     return 0;
 }
+
 
