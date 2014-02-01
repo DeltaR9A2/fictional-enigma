@@ -1,7 +1,10 @@
 License Information
 ===================
 
-All source code in NNLAF is released under the following license:
+Understand that "this project" means "Ninmu Nanmu: Love and Freedom".
+
+Any source file (*.c, *.h, *.py, *.lua) in this project lacking its own license
+statement is distributed under the MIT License found below.
 
 ```
 The MIT License (MIT)
@@ -26,3 +29,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
