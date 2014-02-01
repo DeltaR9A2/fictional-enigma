@@ -19,5 +19,7 @@ void font_delete(font_t *font);
 void font_draw_all_glyphs(font_t *font, int x, int y, SDL_Surface *target);
 void font_draw_string(font_t *font, const wchar_t *string, int32_t x, int32_t y, SDL_Surface *target);
 
+int32_t font_get_width(font_t *font, const wchar_t *string);
 int32_t font_get_height(font_t *font);
+
 #endif
