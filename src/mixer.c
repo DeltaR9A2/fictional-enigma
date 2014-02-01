@@ -12,18 +12,15 @@ mixer_t *mixer_create(void){
   
     Mix_AllocateChannels(mixer->channels);
 
-    mixer->test_sound = Mix_LoadWAV("WhiteSands.ogg");
-    
-    #ifndef DEBUG
-    Mix_PlayChannel(-1, mixer->test_sound, -1);        
-    #endif
+    //mixer->test_sound = Mix_LoadWAV("WhiteSands.ogg");
+    //Mix_PlayChannel(-1, mixer->test_sound, -1);        
     
     return mixer;
 }
     
 void mixer_delete(mixer_t *mixer){
     Mix_HaltChannel(-1);
-    Mix_FreeChunk(mixer->test_sound);
+    //Mix_FreeChunk(mixer->test_sound);
     free(mixer);
     
     Mix_CloseAudio();
