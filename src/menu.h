@@ -24,7 +24,9 @@ extern const uint32_t MENU_MAX_OPTIONS;
 
 struct menu_t{
 	game_t *game;
+	font_t *font;
 	option_t **options;
+	SDL_Surface *buffer;
 	uint8_t num_options;
 	uint8_t selection;
 };

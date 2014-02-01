@@ -1,4 +1,8 @@
+#include <stdlib.h>
+#include <stdint.h>
+
 #include "menu.h"
+#include "sdl_helpers.h"
 
 const uint32_t OPTION_LABEL_LEN = 32;
 const uint32_t MENU_MAX_OPTIONS = 8;
@@ -26,11 +30,15 @@ menu_t *menu_create(game_t *game){
 	menu_t *menu = malloc(sizeof(menu_t));
 
 	menu->game = game;
+	menu->font = game->font;
+	
 	menu->options = malloc(sizeof(option_t*) * MENU_MAX_OPTIONS);
 	
 	for(int i=0; i<MENU_MAX_OPTIONS; i++){
 		menu->options[i] = NULL;
 	}
+	
+	menu->buffer = NULL;
 	
 	menu->selection = 0;
 	
@@ -55,10 +63,14 @@ void menu_delete(menu_t *menu){
 		}
 	}
 	
+	SDL_FreeSurface(menu->buffer);
+	
 	free(menu);
 }
 
 void menu_add_option(menu_t *menu, wchar_t *label, void (*action)(menu_t*)){
+	menu_delete_buffer(menu);
+
 	for(int i=0; i<MENU_MAX_OPTIONS; i++){
 		if(menu->options[i] == NULL){
 			menu->options[i] = option_create(label, action);
@@ -70,14 +82,46 @@ void menu_add_option(menu_t *menu, wchar_t *label, void (*action)(menu_t*)){
 	printf("ERROR: MENU: Could not add option '%ls': Menu full.\n", label);
 }
 
+void menu_delete_buffer(menu_t *menu){
+	SDL_FreeSurface(menu->buffer);
+	menu->buffer = NULL;
+}
+
+void menu_create_buffer(menu_t *menu){
+	#ifdef DEBUG
+	if(menu->buffer != NULL){
+		printf("MEMORY LEAK: MENU BUFFER OVER-WRITE\n");
+	}
+	#endif
+
+	int32_t x = 0;
+	int32_t w = 0;
+	int32_t h = 0;
+	
+	for(int i=0; i<MENU_MAX_OPTIONS; i++){
+		if(menu->options[i] != NULL){
+			x = font_get_width(menu->font, menu->options[i]->label);
+			if(x > w){ w = x; }
+			h += font_get_height(menu->font);
+		}
+	}
+	
+	w += 20;
+	h += 8;
+	
+	menu->buffer = create_surface(w,h);
+}
+
 void menu_up(menu_t *menu){
 	menu->selection -= 1;
 	menu->selection %= menu->num_options;
+	menu_draw_buffer(menu);
 }
 
 void menu_down(menu_t *menu){
 	menu->selection += 1;
 	menu->selection %= menu->num_options;
+	menu_draw_buffer(menu);
 }
 
 void menu_activate(menu_t *menu){
@@ -88,21 +132,52 @@ void menu_activate(menu_t *menu){
 			printf("ERROR: MENU: Option '%ls' has NULL action.\n", menu->options[menu->selection]->label);
 		}
 	}
+	menu_draw_buffer(menu);
 }
 
-void menu_draw(menu_t *menu, SDL_Surface *surface){
-	int x = 64;
-	int y = 32;
+void menu_draw_buffer(menu_t *menu){
+	if(menu->buffer == NULL){
+		menu_create_buffer(menu);
+	}
+
+	SDL_Rect fill_rect;
+
+	fill_rect.x = 0;
+	fill_rect.y = 0;
+	fill_rect.w = menu->buffer->w;
+	fill_rect.h = menu->buffer->h;
+	SDL_FillRect(menu->buffer, &fill_rect, 0x666666FF);
+
+	fill_rect.x += 2;
+	fill_rect.y += 2;
+	fill_rect.w -= 4;
+	fill_rect.h -= 4;
+	SDL_FillRect(menu->buffer, &fill_rect, 0x333333FF);
+
+	int x = 10;
+	int y = 4;
 	int h = font_get_height(menu->game->font);
 	
 	for(int i=0; i<MENU_MAX_OPTIONS; i++){
 		if(menu->options[i] != NULL){
-			font_draw_string(menu->game->font, menu->options[i]->label, x, y, surface);
+			font_draw_string(menu->game->font, menu->options[i]->label, x, y, menu->buffer);
 		}
 		if(i == menu->selection){
-			font_draw_string(menu->game->font, L">", x-16, y, surface);
+			font_draw_string(menu->game->font, L">", x-8, y, menu->buffer);
 		}
 		y += h;
+	}
+}
+
+void menu_draw(menu_t *menu, SDL_Surface *surface){
+	if(menu->buffer == NULL){
+		menu_draw_buffer(menu);
+	}else{
+		SDL_Rect draw_rect;
+		draw_rect.x = surface->w - (menu->buffer->w + 8);
+		draw_rect.y = surface->h - (menu->buffer->h + 8);
+	
+		SDL_BlitSurface(menu->buffer, NULL, surface, &draw_rect);
 	}
 }
 
