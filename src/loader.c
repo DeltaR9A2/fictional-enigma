@@ -9,7 +9,7 @@
 #include "cmap.h"
 
 void load_terrain_rects(game_t *game){
-    SDL_Surface *test_map_image = load_image("map_test.png");
+    SDL_Surface *test_map_image = load_image("map_terrain.png");
     cmap_t *test_cmap = cmap_create();
 
     cmap_init(test_cmap, 0, 0, 128, 128);
@@ -30,7 +30,7 @@ void load_terrain_rects(game_t *game){
 }
 
 void load_platform_rects(game_t *game){
-    SDL_Surface *test_map_image = load_image("map_test.png");
+    SDL_Surface *test_map_image = load_image("map_terrain.png");
     cmap_t *test_cmap = cmap_create();
 
     cmap_init(test_cmap, 0, 0, 128, 128);
@@ -124,7 +124,7 @@ void load_scripts(game_t *game){
 	lua_pushcfunction(LUA, lua_add_anim);
 	lua_setglobal(LUA, "add_anim");
 	
-	luaL_loadfile(LUA, "test.lua");
+	luaL_loadfile(LUA, "frost.lua");
 	lua_pcall(LUA, 0, LUA_MULTRET, 0);
 
 	lua_close(LUA);
