@@ -84,12 +84,22 @@ void game_delete(game_t *game){
 }
 
 void game_check_targets(game_t *game){
+	target_t *nearest_target = NULL;
+	int32_t nearest_distance = 9999;
+	int32_t current_distance = 9999;
+
     for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
-        if(rect_overlap(iter->data->rect, game->player->body->rect)){
-            if(controller_just_pressed(game->controller, BTN_A)){
-                (*iter->data->action)(iter->data, game);
-            }
-        }
+    	current_distance = rect_range_to(iter->data->rect, game->player->body->rect);
+    	if(current_distance < nearest_distance){
+    		nearest_distance = current_distance;
+    		nearest_target = iter->data;
+    	}
+    }
+
+    if(nearest_distance <= 32 && nearest_target != NULL){
+		game->active_target = nearest_target;
+    }else{
+    	game->active_target = NULL;
     }
 }
 
@@ -109,11 +119,16 @@ void game_fast_frame(game_t *game){
 		if(controller_just_pressed(game->controller, BTN_START)){
 			menu_activate(game->menu);
 		}
+
 	}else if(game->mode == GAME_MODE_PLAY){
 		player_update(game->player, game);
 		game_check_targets(game);
-
-		if(controller_just_pressed(game->controller, BTN_START)){
+		if(controller_just_pressed(game->controller, BTN_A)){
+			if(game->active_target != NULL){
+	        	(*game->active_target->action)(game->active_target, game);
+			}
+    	}
+    	if(controller_just_pressed(game->controller, BTN_START)){
 			game->mode = GAME_MODE_MENU;
 		}
 

@@ -95,9 +95,11 @@ void camera_draw_player(camera_t *camera, player_t *player){
     camera_fill_rect(camera, player->weapon, 0xDD9900FF);
 }
 
-void camera_draw_targets(camera_t *camera, game_t *game){
+void camera_draw_targets(camera_t *camera, game_t *game)
+{
     target_node_t *iter = game->targets->head;
-    while(iter != NULL){
+    while(iter != NULL)
+    {
         #ifdef DEBUG
         camera_fill_rect(camera, iter->data->rect, iter->data->color);
         #endif
