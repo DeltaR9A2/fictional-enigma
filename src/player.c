@@ -65,15 +65,15 @@ void player_update_controls(player_t *player, game_t *game){
     }
 
 
-    if(controller_pressed(game->controller, BTN_D | BTN_A)){
+    if(controller_pressed(game->controller, BTN_D)){
         player->body->flags |= PLAT_DROP;
     }
     
-    if(controller_just_pressed(game->controller, BTN_A)){
+    if(controller_just_pressed(game->controller, BTN_U)){
         if(player->body->flags & BLOCKED_D && controller_released(game->controller, BTN_D)){
             player->body->vy = player->jump_force;
         }
-    }else if(controller_just_released(game->controller, BTN_A)){
+    }else if(controller_just_released(game->controller, BTN_U)){
         if(player->body->vy < player->jump_brake){
             player->body->vy = player->jump_brake;
         }
