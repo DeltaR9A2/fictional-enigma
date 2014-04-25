@@ -8,8 +8,8 @@
 
 #include "cmap.h"
 
-void load_terrain_rects(game_t *game){
-    SDL_Surface *test_map_image = load_image("map_terrain.png");
+void load_terrain_rects(game_t *game, char *filename){
+    SDL_Surface *test_map_image = load_image(filename);
     cmap_t *test_cmap = cmap_create();
 
     cmap_init(test_cmap, 0, 0, 128, 128);
@@ -29,8 +29,8 @@ void load_terrain_rects(game_t *game){
     SDL_FreeSurface(test_map_image);
 }
 
-void load_platform_rects(game_t *game){
-    SDL_Surface *test_map_image = load_image("map_terrain.png");
+void load_platform_rects(game_t *game, char *filename){
+    SDL_Surface *test_map_image = load_image(filename);
     cmap_t *test_cmap = cmap_create();
 
     cmap_init(test_cmap, 0, 0, 128, 128);
@@ -50,8 +50,8 @@ void load_platform_rects(game_t *game){
     SDL_FreeSurface(test_map_image);
 }
    
-void load_targets(game_t *game){
-    SDL_Surface *test_map_image = load_image("map_targets.png");
+void load_targets(game_t *game, char *filename){
+    SDL_Surface *test_map_image = load_image(filename);
 
     for(int i=0; i < test_map_image->w * test_map_image->h; i++){
         uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
@@ -68,13 +68,26 @@ void load_targets(game_t *game){
     }
     
     SDL_FreeSurface(test_map_image);
-    
-    // 0x55DDCCFF teal
-    // 0xFF00FFFF magenta
-    // 0xDDCC00FF gold
 }
 
 static game_t *GAME;
+
+static int lua_load_terrain(lua_State *L){
+	char *filename = luaL_checkstring(L,1);
+	
+	load_terrain_rects(GAME, filename);
+	load_platform_rects(GAME, filename);
+	
+	return 0;
+}
+
+static int lua_load_targets(lua_State *L){
+	char *filename = luaL_checkstring(L,1);
+	
+	load_targets(GAME, filename);
+	
+	return 0;
+}
 
 static int lua_add_fset(lua_State *L){
 	char *fset_name = luaL_checkstring(L,1);
@@ -113,10 +126,46 @@ static int lua_add_anim(lua_State *L){
 	return 0;
 }
 
+static int lua_configure_target(lua_State *L){
+	int color = luaL_checkint(L,1);
+
+	char *anim_name = luaL_checkstring(L,2);
+	char *portrait = luaL_checkstring(L,3);
+	char *message = luaL_checkstring(L,4);
+
+	wchar_t conversion_buffer[128];
+
+	#ifdef DEBUG
+    printf("Configuring %08X %s %s %s\n", color, anim_name, portrait, message);
+	#endif
+
+	target_node_t *iter = GAME->targets->head;
+	while(iter != NULL){
+		if(iter->data->color == color){
+			iter->data->sprite = sprite_create();
+			
+			swprintf(conversion_buffer, 128, L"%hs", anim_name);
+			sprite_set_anim(iter->data->sprite, anim_dict_get(GAME->anims, conversion_buffer));
+			rect_move_to(iter->data->sprite->rect, iter->data->rect);
+			
+			iter->data->portrait = load_image(portrait);
+			swprintf(iter->data->message, 128, L"%s", message);
+		}
+		iter = iter->next;
+	}	
+	
+	return 0;
+}
 
 void load_scripts(game_t *game){
 	lua_State *LUA = luaL_newstate();
 	luaL_openlibs(LUA);
+
+	lua_pushcfunction(LUA, lua_load_terrain);
+	lua_setglobal(LUA, "load_terrain");
+	
+	lua_pushcfunction(LUA, lua_load_targets);
+	lua_setglobal(LUA, "load_targets");
 
 	lua_pushcfunction(LUA, lua_add_fset);
 	lua_setglobal(LUA, "add_fset");
@@ -124,17 +173,25 @@ void load_scripts(game_t *game){
 	lua_pushcfunction(LUA, lua_add_anim);
 	lua_setglobal(LUA, "add_anim");
 	
+	lua_pushcfunction(LUA, lua_configure_target);
+	lua_setglobal(LUA, "configure_target");
+	
+	luaL_loadfile(LUA, "init.lua");
+	lua_pcall(LUA, 0, LUA_MULTRET, 0);
+	
+	/*
 	luaL_loadfile(LUA, "frost.lua");
 	lua_pcall(LUA, 0, LUA_MULTRET, 0);
 
+	luaL_loadfile(LUA, "targets.lua");
+	lua_pcall(LUA, 0, LUA_MULTRET, 0);
+	*/
+	
 	lua_close(LUA);
 }
 
 void load_game(game_t *game){
 	GAME = game;
     load_scripts(game);
-    load_terrain_rects(game);
-    load_platform_rects(game);
-    load_targets(game);
 }
 
