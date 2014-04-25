@@ -45,17 +45,6 @@ menu_t *menu_create(game_t *game){
 	return menu;
 }
 
-menu_t *menu_create_main_menu(game_t *game){
-	menu_t *menu = menu_create(game);
-	
-	menu_add_option(menu, L"New Game", &menu_new_game);
-	menu_add_option(menu, L"Load Game", &menu_load_game);
-	menu_add_option(menu, L"Options", &menu_options);
-	menu_add_option(menu, L"Exit", &menu_exit);
-	
-	return menu;
-}
-
 void menu_delete(menu_t *menu){
 	for(int i=0; i<MENU_MAX_OPTIONS; i++){
 		if(menu->options[i] != NULL){
@@ -68,19 +57,6 @@ void menu_delete(menu_t *menu){
 	free(menu);
 }
 
-void menu_add_option(menu_t *menu, wchar_t *label, void (*action)(menu_t*)){
-	menu_delete_buffer(menu);
-
-	for(int i=0; i<MENU_MAX_OPTIONS; i++){
-		if(menu->options[i] == NULL){
-			menu->options[i] = option_create(label, action);
-			menu->num_options = i+1;
-			return;
-		}
-	}
-	
-	printf("ERROR: MENU: Could not add option '%ls': Menu full.\n", label);
-}
 
 void menu_delete_buffer(menu_t *menu){
 	SDL_FreeSurface(menu->buffer);
@@ -112,29 +88,6 @@ void menu_create_buffer(menu_t *menu){
 	menu->buffer = create_surface(w,h);
 }
 
-void menu_up(menu_t *menu){
-	menu->selection -= 1;
-	menu->selection %= menu->num_options;
-	menu_draw_buffer(menu);
-}
-
-void menu_down(menu_t *menu){
-	menu->selection += 1;
-	menu->selection %= menu->num_options;
-	menu_draw_buffer(menu);
-}
-
-void menu_activate(menu_t *menu){
-	if(menu->options[menu->selection] != NULL){
-		if(menu->options[menu->selection]->action != NULL){
-			menu->options[menu->selection]->action(menu);
-		}else{
-			printf("ERROR: MENU: Option '%ls' has NULL action.\n", menu->options[menu->selection]->label);
-		}
-	}
-	menu_draw_buffer(menu);
-}
-
 void menu_draw_buffer(menu_t *menu){
 	if(menu->buffer == NULL){
 		menu_create_buffer(menu);
@@ -163,11 +116,36 @@ void menu_draw_buffer(menu_t *menu){
 			font_draw_string(menu->game->font, menu->options[i]->label, x, y, menu->buffer);
 		}
 		if(i == menu->selection){
-			font_draw_string(menu->game->font, L">", x-8, y, menu->buffer);
+			font_draw_string(menu->game->font, L">", x-6, y, menu->buffer);
 		}
 		y += h;
 	}
 }
+
+void menu_up(menu_t *menu){
+	menu->selection -= 1;
+	menu->selection %= menu->num_options;
+	menu_draw_buffer(menu);
+}
+
+void menu_down(menu_t *menu){
+	menu->selection += 1;
+	menu->selection %= menu->num_options;
+	menu_draw_buffer(menu);
+}
+
+void menu_activate(menu_t *menu){
+	if(menu->options[menu->selection] != NULL){
+		if(menu->options[menu->selection]->action != NULL){
+			menu->options[menu->selection]->action(menu);
+		}else{
+			printf("ERROR: MENU: Option '%ls' has NULL action.\n", menu->options[menu->selection]->label);
+		}
+	}
+	menu_draw_buffer(menu);
+}
+
+
 
 void menu_draw(menu_t *menu, SDL_Surface *surface){
 	if(menu->buffer == NULL){
@@ -179,6 +157,31 @@ void menu_draw(menu_t *menu, SDL_Surface *surface){
 	
 		SDL_BlitSurface(menu->buffer, NULL, surface, &draw_rect);
 	}
+}
+
+void menu_add_option(menu_t *menu, wchar_t *label, void (*action)(menu_t*)){
+	menu_delete_buffer(menu);
+
+	for(int i=0; i<MENU_MAX_OPTIONS; i++){
+		if(menu->options[i] == NULL){
+			menu->options[i] = option_create(label, action);
+			menu->num_options = i+1;
+			return;
+		}
+	}
+	
+	printf("ERROR: MENU: Could not add option '%ls': Menu full.\n", label);
+}
+
+menu_t *menu_create_main_menu(game_t *game){
+	menu_t *menu = menu_create(game);
+	
+	menu_add_option(menu, L"Play Game", &menu_new_game);
+//	menu_add_option(menu, L"Load Game", &menu_load_game);
+//	menu_add_option(menu, L"Options", &menu_options);
+	menu_add_option(menu, L"Exit", &menu_exit);
+	
+	return menu;
 }
 
 void menu_exit(menu_t *menu){
