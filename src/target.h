@@ -5,12 +5,18 @@ typedef struct target_t target_t;
 
 #include "rect.h"
 #include "game.h"
+#include "sprite.h"
 
 struct target_t{
   uint8_t type;
   rect_t *rect;
   uint32_t color;
   void (*action)(target_t*, game_t*);
+
+  sprite_t *sprite;
+  wchar_t message[128];
+
+  SDL_Surface *portrait;
 };
 
 target_t *target_create(void);

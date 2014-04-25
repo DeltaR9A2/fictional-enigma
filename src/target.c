@@ -13,6 +13,12 @@ target_t *target_create(void){
     target->rect = rect_create();
     target->color = 0x00000000;
     target->action = &target_activate;
+
+	target->sprite = NULL;
+	target->portrait = NULL;
+
+	swprintf(target->message, 128, L"");
+	
     return target;
 }
 
@@ -23,6 +29,7 @@ void target_delete(target_t *target){
 
 void target_activate(target_t *target, game_t *game){
     printf("Target Activate %08X\n", target->color);
-    game_set_message(game, L"Target Activated");
+    game_set_dialogue(game, target->portrait, target->message);
+    game->mode = GAME_MODE_DIALOGUE;
 }
 
