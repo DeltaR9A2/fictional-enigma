@@ -7,6 +7,7 @@ typedef struct game_t game_t;
 
 extern const uint32_t GAME_MODE_MENU;
 extern const uint32_t GAME_MODE_PLAY;
+extern const uint32_t GAME_MODE_DIALOGUE;
 
 extern const uint32_t GAME_MESSAGE_LEN;
 
@@ -51,6 +52,13 @@ struct game_t{
 	wchar_t *message;
 	uint32_t message_timeout;
 	SDL_Surface *message_surface;
+
+	//////////////////////////////
+	wchar_t *dialogue_content;
+	SDL_Surface *dialogue_portrait;
+	SDL_Surface *dialogue_surface;
+	//////////////////////////////
+
 };
 
 game_t *game_create(core_t *core);
@@ -60,4 +68,6 @@ void game_fast_frame(game_t *game);
 void game_full_frame(game_t *game);
 
 void game_set_message(game_t *game, const wchar_t *text);
+void game_set_dialogue(game_t *game, SDL_Surface *portrait, const wchar_t *text);
+
 #endif
