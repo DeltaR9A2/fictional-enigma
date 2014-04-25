@@ -13,53 +13,37 @@
 #include "core.h"
 #include "game.h"
 
+#include "video_filters.h"
+
+static uint32_t (*ACTIVE_FILTER)(uint32_t, SDL_PixelFormat*) = NULL;
+
 int main_event_watch(void *data, SDL_Event *e){
     game_t *game = (game_t *)data;
     
+    #ifdef DEBUG
     if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
         game->core->running = false;
-    }else if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
+    }else
+    #endif
+    if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
         core_window_resize(game->core, e->window.data1, e->window.data2);
     }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
         core_toggle_fullscreen(game->core);
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F1){
+    	ACTIVE_FILTER = NULL;
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F2){
+		ACTIVE_FILTER = &filter_grayscale;
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F3){
+		ACTIVE_FILTER = &filter_hsl_grayscale;
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F4){
+    	ACTIVE_FILTER = &filter_negative;
     }
     
     return 0;
 }
 
-////////////////////////////
-uint32_t filter_negative(uint32_t pixel, SDL_PixelFormat *format){
-	uint8_t r, g, b, a;
-	SDL_GetRGBA(pixel, format, &r, &g, &b, &a);
-	
-	r = 255 - r;
-	g = 255 - g;
-	b = 255 - b;
-	
-	return SDL_MapRGBA(format, r, g, b, a);
-}
 
-uint32_t filter_grayscale(uint32_t pixel, SDL_PixelFormat *format){
-	uint8_t r, g, b, a;
-	SDL_GetRGBA(pixel, format, &r, &g, &b, &a);
 
-	r = g = b = ((r+g+b)/3);
-	
-	return SDL_MapRGBA(format, r, g, b, a);
-}
-
-void video_filter(SDL_Surface *surface, uint32_t (*function)(uint32_t, SDL_PixelFormat*)){
-	SDL_LockSurface(surface);
-
-	uint32_t *pixels = (uint32_t*)surface->pixels;
-	for(int i = 0; i < surface->w * surface->h; i++){
-		pixels[i] = function(pixels[i], surface->format);
-	}
-	
-	SDL_UnlockSurface(surface);
-}
-
-////////////////////////////
 
 int main(int arc, char* argv[]){
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -69,6 +53,7 @@ int main(int arc, char* argv[]){
 
     SDL_AddEventWatch(&main_event_watch, game);
     
+//    double ms_per_frame = 16.6;
     double ms_per_frame = 16.6;
     double curr_ms = SDL_GetTicks();
     double prev_ms = curr_ms;
@@ -88,13 +73,13 @@ int main(int arc, char* argv[]){
             
             if(ms_accum > ms_per_frame){
                 game_fast_frame(game);
+                printf("Dropped frame.\n");
             }else{
                 game_full_frame(game);
 
-                ////////////////////////////
-                //video_filter(core->screen, &filter_grayscale);
-                //video_filter(core->screen, &filter_negative);
-                ////////////////////////////
+				if(ACTIVE_FILTER != NULL){
+					video_filter(core->screen, ACTIVE_FILTER);
+				}
 
                 core_window_redraw(core);
             }
