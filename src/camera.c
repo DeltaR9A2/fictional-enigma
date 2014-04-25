@@ -85,7 +85,7 @@ void camera_draw_platform_rects(camera_t *camera, game_t *game){
 void camera_draw_player(camera_t *camera, player_t *player){
     
     if(player->flashing % 2 == 0){
-    	#ifdef DEBUG
+        #ifdef DEBUG
         camera_fill_rect(camera, player->body->rect, 0x2222DDFF);
         #endif
         
@@ -98,7 +98,14 @@ void camera_draw_player(camera_t *camera, player_t *player){
 void camera_draw_targets(camera_t *camera, game_t *game){
     target_node_t *iter = game->targets->head;
     while(iter != NULL){
+        #ifdef DEBUG
         camera_fill_rect(camera, iter->data->rect, iter->data->color);
+        #endif
+
+        if(iter->data->sprite != NULL){
+            camera_draw_sprite(camera, iter->data->sprite);
+        }
+        
         iter = iter->next;
     }
 }
