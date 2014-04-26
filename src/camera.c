@@ -51,6 +51,17 @@ void camera_draw_sprite(camera_t *camera, sprite_t *sprite){
 	anim_draw(sprite->anim, sprite->step, camera->buffer, &draw_rect);
 }
 
+void camera_draw_surface(camera_t *camera, SDL_Surface *surface){
+	SDL_Rect draw_rect;
+
+	draw_rect.x = 0 - camera->view->x;
+	draw_rect.y = 0 - camera->view->y;
+	draw_rect.w = surface->w;
+	draw_rect.h = surface->h;
+
+	SDL_BlitSurface(surface, NULL, camera->buffer, &draw_rect);
+}
+
 void camera_draw_game(camera_t *camera, game_t *game){
 	camera->view->x = floor(camera->view->x);
 	camera->view->y = floor(camera->view->y);
@@ -59,8 +70,12 @@ void camera_draw_game(camera_t *camera, game_t *game){
 
 	rect_limit_to(camera->view, camera->bounds);
 
+	#ifdef DEBUG
 	camera_draw_terrain_rects(camera, game);
 	camera_draw_platform_rects(camera, game);
+	#endif
+	
+	camera_draw_surface(camera, game->map_image);
 	camera_draw_targets(camera, game);
 
 	camera_draw_player(camera, game->player);

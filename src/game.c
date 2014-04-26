@@ -57,10 +57,10 @@ game_t *game_create(core_t *core){
 	game->menu = menu_create_main_menu(game);
 
 	camera_init(game->camera, 640, 360);
-	rect_init(game->camera->bounds, -128, -128, 1280, 1280);
-	
 	load_game(game);
-	
+
+	game->map_image = load_image("test_map_image.png");
+
 	game->message = calloc(GAME_MESSAGE_LEN, sizeof(wchar_t));
 	game->message_surface = create_surface(640-16, 6+font_get_height(game->font));
 	game->message_timeout = 0;

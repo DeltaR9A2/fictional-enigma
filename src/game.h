@@ -47,7 +47,9 @@ struct game_t{
 	target_list_t *targets;
 	rect_list_t *terrain_rects;
 	rect_list_t *platform_rects;
-	
+	SDL_Surface *map_image;
+
+
 	target_t *active_target;
 
 	wchar_t *message;

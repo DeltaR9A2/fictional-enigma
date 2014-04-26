@@ -13,10 +13,10 @@ void load_map(game_t *game, char *filename){
 	SDL_Surface *map_image = load_image(filename);
 
 	cmap_t *terrain_cmap = cmap_create();
-	cmap_init(terrain_cmap, 0, 0, 128, 128);
+	cmap_init(terrain_cmap, 0, 0, map_image->w, map_image->h);
 
 	cmap_t *platform_cmap = cmap_create();
-	cmap_init(platform_cmap, 0, 0, 128, 128);
+	cmap_init(platform_cmap, 0, 0, map_image->w, map_image->h);
 
 	printf("load_map: Beginning for loop.\n");
 	for(int i=0; i < map_image->w * map_image->h; i++){
@@ -34,8 +34,8 @@ void load_map(game_t *game, char *filename){
 
 			if(pixel != 0xFFFFFFFF){
 				target_t *target = target_list_get(game->targets);
-				target->rect->x = (i % 128) * 8;
-				target->rect->y = (i / 128) * 8;
+				target->rect->x = (i % map_image->w) * 8;
+				target->rect->y = (i / map_image->w) * 8;
 				target->rect->w = 8;
 				target->rect->h = 8;
 				target->color = pixel;
@@ -49,6 +49,9 @@ void load_map(game_t *game, char *filename){
 
 	cmap_add_to_rect_list(platform_cmap, game->platform_rects);
 	cmap_delete(platform_cmap);
+
+	rect_init(game->camera->bounds, 0, 0, map_image->w * 8, map_image->h * 8);
+	
 
 	SDL_FreeSurface(map_image);
 }
