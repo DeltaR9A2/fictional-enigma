@@ -83,13 +83,17 @@ void game_delete(game_t *game){
     free(game);
 }
 
-void game_check_targets(game_t *game){
+void game_update_targets(game_t *game){
 	target_t *nearest_target = NULL;
 	int32_t nearest_distance = 9999;
 	int32_t current_distance = 9999;
 
     for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
-    	current_distance = rect_range_to(iter->data->rect, game->player->body->rect);
+    	if(iter->data->sprite != NULL){
+    		iter->data->sprite->step += 1;
+    	}
+
+    	current_distance = rect_range_to(iter->data->sprite->rect, game->player->body->rect);
     	if(current_distance < nearest_distance){
     		nearest_distance = current_distance;
     		nearest_target = iter->data;
@@ -122,7 +126,9 @@ void game_fast_frame(game_t *game){
 
 	}else if(game->mode == GAME_MODE_PLAY){
 		player_update(game->player, game);
-		game_check_targets(game);
+
+		game_update_targets(game);
+
 		if(controller_just_pressed(game->controller, BTN_A)){
 			if(game->active_target != NULL){
 	        	(*game->active_target->action)(game->active_target, game);
