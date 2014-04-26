@@ -27,28 +27,28 @@ extern const uint32_t GAME_MESSAGE_LEN;
 #include "target_list.h"
 
 struct game_t{
-    core_t *core;
-    uint32_t step;
-    uint32_t mode;
+	core_t *core;
+	uint32_t step;
+	uint32_t mode;
 
-    font_t *font;
+	font_t *font;
 
-    controller_t *controller;
-    
-    menu_t *menu;
-    
-    mixer_t *mixer;
+	controller_t *controller;
+	
+	menu_t *menu;
+	
+	mixer_t *mixer;
 
-    camera_t *camera;   
-    fset_dict_t *fsets;
-    anim_dict_t *anims;
-    
-    player_t *player;
-    target_list_t *targets;
-    rect_list_t *terrain_rects;
-    rect_list_t *platform_rects;
-    
-    target_t *active_target;
+	camera_t *camera;	
+	fset_dict_t *fsets;
+	anim_dict_t *anims;
+	
+	player_t *player;
+	target_list_t *targets;
+	rect_list_t *terrain_rects;
+	rect_list_t *platform_rects;
+	
+	target_t *active_target;
 
 	wchar_t *message;
 	uint32_t message_timeout;

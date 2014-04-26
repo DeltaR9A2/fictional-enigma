@@ -13,9 +13,9 @@ extern const uint32_t PLAT_DROP;
 
 typedef struct body_t body_t;
 struct body_t{
-    rect_t *rect;
-    double vx, vy;
-    uint32_t flags;
+	rect_t *rect;
+	double vx, vy;
+	uint32_t flags;
 };
 
 body_t *body_create(void);

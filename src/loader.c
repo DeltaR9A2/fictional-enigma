@@ -20,27 +20,27 @@ void load_map(game_t *game, char *filename){
 
 	printf("load_map: Beginning for loop.\n");
 	for(int i=0; i < map_image->w * map_image->h; i++){
-        uint32_t pixel = ((Uint32 *)map_image->pixels)[i];
-        printf("Got pixel #%i\n", i);
-        if(pixel == 0x333366FF){
-            terrain_cmap->data[i] = 1;
-            platform_cmap->data[i] = 0;
-        }else if(pixel == 0x9999DDFF){
-            terrain_cmap->data[i] = 0;
-            platform_cmap->data[i] = 1;
-        }else{
-            terrain_cmap->data[i] = 0;
-            platform_cmap->data[i] = 0;
+		uint32_t pixel = ((Uint32 *)map_image->pixels)[i];
 
-	        if(pixel != 0xFFFFFFFF){
-        	    target_t *target = target_list_get(game->targets);
-            	target->rect->x = (i % 128) * 8;
-            	target->rect->y = (i / 128) * 8;
-            	target->rect->w = 8;
-            	target->rect->h = 8;
-            	target->color = pixel;
-        	}
-        }
+		if(pixel == 0x333366FF){
+			terrain_cmap->data[i] = 1;
+			platform_cmap->data[i] = 0;
+		}else if(pixel == 0x9999DDFF){
+			terrain_cmap->data[i] = 0;
+			platform_cmap->data[i] = 1;
+		}else{
+			terrain_cmap->data[i] = 0;
+			platform_cmap->data[i] = 0;
+
+			if(pixel != 0xFFFFFFFF){
+				target_t *target = target_list_get(game->targets);
+				target->rect->x = (i % 128) * 8;
+				target->rect->y = (i / 128) * 8;
+				target->rect->w = 8;
+				target->rect->h = 8;
+				target->color = pixel;
+			}
+		}
 	}
 	printf("load_map: Exiting for loop.\n");
 
@@ -50,7 +50,7 @@ void load_map(game_t *game, char *filename){
 	cmap_add_to_rect_list(platform_cmap, game->platform_rects);
 	cmap_delete(platform_cmap);
 
-    SDL_FreeSurface(map_image);
+	SDL_FreeSurface(map_image);
 }
 
 static game_t *GAME;
@@ -73,9 +73,9 @@ static int lua_add_fset(lua_State *L){
 	wchar_t real_name[32];
 	swprintf(real_name, 32, L"%s", fset_name);
 
-    fset_t *fset = fset_dict_get(GAME->fsets, real_name);
-    fset_init(fset, file_name, cols, rows, flip);
-    
+	fset_t *fset = fset_dict_get(GAME->fsets, real_name);
+	fset_init(fset, file_name, cols, rows, flip);
+	
 	return 0;
 }
 
@@ -92,11 +92,11 @@ static int lua_add_anim(lua_State *L){
 	wchar_t w_anim_name[32];
 	swprintf(w_anim_name, 32, L"%s", anim_name);
 
-    fset_t *fset = fset_dict_get(GAME->fsets, w_fset_name);
-    anim_t *anim = anim_dict_get(GAME->anims, w_anim_name);
+	fset_t *fset = fset_dict_get(GAME->fsets, w_fset_name);
+	anim_t *anim = anim_dict_get(GAME->anims, w_anim_name);
 
-    anim_init(anim, fset, start, length, rate);
-    
+	anim_init(anim, fset, start, length, rate);
+	
 	return 0;
 }
 
@@ -110,7 +110,7 @@ static int lua_configure_target(lua_State *L){
 	wchar_t conversion_buffer[128];
 
 	#ifdef DEBUG
-    printf("Configuring %08X %s %s %s\n", color, anim_name, portrait, message);
+	printf("Configuring %08X %s %s %s\n", color, anim_name, portrait, message);
 	#endif
 
 	target_node_t *iter = GAME->targets->head;
@@ -157,6 +157,6 @@ void load_scripts(game_t *game){
 
 void load_game(game_t *game){
 	GAME = game;
-    load_scripts(game);
+	load_scripts(game);
 }
 

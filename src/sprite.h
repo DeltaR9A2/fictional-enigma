@@ -6,9 +6,9 @@
 
 typedef struct sprite_t sprite_t;
 struct sprite_t{
-    rect_t *rect;
-    anim_t *anim;
-    int step;
+	rect_t *rect;
+	anim_t *anim;
+	int step;
 };
 
 sprite_t *sprite_create();

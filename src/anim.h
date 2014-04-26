@@ -12,9 +12,9 @@ This struct holds the definition of a single animation.
 Intended to be created/altered/destroyed using the functions in anim.h
 */
 struct anim_t{
-    int fps; /**< The rate of the animation, in frames per second. */
-    int len; /**< The number of frames in this animation. */
-    SDL_Surface **frames; /**< An array of pointers to the frame surfaces. */
+	int fps; /**< The rate of the animation, in frames per second. */
+	int len; /**< The number of frames in this animation. */
+	SDL_Surface **frames; /**< An array of pointers to the frame surfaces. */
 };
 
 /** Create a new animation and return a pointer to it. */

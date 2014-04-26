@@ -45,42 +45,42 @@ void game_set_dialogue(game_t *game, SDL_Surface *portrait, const wchar_t *text)
 }
 
 game_t *game_create(core_t *core){
-    game_t *game = malloc(sizeof(game_t));
-    
-    game->core = core;
-    game->step = 0;
-    game->mode = GAME_MODE_MENU;
+	game_t *game = malloc(sizeof(game_t));
+	
+	game->core = core;
+	game->step = 0;
+	game->mode = GAME_MODE_MENU;
 
-    game_create_data_structures(game);
+	game_create_data_structures(game);
 
-    game->font = font_create("font_8bit.png");
-    game->menu = menu_create_main_menu(game);
+	game->font = font_create("font_8bit.png");
+	game->menu = menu_create_main_menu(game);
 
-    camera_init(game->camera, 640, 360);
-    rect_init(game->camera->bounds, -128, -128, 1280, 1280);
-    
-    load_game(game);
-    
-    game->message = calloc(GAME_MESSAGE_LEN, sizeof(wchar_t));
-    game->message_surface = create_surface(640-16, 6+font_get_height(game->font));
+	camera_init(game->camera, 640, 360);
+	rect_init(game->camera->bounds, -128, -128, 1280, 1280);
+	
+	load_game(game);
+	
+	game->message = calloc(GAME_MESSAGE_LEN, sizeof(wchar_t));
+	game->message_surface = create_surface(640-16, 6+font_get_height(game->font));
 	game->message_timeout = 0;
 
 	game->dialogue_content = calloc(GAME_DIALOGUE_LEN, sizeof(wchar_t));
 	game->dialogue_surface = create_surface(640, 100);
 	game->dialogue_portrait = NULL;
 
-    return game;
+	return game;
 }
 
 void game_delete(game_t *game){
 	free(game->message);
 
 	menu_delete(game->menu);	
-    font_delete(game->font);
+	font_delete(game->font);
 	
 	game_delete_data_structures(game);
-    
-    free(game);
+	
+	free(game);
 }
 
 void game_update_targets(game_t *game){
@@ -88,27 +88,27 @@ void game_update_targets(game_t *game){
 	int32_t nearest_distance = 9999;
 	int32_t current_distance = 9999;
 
-    for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
-    	if(iter->data->sprite != NULL){
-    		iter->data->sprite->step += 1;
-    	}
+	for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
+		if(iter->data->sprite != NULL){
+			iter->data->sprite->step += 1;
+		}
 
-    	current_distance = rect_range_to(iter->data->sprite->rect, game->player->body->rect);
-    	if(current_distance < nearest_distance){
-    		nearest_distance = current_distance;
-    		nearest_target = iter->data;
-    	}
-    }
+		current_distance = rect_range_to(iter->data->sprite->rect, game->player->body->rect);
+		if(current_distance < nearest_distance){
+			nearest_distance = current_distance;
+			nearest_target = iter->data;
+		}
+	}
 
-    if(nearest_distance <= 32 && nearest_target != NULL){
+	if(nearest_distance <= 32 && nearest_target != NULL){
 		game->active_target = nearest_target;
-    }else{
-    	game->active_target = NULL;
-    }
+	}else{
+		game->active_target = NULL;
+	}
 }
 
 void game_fast_frame(game_t *game){
-    game->step += 1;
+	game->step += 1;
 
 	if(game->mode == GAME_MODE_MENU){
 		if(controller_just_pressed(game->controller, BTN_U)){
@@ -131,10 +131,10 @@ void game_fast_frame(game_t *game){
 
 		if(controller_just_pressed(game->controller, BTN_A)){
 			if(game->active_target != NULL){
-	        	(*game->active_target->action)(game->active_target, game);
+				(*game->active_target->action)(game->active_target, game);
 			}
-    	}
-    	if(controller_just_pressed(game->controller, BTN_START)){
+		}
+		if(controller_just_pressed(game->controller, BTN_START)){
 			game->mode = GAME_MODE_MENU;
 		}
 
@@ -148,13 +148,13 @@ void game_fast_frame(game_t *game){
 void game_full_frame(game_t *game){
 	SDL_Rect draw_rect;
 
-    if(game->mode == GAME_MODE_MENU){
-	    game_fast_frame(game);
+	if(game->mode == GAME_MODE_MENU){
+		game_fast_frame(game);
 		SDL_FillRect(game->core->screen, NULL, 0x000000FF);
 		menu_draw(game->menu, game->core->screen);
 
-    }else if(game->mode == GAME_MODE_PLAY){
-	    game_fast_frame(game);
+	}else if(game->mode == GAME_MODE_PLAY){
+		game_fast_frame(game);
 		rect_move_to(game->camera->view, game->player->body->rect);
 		camera_draw_game(game->camera, game);
 		SDL_BlitSurface(game->camera->buffer, NULL, game->core->screen, NULL);
@@ -187,31 +187,31 @@ void game_full_frame(game_t *game){
 }
 
 void game_create_data_structures(game_t *game){
-    game->controller = controller_create();
-    game->mixer = mixer_create();
-    game->camera = camera_create();
-    game->player = player_create();
-    
-    game->fsets = fset_dict_create();
-    game->anims = anim_dict_create();
+	game->controller = controller_create();
+	game->mixer = mixer_create();
+	game->camera = camera_create();
+	game->player = player_create();
+	
+	game->fsets = fset_dict_create();
+	game->anims = anim_dict_create();
 
-    game->terrain_rects = rect_list_create();
-    game->platform_rects = rect_list_create();
+	game->terrain_rects = rect_list_create();
+	game->platform_rects = rect_list_create();
 
-    game->targets = target_list_create();
+	game->targets = target_list_create();
 }
 
 void game_delete_data_structures(game_t *game){
-    target_list_delete(game->targets);
+	target_list_delete(game->targets);
 
-    rect_list_delete(game->platform_rects);
-    rect_list_delete(game->terrain_rects);
-    anim_dict_delete(game->anims);
-    fset_dict_delete(game->fsets);
-    
-    player_delete(game->player);
-    camera_delete(game->camera);
-    mixer_delete(game->mixer);
-    controller_delete(game->controller);
+	rect_list_delete(game->platform_rects);
+	rect_list_delete(game->terrain_rects);
+	anim_dict_delete(game->anims);
+	fset_dict_delete(game->fsets);
+	
+	player_delete(game->player);
+	camera_delete(game->camera);
+	mixer_delete(game->mixer);
+	controller_delete(game->controller);
 }
 

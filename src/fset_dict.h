@@ -8,13 +8,13 @@ typedef struct fset_dict_t fset_dict_t;
 #include "fset.h"
 
 struct fset_node_t{
-    fset_t *data;
-    fset_node_t *next;
-    wchar_t name[32];
+	fset_t *data;
+	fset_node_t *next;
+	wchar_t name[32];
 };
 
 struct fset_dict_t{
-    fset_node_t *head;
+	fset_node_t *head;
 };
 
 fset_dict_t *fset_dict_create(void);

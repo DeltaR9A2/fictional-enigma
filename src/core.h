@@ -9,17 +9,17 @@
 
 typedef struct core_t core_t;
 struct core_t{
-    bool running;
-    bool fullscreen;
+	bool running;
+	bool fullscreen;
 
-    SDL_Window *window;
-    int32_t win_vw, win_vh;
-    int32_t win_cw, win_ch;
-    SDL_Rect active_rect;
+	SDL_Window *window;
+	int32_t win_vw, win_vh;
+	int32_t win_cw, win_ch;
+	SDL_Rect active_rect;
 
-    SDL_Renderer *rend;
-    SDL_Surface *screen;
-    SDL_Texture *screen_texture;
+	SDL_Renderer *rend;
+	SDL_Surface *screen;
+	SDL_Texture *screen_texture;
 };
 
 core_t *core_create(void);

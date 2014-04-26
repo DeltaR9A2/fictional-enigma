@@ -19,7 +19,7 @@ extern uint32_t KEYMAP_LB;
 extern uint32_t KEYMAP_RB;
 extern uint32_t KEYMAP_LT;
 extern uint32_t KEYMAP_RT;
-    
+	
 extern uint32_t KEYMAP_LS;
 extern uint32_t KEYMAP_RS;
 extern uint32_t KEYMAP_BACK;
@@ -29,17 +29,17 @@ extern const uint32_t BTN_L;
 extern const uint32_t BTN_R;
 extern const uint32_t BTN_U;
 extern const uint32_t BTN_D;
-    
+	
 extern const uint32_t BTN_A;
 extern const uint32_t BTN_B;
 extern const uint32_t BTN_X;
 extern const uint32_t BTN_Y;
-    
+	
 extern const uint32_t BTN_LB;
 extern const uint32_t BTN_RB;
 extern const uint32_t BTN_LT;
 extern const uint32_t BTN_RT;
-    
+	
 extern const uint32_t BTN_LS;
 extern const uint32_t BTN_RS;
 extern const uint32_t BTN_BACK;
@@ -49,8 +49,8 @@ extern const uint32_t BTN_NONE;
 
 typedef struct controller_t controller_t;
 struct controller_t{
-    uint32_t pressed;
-    uint32_t previous;
+	uint32_t pressed;
+	uint32_t previous;
 };
 
 controller_t *controller_create(void);

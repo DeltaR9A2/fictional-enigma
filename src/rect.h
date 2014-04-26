@@ -7,7 +7,7 @@ typedef struct rect_t rect_t;
 #include <SDL2/SDL.h>
 
 struct rect_t{
-    double x, y, w, h;
+	double x, y, w, h;
 };
 
 rect_t *rect_create(void);

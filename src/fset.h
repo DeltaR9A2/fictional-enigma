@@ -7,8 +7,8 @@
 
 typedef struct fset_t fset_t;
 struct fset_t{
-    int len;
-    SDL_Surface **frames;
+	int len;
+	SDL_Surface **frames;
 };
 
 fset_t *fset_create(void);

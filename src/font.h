@@ -10,7 +10,7 @@
 #define MAX_GLYPHS 256
 typedef struct font_t font_t;
 struct font_t{
-    SDL_Surface *glyphs[MAX_GLYPHS];
+	SDL_Surface *glyphs[MAX_GLYPHS];
 };
 
 font_t *font_create(const char *image_fn);

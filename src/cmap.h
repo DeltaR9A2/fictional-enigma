@@ -5,8 +5,8 @@
 
 typedef struct cmap_t cmap_t;
 struct cmap_t{
-    rect_t *rect;
-    int8_t *data;
+	rect_t *rect;
+	int8_t *data;
 };
 
 cmap_t *cmap_create(void);

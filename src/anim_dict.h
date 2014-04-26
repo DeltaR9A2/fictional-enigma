@@ -8,13 +8,13 @@ typedef struct anim_dict_t anim_dict_t;
 #include "anim.h"
 
 struct anim_node_t{
-    anim_t *data;
-    anim_node_t *next;
-    wchar_t name[32];
+	anim_t *data;
+	anim_node_t *next;
+	wchar_t name[32];
 };
 
 struct anim_dict_t{
-    anim_node_t *head;
+	anim_node_t *head;
 };
 
 anim_dict_t *anim_dict_create(void);

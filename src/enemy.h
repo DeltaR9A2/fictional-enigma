@@ -8,12 +8,12 @@ typedef struct enemy_t enemy_t;
 #include "game.h"
 
 struct enemy_t{
-    rect_t *rect;
-    rect_t *weapon;
-    
-    body_t *body;
-    
-    int32_t flashing;
+	rect_t *rect;
+	rect_t *weapon;
+	
+	body_t *body;
+	
+	int32_t flashing;
 };
 
 enemy_t *enemy_create(void);

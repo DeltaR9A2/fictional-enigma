@@ -8,9 +8,9 @@ typedef struct camera_t camera_t;
 #include "player.h"
 
 struct camera_t{
-    rect_t *view;
-    rect_t *bounds;
-    SDL_Surface *buffer;
+	rect_t *view;
+	rect_t *bounds;
+	SDL_Surface *buffer;
 };
 
 camera_t *camera_create(void);

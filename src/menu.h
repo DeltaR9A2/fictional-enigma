@@ -12,7 +12,7 @@ extern const uint32_t OPTION_LABEL_LEN;
 
 struct option_t{
 	wchar_t *label;
- 	void (*action)(menu_t*);
+	void (*action)(menu_t*);
 };
 
 option_t *option_create(wchar_t *label, void (*action)(menu_t*));
