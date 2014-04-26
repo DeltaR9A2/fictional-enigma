@@ -23,22 +23,22 @@ int main_event_watch(void *data, SDL_Event *e){
     #ifdef DEBUG
     if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
         game->core->running = false;
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
+        core_toggle_fullscreen(game->core);
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F1){
+        ACTIVE_FILTER = NULL;
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F2){
+        ACTIVE_FILTER = &filter_grayscale;
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F3){
+        ACTIVE_FILTER = &filter_hsl_grayscale;
+    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F4){
+        ACTIVE_FILTER = &filter_negative;
     }else
     #endif
     if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
         core_window_resize(game->core, e->window.data1, e->window.data2);
-    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
-        core_toggle_fullscreen(game->core);
-    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F1){
-    	ACTIVE_FILTER = NULL;
-    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F2){
-		ACTIVE_FILTER = &filter_grayscale;
-    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F3){
-		ACTIVE_FILTER = &filter_hsl_grayscale;
-    }else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F4){
-    	ACTIVE_FILTER = &filter_negative;
     }
-    
+
     return 0;
 }
 
@@ -73,7 +73,9 @@ int main(int arc, char* argv[]){
             
             if(ms_accum > ms_per_frame){
                 game_fast_frame(game);
+                #ifdef DEBUG
                 printf("Dropped frame.\n");
+                #endif
             }else{
                 game_full_frame(game);
 

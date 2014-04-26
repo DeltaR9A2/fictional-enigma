@@ -8,83 +8,57 @@
 
 #include "cmap.h"
 
-void load_terrain_rects(game_t *game, char *filename){
-    SDL_Surface *test_map_image = load_image(filename);
-    cmap_t *test_cmap = cmap_create();
+void load_map(game_t *game, char *filename){
+	printf("Entering load_map\n");
+	SDL_Surface *map_image = load_image(filename);
 
-    cmap_init(test_cmap, 0, 0, 128, 128);
-    
-    for(int i=0; i < test_map_image->w * test_map_image->h; i++){
-        uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
+	cmap_t *terrain_cmap = cmap_create();
+	cmap_init(terrain_cmap, 0, 0, 128, 128);
+
+	cmap_t *platform_cmap = cmap_create();
+	cmap_init(platform_cmap, 0, 0, 128, 128);
+
+	printf("load_map: Beginning for loop.\n");
+	for(int i=0; i < map_image->w * map_image->h; i++){
+        uint32_t pixel = ((Uint32 *)map_image->pixels)[i];
+        printf("Got pixel #%i\n", i);
         if(pixel == 0x333366FF){
-            test_cmap->data[i] = 1;
+            terrain_cmap->data[i] = 1;
+            platform_cmap->data[i] = 0;
+        }else if(pixel == 0x9999DDFF){
+            terrain_cmap->data[i] = 0;
+            platform_cmap->data[i] = 1;
         }else{
-            test_cmap->data[i] = 0;
+            terrain_cmap->data[i] = 0;
+            platform_cmap->data[i] = 0;
+
+	        if(pixel != 0xFFFFFFFF){
+        	    target_t *target = target_list_get(game->targets);
+            	target->rect->x = (i % 128) * 8;
+            	target->rect->y = (i / 128) * 8;
+            	target->rect->w = 8;
+            	target->rect->h = 8;
+            	target->color = pixel;
+        	}
         }
-    }
-    
-    cmap_add_to_rect_list(test_cmap, game->terrain_rects);
+	}
+	printf("load_map: Exiting for loop.\n");
 
-    cmap_delete(test_cmap);
-    SDL_FreeSurface(test_map_image);
-}
+	cmap_add_to_rect_list(terrain_cmap, game->terrain_rects);
+	cmap_delete(terrain_cmap);
 
-void load_platform_rects(game_t *game, char *filename){
-    SDL_Surface *test_map_image = load_image(filename);
-    cmap_t *test_cmap = cmap_create();
+	cmap_add_to_rect_list(platform_cmap, game->platform_rects);
+	cmap_delete(platform_cmap);
 
-    cmap_init(test_cmap, 0, 0, 128, 128);
-    
-    for(int i=0; i < test_map_image->w * test_map_image->h; i++){
-        uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
-        if(pixel == 0x9999DDFF){
-            test_cmap->data[i] = 1;
-        }else{
-            test_cmap->data[i] = 0;
-        }
-    }
-    
-    cmap_add_to_rect_list(test_cmap, game->platform_rects);
-
-    cmap_delete(test_cmap);
-    SDL_FreeSurface(test_map_image);
-}
-   
-void load_targets(game_t *game, char *filename){
-    SDL_Surface *test_map_image = load_image(filename);
-
-    for(int i=0; i < test_map_image->w * test_map_image->h; i++){
-        uint32_t pixel = ((Uint32 *)test_map_image->pixels)[i];
-        if(pixel != 0xFFFFFFFF){
-            //printf("Target color: %08X\n", pixel);
-            target_t *target = target_list_get(game->targets);
-            target->rect->x = (i % 128) * 8;
-            target->rect->y = (i / 128) * 8;
-            target->rect->w = 8;
-            target->rect->h = 8;
-            target->color = pixel;
-
-        }
-    }
-    
-    SDL_FreeSurface(test_map_image);
+    SDL_FreeSurface(map_image);
 }
 
 static game_t *GAME;
 
-static int lua_load_terrain(lua_State *L){
+static int lua_load_map(lua_State *L){
 	char *filename = luaL_checkstring(L,1);
 	
-	load_terrain_rects(GAME, filename);
-	load_platform_rects(GAME, filename);
-	
-	return 0;
-}
-
-static int lua_load_targets(lua_State *L){
-	char *filename = luaL_checkstring(L,1);
-	
-	load_targets(GAME, filename);
+	load_map(GAME, filename);
 	
 	return 0;
 }
@@ -146,7 +120,9 @@ static int lua_configure_target(lua_State *L){
 			
 			swprintf(conversion_buffer, 128, L"%hs", anim_name);
 			sprite_set_anim(iter->data->sprite, anim_dict_get(GAME->anims, conversion_buffer));
-			rect_move_to(iter->data->sprite->rect, iter->data->rect);
+			rect_set_l_edge(iter->data->sprite->rect, rect_get_l_edge(iter->data->rect));
+			rect_set_t_edge(iter->data->sprite->rect, rect_get_t_edge(iter->data->rect));
+			//rect_move_to(iter->data->sprite->rect, iter->data->rect);
 			
 			iter->data->portrait = load_image(portrait);
 			swprintf(iter->data->message, 128, L"%s", message);
@@ -161,11 +137,8 @@ void load_scripts(game_t *game){
 	lua_State *LUA = luaL_newstate();
 	luaL_openlibs(LUA);
 
-	lua_pushcfunction(LUA, lua_load_terrain);
-	lua_setglobal(LUA, "load_terrain");
-	
-	lua_pushcfunction(LUA, lua_load_targets);
-	lua_setglobal(LUA, "load_targets");
+	lua_pushcfunction(LUA, lua_load_map);
+	lua_setglobal(LUA, "load_map");
 
 	lua_pushcfunction(LUA, lua_add_fset);
 	lua_setglobal(LUA, "add_fset");
@@ -178,14 +151,6 @@ void load_scripts(game_t *game){
 	
 	luaL_loadfile(LUA, "init.lua");
 	lua_pcall(LUA, 0, LUA_MULTRET, 0);
-	
-	/*
-	luaL_loadfile(LUA, "frost.lua");
-	lua_pcall(LUA, 0, LUA_MULTRET, 0);
-
-	luaL_loadfile(LUA, "targets.lua");
-	lua_pcall(LUA, 0, LUA_MULTRET, 0);
-	*/
 	
 	lua_close(LUA);
 }
