@@ -1,14 +1,14 @@
 
-export CC      := gcc
+export CC := gcc
 
 # Debug Flags #####
-export CFLAGS  := -std=c11 -O0 -g -I./src -Wall -Werror -D DEBUG
-export LFLAGS  := -Wl,-rpath,. -g -lm -llua -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+export CFLAGS := -std=c11 -O0 -g -I./src -Wall -Werror -D DEBUG
+export LFLAGS := -Wl,-rpath,. -g -lm -llua -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
 ###################
 
 # Release Flags #####
-#export CFLAGS  := -std=c11 -O2 -I./src
-#export LFLAGS  := -Wl,-rpath,. -lm -llua -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+#export CFLAGS := -std=c11 -O2 -I./src
+#export LFLAGS := -Wl,-rpath,. -lm -llua -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
 #####################
 
 TARGET := main
