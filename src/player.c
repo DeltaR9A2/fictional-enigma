@@ -140,11 +140,11 @@ void player_update_controls(player_t *player, game_t *game){
 			}else if(player->face_dir & DIR_L){
 				rect_set_r_edge(player->weapon, rect_get_mid_x(player->weapon));
 			}
-	   }
+		}
 	}else{
 		if(controller_just_pressed(game->controller, BTN_B)){
 			player->weapon_delay = 0;
-			player->weapon_life = 10;
+			player->weapon_life = 0;
 		}
 	}
 
