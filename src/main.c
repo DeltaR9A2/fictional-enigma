@@ -20,30 +20,26 @@ static uint32_t (*ACTIVE_FILTER)(uint32_t, SDL_PixelFormat*) = NULL;
 int main_event_watch(void *data, SDL_Event *e){
 	game_t *game = (game_t *)data;
 	
-	#ifdef DEBUG
-	if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
-		game->core->running = false;
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
+	if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
 		core_toggle_fullscreen(game->core);
+	}else if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
+		game->core->running = false;
 	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F1){
 		ACTIVE_FILTER = NULL;
 	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F2){
-		ACTIVE_FILTER = &filter_grayscale;
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F3){
-		ACTIVE_FILTER = &filter_hsl_grayscale;
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F4){
 		ACTIVE_FILTER = &filter_negative;
-	}else
-	#endif
-	if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
+	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F3){
+		ACTIVE_FILTER = &filter_grayscale;
+	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F4){
+		ACTIVE_FILTER = &filter_sepia_tone;
+	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F5){
+		ACTIVE_FILTER = &filter_hue_rotation;
+	}else if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
 		core_window_resize(game->core, e->window.data1, e->window.data2);
 	}
 
 	return 0;
 }
-
-
-
 
 int main(int arc, char* argv[]){
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -85,6 +81,10 @@ int main(int arc, char* argv[]){
 
 				core_window_redraw(core);
 			}
+
+			/////////////////////
+			hue_rotation += 4;
+			/////////////////////
 		}
 	}
 

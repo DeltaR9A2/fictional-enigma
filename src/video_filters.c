@@ -141,11 +141,42 @@ uint32_t filter_hsl_grayscale(uint32_t pixel, SDL_PixelFormat *format){
 	
 	rgb_to_hsl(&rgb, &hsl);
 	
-	//hsl.s = fmax(0.1, hsl.s * 0.25);
-	//hsl.h = 35;
+	hsl.s = fmax(0.2, hsl.s * 0.25);
+	hsl.h = 35;
 	
 	hsl_to_rgb(&hsl, &rgb);
 
 	return pixel_from_rgb(&rgb, format);
 }
 
+uint32_t hue_rotation = 0;
+
+uint32_t filter_hue_rotation(uint32_t pixel, SDL_PixelFormat *format){
+	RGB_Pixel rgb;
+	RGB_Pixel new;
+	
+	rgb_from_pixel(&rgb, pixel, format);
+
+	new.r = rgb.r * ((double)(hue_rotation % 360) / 360.0);
+	new.g = rgb.g * ((double)((hue_rotation + 120) % 360) / 360.0);
+	new.b = rgb.b * ((double)((hue_rotation + 240) % 360) / 360.0);
+	
+	return pixel_from_rgb(&new, format);
+}
+
+uint32_t filter_sepia_tone(uint32_t pixel, SDL_PixelFormat *format){
+	RGB_Pixel rgb;
+	RGB_Pixel new;
+	
+	rgb_from_pixel(&rgb, pixel, format);
+
+	double avg = ((rgb.r + rgb.g + rgb.b) / 3.0);
+
+	avg *= 0.9;
+
+	new.r = fmin(1.00, (rgb.r * 0.393) + (rgb.g * 0.769) + (rgb.b * 0.189));
+	new.g = fmin(1.00, (rgb.r * 0.349) + (rgb.g * 0.686) + (rgb.b * 0.168));
+	new.b = fmin(1.00, (rgb.r * 0.272) + (rgb.g * 0.534) + (rgb.b * 0.131));
+	
+	return pixel_from_rgb(&new, format);
+}
