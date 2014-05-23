@@ -1,0 +1,33 @@
+<article>
+	<header>
+		<h2>About the Game</h2>
+	</header>
+	<p><i>Ninmu Nanmu: Love and Freedom</i> is a computer game currently in
+	development. It's based on <a href="http://old.ninmunanmu.com/">this webcomic</a>
+	that I worked on for many years. I always wanted it to be a game, and in early
+	2013 my fans made that possible by backing an Indiegogo campaign to fund this
+	project.</p>
+</article>
+<article>
+	<header>
+		<h2>About the Author</h2>
+	</header>
+	<p>My name is John Colburn. I'm a self-taught artist and programmer. I live in
+	the Twin Cities area of Minnesota in the United States. I don't really like
+	talking about myself that much, so this section is kinda short.</p>
+</article>
+<article>
+	<header>
+		<h2>Frequently Asked Questions</h2>
+		<p>Answers to all your questions before you even ask them.</p>
+	</header>
+	<section>
+		<h3>What kind of game is this?</h3>
+		<p>It's a side-scrolling action game with focus on story and characters. It's
+		similar in some ways to games like
+		<a href="http://store.steampowered.com/app/236090/">Dust: An Elysian Tail</a>
+		or <a href="http://store.steampowered.com/app/203510/">Fortune Summoners</a>.
+		Expect lots of dialogue, intense combat, and interesting places to explore.</p>
+	</section>
+</article>
+

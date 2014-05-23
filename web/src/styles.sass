@@ -1,0 +1,99 @@
+html
+	overflow-y: scroll
+
+=main-flow
+	box-sizing: border-box
+	-moz-box-sizing: border-box
+	color: #DDDDDD
+	border: 2px solid #666666
+	background: #333333
+	margin: 0px 0px 8px 0px
+	padding: 5px
+
+ul
+	margin: 0px 0px 10px 0px
+
+=heading
+	margin: 10px 5px -5px 5px
+	font-style: italic
+	font-weight: 700
+
+h1
+	+heading
+	font-size: 50px
+
+h2
+	+heading
+	font-size: 30px
+
+h3
+	+heading
+	font-size: 20px
+
+hr
+	border: 1px solid #666666
+	margin: 20px 0px 25px 0px
+
+p
+	margin: 5px 20px 10px 20px
+	text-align: justify
+	
+a
+	color: #CCCCCC
+	
+a:hover
+	color: #FFFFFF
+
+strong
+	font-weight: 700
+
+body
+	font-family: Exo
+	font-weight: 500
+	font-size: 18px
+	background-color: #111111
+	>div
+		width: 600px
+		margin-left: auto
+		margin-right: auto
+		>header
+			+main-flow
+			padding: 10px
+			text-align: center
+			margin-top: 24px
+			>h1
+				margin: 0px 0px -9px 0px
+			
+			>h3
+				margin: 12px 0px 10px 0px
+		
+		>article
+			+main-flow
+			>header
+				text-align: left
+
+		>nav
+			+main-flow
+			text-align: center
+			padding: 0px
+
+			>a
+				+heading
+				font-size: 20px
+				width: 100px
+				margin: 0px
+				padding: 5px
+				display: inline-block
+				text-align: center
+				text-decoration: none
+
+			>a:hover
+				background: #666666
+
+		>footer
+			+main-flow
+			padding: 5px
+			text-align: center
+
+
+

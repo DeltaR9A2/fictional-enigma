@@ -1,0 +1,22 @@
+<article>
+	<header>
+		<h2>News</h2>
+	</header>
+	<p><strong>May 21st, 2014:</strong> Hey there, posting this update cause I said I would. Not much specific progress to talk about right now because last week was payroll and I was sick for part of the weekend. I opened the code to work on it and quickly realized I was in no condition to make significant changes.</p>
+	<p>So I'll talk about the current state of the code. I was using Python+Pygame when this project started, and at some point I switched to C+SDL2 without really announcing it. I know I told a few people, but consider this the official announcement.</p>
+	<p>Re-coding everything in C didn't really take that long, and the change of language hasn't made things any more difficult from my perspective. In fact, a bunch of lingering problems (graphics scaling, input handling) were much easier to solve after the switch.</p>
+	<p>My biggest challenge right now is establishing a content workflow so I can start producing gameplay instead of just code. I'm working on how to build levels, write dialogue, etc in a way that works for me and for the engine. A format that's easy to work on is often a pain to parse and vice versa. I've got a pretty solid system for laying out the terrain, but I'm not totally satisfied with the current system for placing objects/NPCs/etc. The format for storing dialogue is totally up in the air right now.</p>
+	<p>And now, here's an image pulled randomly out of the current build. The latest dialogue portrait for Frost. I'm experimenting with different visual styles for dialogue, because I'm not sure I want to go with the classic Visual Novel presentation.</p>
+	<p style="text-align:center"><img src="img/portrait_frost_default.png"></p>
+	<hr>
+	<p><strong>May 11th, 2014:</strong> Anybody ever noticed how I'm terrible at posting information about my projects? Cause I'm pretty terrible at that.</p>
+	<p>Shortly after the previous (Jan 19th) update, I started a new job because I needed more money. That, of course, meant that working on the game went from slow to very slow. It kinda sucks that I don't always have much time to work on the game now, but on the upside I have enough money to keep working on the game.</p>
+	<p>My original timeline said I would have a totally playable version after one year (10 days ago) which obviously didn't happen. That may or may not have been an unrealistic goal; I'm far too biased to make that distinction. The important part is that I'm still working on the game and I still intend to finish it.</p>
+	<p>I haven't forgotten any of the people who backed my IGG campaign. I hope you'll all bear with me for a while longer; I won't try to say how long it will take to finish the game, but I'm definitely going to share progress more often. I will totally admit to being slow and inconsistent, but at least I don't give up easily.</p>
+	<hr>
+	<p><strong>Jan 19th, 2014:</strong> Decided I didn't like the fancy CSS, so it's back to solid colors.</p>
+	<hr>
+	<p><strong>Jan 8th, 2014:</strong> Went nuts on the CSS for a while. I think it looks nice, but maybe isn't quite my style? I guess we'll see.</p>
+	<hr>
+	<p><strong>Jan 8th, 2014:</strong> Added some stuff to the 'About' section. Still rolling along.</p>
+</article>
