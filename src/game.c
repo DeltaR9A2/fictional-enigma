@@ -44,6 +44,30 @@ void game_set_dialogue(game_t *game, SDL_Surface *portrait, const wchar_t *text)
 	swprintf(game->dialogue_content, GAME_DIALOGUE_LEN, text);
 }
 
+void game_update_targets(game_t *game){
+	target_t *nearest_target = NULL;
+	int32_t nearest_distance = 9999;
+	int32_t current_distance = 9999;
+
+	for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
+		if(iter->data->sprite != NULL){
+			iter->data->sprite->step += 1;
+		}
+
+		current_distance = rect_range_to(iter->data->sprite->rect, game->player->body->rect);
+		if(current_distance < nearest_distance){
+			nearest_distance = current_distance;
+			nearest_target = iter->data;
+		}
+	}
+
+	if(nearest_distance <= 32 && nearest_target != NULL){
+		game->active_target = nearest_target;
+	}else{
+		game->active_target = NULL;
+	}
+}
+
 game_t *game_create(core_t *core){
 	game_t *game = malloc(sizeof(game_t));
 	
@@ -69,6 +93,9 @@ game_t *game_create(core_t *core){
 	game->dialogue_surface = create_surface(640, 100);
 	game->dialogue_portrait = NULL;
 
+	player_update(game->player, game);
+	game_update_targets(game);
+
 	return game;
 }
 
@@ -81,30 +108,6 @@ void game_delete(game_t *game){
 	game_delete_data_structures(game);
 	
 	free(game);
-}
-
-void game_update_targets(game_t *game){
-	target_t *nearest_target = NULL;
-	int32_t nearest_distance = 9999;
-	int32_t current_distance = 9999;
-
-	for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
-		if(iter->data->sprite != NULL){
-			iter->data->sprite->step += 1;
-		}
-
-		current_distance = rect_range_to(iter->data->sprite->rect, game->player->body->rect);
-		if(current_distance < nearest_distance){
-			nearest_distance = current_distance;
-			nearest_target = iter->data;
-		}
-	}
-
-	if(nearest_distance <= 32 && nearest_target != NULL){
-		game->active_target = nearest_target;
-	}else{
-		game->active_target = NULL;
-	}
 }
 
 void game_fast_frame(game_t *game){
@@ -126,7 +129,6 @@ void game_fast_frame(game_t *game){
 
 	}else if(game->mode == GAME_MODE_PLAY){
 		player_update(game->player, game);
-
 		game_update_targets(game);
 
 		if(controller_just_pressed(game->controller, BTN_A)){
@@ -145,35 +147,34 @@ void game_fast_frame(game_t *game){
 	}
 }
 
+void game_draw_dialogue(game_t *game){
+	SDL_Rect draw_rect;
+
+	draw_rect.x = 0;
+	draw_rect.y = 0;
+	SDL_BlitSurface(game->dialogue_portrait, NULL, game->core->screen, &draw_rect);
+
+	SDL_FillRect(game->dialogue_surface, NULL, 0x000000DD);
+	font_draw_string(game->font, game->dialogue_content, 8, 3, game->dialogue_surface);
+
+	draw_rect.x = 0;
+	draw_rect.y = 380-100;
+	SDL_BlitSurface(game->dialogue_surface, NULL, game->core->screen, &draw_rect);
+}
+
 void game_full_frame(game_t *game){
 	SDL_Rect draw_rect;
 
+	game_fast_frame(game);
+
+	rect_move_to(game->camera->view, game->player->body->rect);
+	camera_draw_game(game->camera, game);
+	SDL_BlitSurface(game->camera->buffer, NULL, game->core->screen, NULL);
+
 	if(game->mode == GAME_MODE_MENU){
-		game_fast_frame(game);
-		SDL_FillRect(game->core->screen, NULL, 0x000000FF);
 		menu_draw(game->menu, game->core->screen);
-
-	}else if(game->mode == GAME_MODE_PLAY){
-		game_fast_frame(game);
-		rect_move_to(game->camera->view, game->player->body->rect);
-		camera_draw_game(game->camera, game);
-		SDL_BlitSurface(game->camera->buffer, NULL, game->core->screen, NULL);
-
 	}else if(game->mode == GAME_MODE_DIALOGUE){
-		game_fast_frame(game);
-
-		SDL_BlitSurface(game->camera->buffer, NULL, game->core->screen, NULL);
-
-		draw_rect.x = 0;
-		draw_rect.y = 0;
-		SDL_BlitSurface(game->dialogue_portrait, NULL, game->core->screen, &draw_rect);
-
-		SDL_FillRect(game->dialogue_surface, NULL, 0x000000DD);
-		font_draw_string(game->font, game->dialogue_content, 8, 3, game->dialogue_surface);
-
-		draw_rect.x = 0;
-		draw_rect.y = 380-100;
-		SDL_BlitSurface(game->dialogue_surface, NULL, game->core->screen, &draw_rect);
+		game_draw_dialogue(game);
 	}
 
 	if(game->message_timeout > 0){
@@ -183,7 +184,6 @@ void game_full_frame(game_t *game){
 		
 		SDL_BlitSurface(game->message_surface, NULL, game->core->screen, &draw_rect);
 	}
-	
 }
 
 void game_create_data_structures(game_t *game){
