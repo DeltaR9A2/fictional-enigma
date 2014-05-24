@@ -143,6 +143,7 @@ void player_update_controls(player_t *player, game_t *game){
 		}
 	}else{
 		if(controller_just_pressed(game->controller, BTN_B)){
+			// Weapon disabled; set life higher than zero here to enable
 			player->weapon_delay = 0;
 			player->weapon_life = 0;
 		}
