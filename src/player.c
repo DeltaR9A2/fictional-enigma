@@ -72,6 +72,7 @@ void player_update_controls(player_t *player, game_t *game){
 	if(controller_just_pressed(game->controller, BTN_U)){
 		if(player->body->flags & BLOCKED_D && controller_released(game->controller, BTN_D)){
 			player->body->vy = player->jump_force;
+			mixer_test_sound(game->mixer);
 		}
 	}else if(controller_just_released(game->controller, BTN_U)){
 		if(player->body->vy < player->jump_brake){
@@ -145,10 +146,9 @@ void player_update_controls(player_t *player, game_t *game){
 		if(controller_just_pressed(game->controller, BTN_B)){
 			// Weapon disabled; set life higher than zero here to enable
 			player->weapon_delay = 0;
-			player->weapon_life = 0;
+			player->weapon_life = 10;
 		}
 	}
-
 }
 
 void player_update_animation(player_t *player, game_t *game){
