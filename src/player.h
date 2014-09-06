@@ -10,6 +10,8 @@ typedef struct player_t player_t;
 #include "sprite.h"
 #include "physics.h"
 
+#include "mixer.h"
+
 //self.dash_vel = 8
 //self.dash_timer = 0
 //self.air_dash = False
