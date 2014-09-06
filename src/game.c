@@ -39,7 +39,9 @@ void game_set_message(game_t *game, const wchar_t *text){
 	font_draw_string(game->font, game->message, 8, 4, game->message_surface);
 }
 
+static int32_t dialogue_timer = 0;
 void game_set_dialogue(game_t *game, SDL_Surface *portrait, const wchar_t *text){
+	dialogue_timer = 0;
 	game->dialogue_portrait = portrait;
 	swprintf(game->dialogue_content, GAME_DIALOGUE_LEN, text);
 }
@@ -70,7 +72,7 @@ void game_update_targets(game_t *game){
 
 game_t *game_create(core_t *core){
 	game_t *game = malloc(sizeof(game_t));
-	
+
 	game->core = core;
 	game->step = 0;
 	game->mode = GAME_MODE_MENU;
@@ -90,7 +92,7 @@ game_t *game_create(core_t *core){
 	game->message_timeout = 0;
 
 	game->dialogue_content = calloc(GAME_DIALOGUE_LEN, sizeof(wchar_t));
-	game->dialogue_surface = create_surface(640, 100);
+	game->dialogue_surface = create_surface(640-256, 100);
 	game->dialogue_portrait = NULL;
 
 	player_update(game->player, game);
@@ -104,9 +106,9 @@ void game_delete(game_t *game){
 
 	menu_delete(game->menu);	
 	font_delete(game->font);
-	
+
 	game_delete_data_structures(game);
-	
+
 	free(game);
 }
 
@@ -154,10 +156,12 @@ void game_draw_dialogue(game_t *game){
 	draw_rect.y = 0;
 	SDL_BlitSurface(game->dialogue_portrait, NULL, game->core->screen, &draw_rect);
 
-	SDL_FillRect(game->dialogue_surface, NULL, 0x000000DD);
-	font_draw_string(game->font, game->dialogue_content, 8, 3, game->dialogue_surface);
+	SDL_FillRect(game->dialogue_surface, NULL, 0x000000FF);
 
-	draw_rect.x = 0;
+	if(dialogue_timer < wcslen(game->dialogue_content)){	dialogue_timer += 1;	}
+	font_draw_string_part(game->font, game->dialogue_content, dialogue_timer, 8, 3, game->dialogue_surface);
+
+	draw_rect.x = game->dialogue_portrait->w;
 	draw_rect.y = 380-100;
 	SDL_BlitSurface(game->dialogue_surface, NULL, game->core->screen, &draw_rect);
 }
@@ -181,7 +185,7 @@ void game_full_frame(game_t *game){
 		game->message_timeout -= 1;
 		draw_rect.x = 8;
 		draw_rect.y = 8;
-		
+
 		SDL_BlitSurface(game->message_surface, NULL, game->core->screen, &draw_rect);
 	}
 }
@@ -191,7 +195,7 @@ void game_create_data_structures(game_t *game){
 	game->mixer = mixer_create();
 	game->camera = camera_create();
 	game->player = player_create();
-	
+
 	game->fsets = fset_dict_create();
 	game->anims = anim_dict_create();
 
@@ -208,7 +212,7 @@ void game_delete_data_structures(game_t *game){
 	rect_list_delete(game->terrain_rects);
 	anim_dict_delete(game->anims);
 	fset_dict_delete(game->fsets);
-	
+
 	player_delete(game->player);
 	camera_delete(game->camera);
 	mixer_delete(game->mixer);

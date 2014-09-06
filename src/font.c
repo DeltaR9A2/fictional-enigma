@@ -85,6 +85,15 @@ void font_draw_string(font_t *font, const wchar_t *string, int32_t x, int32_t y,
 	}
 }
 
+void font_draw_string_part(font_t *font, const wchar_t *string, int32_t len, int32_t x, int32_t y, SDL_Surface *target){
+	wchar_t temp[1024];
+
+	wcsncpy(temp, string, len);
+	temp[len] = L'\0';
+
+	font_draw_string(font, temp, x, y, target);
+}
+
 int32_t font_get_width(font_t *font, const wchar_t *string){
 	int32_t w = 0;
 	for(int i=0; i<wcslen(string); i++){
