@@ -2,21 +2,24 @@
 	<header>
 		<h2>News</h2>
 	</header>
+	<p><strong>July 5th, 2014:</strong> I haven't updated in a while because there hasn't been much to report. Since I haven't been able to get much work done on the game, I guess I'll post about what I <em>have</em> been doing.</p>
+	<p>At the job I have right now, I am a 'Direct Service Professional'. That means I work people who have disabilities and help them with their everyday needs. My specific department provides ILS services, which stands for Independent Living Skills. We work with people who are partially independent but whose disabilities mean that they still need help with certain things.</p>
+	<p>So basically I drive around town helping people get to their appointments, buy groceries, or just go out to eat once in a while. My company supports people with all sorts of disabilities, but most of the people I work with have some combination of low IQ, autism, and behavioral problems. I have a lot of empathy for these people in particular because I was extremely awkward growing up and I know exactly how it feels when nobody in the room has the patience to understand what you're trying to say.</p>
+	<p>The month of June was particularly busy because the company I work for is restructuring; supervisors are being re-assigned, paperwork is changing, and we're all struggling to make sure this doesn't affect the people we're supporting. Just in case that wasn't enough to worry about, one of my guys ended up in a hospital and another got reassigned to work with someone else. So I've been shuffling my hours, picking up new people, and taking extra days to make sure I get enough hours and cover all the people who are depending on me.</p>
+	<p>So that's what I've been doing while I wasn't working on the game. Even though I'm technically part time, it's easy for things to spill over and eat most of the week. Things at work are settling down and I'm getting my own life a bit more organized, so there should be real progress to report on pretty soon.</p>
+	<hr>
+	<p><strong>May 29th, 2014:</strong> Still not much to report on the code side of things. Still working on content and visuals. I posted some concept art on my DeviantArt account, which you can find <a href="http://johncolburn.deviantart.com/art/NNLAF-Concepts-2014-05-25-457192869">over here</a>. I've been messing with color combinations for terrain. Right now the test map is extremely purple, as seen below. It has also been green, blue, gray, and brown recently. You can also see some miscellaneous experiments with different tiles and backgrounds.</p>
+	<p style="text-align:center"><img src="img/test_map_20140529.png"></p>
+	<hr>
 	<p><strong>May 21st, 2014:</strong> Hey there, posting this update cause I said I would. Not much specific progress to talk about right now because last week was payroll and I was sick for part of the weekend. I opened the code to work on it and quickly realized I was in no condition to make significant changes.</p>
 	<p>So I'll talk about the current state of the code. I was using Python+Pygame when this project started, and at some point I switched to C+SDL2 without really announcing it. I know I told a few people, but consider this the official announcement.</p>
 	<p>Re-coding everything in C didn't really take that long, and the change of language hasn't made things any more difficult from my perspective. In fact, a bunch of lingering problems (graphics scaling, input handling) were much easier to solve after the switch.</p>
 	<p>My biggest challenge right now is establishing a content workflow so I can start producing gameplay instead of just code. I'm working on how to build levels, write dialogue, etc in a way that works for me and for the engine. A format that's easy to work on is often a pain to parse and vice versa. I've got a pretty solid system for laying out the terrain, but I'm not totally satisfied with the current system for placing objects/NPCs/etc. The format for storing dialogue is totally up in the air right now.</p>
 	<p>And now, here's an image pulled randomly out of the current build. The latest dialogue portrait for Frost. I'm experimenting with different visual styles for dialogue, because I'm not sure I want to go with the classic Visual Novel presentation.</p>
-	<p style="text-align:center"><img src="img/portrait_frost_default.png"></p>
+	<p style="text-align:center"><img src="img/portrait_frost_20140521.png"></p>
 	<hr>
 	<p><strong>May 11th, 2014:</strong> Anybody ever noticed how I'm terrible at posting information about my projects? Cause I'm pretty terrible at that.</p>
 	<p>Shortly after the previous (Jan 19th) update, I started a new job because I needed more money. That, of course, meant that working on the game went from slow to very slow. It kinda sucks that I don't always have much time to work on the game now, but on the upside I have enough money to keep working on the game.</p>
 	<p>My original timeline said I would have a totally playable version after one year (10 days ago) which obviously didn't happen. That may or may not have been an unrealistic goal; I'm far too biased to make that distinction. The important part is that I'm still working on the game and I still intend to finish it.</p>
 	<p>I haven't forgotten any of the people who backed my IGG campaign. I hope you'll all bear with me for a while longer; I won't try to say how long it will take to finish the game, but I'm definitely going to share progress more often. I will totally admit to being slow and inconsistent, but at least I don't give up easily.</p>
-	<hr>
-	<p><strong>Jan 19th, 2014:</strong> Decided I didn't like the fancy CSS, so it's back to solid colors.</p>
-	<hr>
-	<p><strong>Jan 8th, 2014:</strong> Went nuts on the CSS for a while. I think it looks nice, but maybe isn't quite my style? I guess we'll see.</p>
-	<hr>
-	<p><strong>Jan 8th, 2014:</strong> Added some stuff to the 'About' section. Still rolling along.</p>
 </article>
