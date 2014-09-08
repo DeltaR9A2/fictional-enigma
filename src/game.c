@@ -70,6 +70,31 @@ void game_update_targets(game_t *game){
 	}
 }
 
+void game_update_enemies(game_t *game){
+	enemy_node_t *iter;
+	for(iter = game->enemies->head; iter; iter = iter->next){
+		enemy_update(iter->data, game);
+	}
+
+	for(iter = game->enemies->head; iter; iter = iter->next){
+		if(iter->data->flashing > 0){
+			iter->data->flashing -= 1;
+		}else{
+			if(rect_overlap(iter->data->rect, game->player->weapon)){
+				iter->data->flashing = 15;
+				printf("Enemy hit by player.\n");
+			}
+		}
+
+		if(game->player->flashing == 0){
+			if(rect_overlap(iter->data->weapon, game->player->body->rect)){
+				game->player->flashing = 60;
+				printf("Player hit by enemy.\n");
+			}
+		}
+	}
+}
+
 game_t *game_create(core_t *core){
 	game_t *game = malloc(sizeof(game_t));
 
@@ -97,6 +122,19 @@ game_t *game_create(core_t *core){
 
 	player_update(game->player, game);
 	game_update_targets(game);
+
+	enemy_t *debug_enemy = enemy_list_get(game->enemies);
+
+	debug_enemy->rect->w = 16;
+	debug_enemy->rect->h = 16;
+	debug_enemy->body->rect->w = 16;
+	debug_enemy->body->rect->h = 32;
+	debug_enemy->body->rect->x = 32;
+	debug_enemy->body->rect->y = 32;
+
+	debug_enemy->body->vx = 1;
+
+	game_update_enemies(game);
 
 	return game;
 }
@@ -132,6 +170,7 @@ void game_fast_frame(game_t *game){
 	}else if(game->mode == GAME_MODE_PLAY){
 		player_update(game->player, game);
 		game_update_targets(game);
+		game_update_enemies(game);
 
 		if(controller_just_pressed(game->controller, BTN_A)){
 			if(game->active_target != NULL){
@@ -203,9 +242,11 @@ void game_create_data_structures(game_t *game){
 	game->platform_rects = rect_list_create();
 
 	game->targets = target_list_create();
+	game->enemies = enemy_list_create();
 }
 
 void game_delete_data_structures(game_t *game){
+	enemy_list_delete(game->enemies);
 	target_list_delete(game->targets);
 
 	rect_list_delete(game->platform_rects);

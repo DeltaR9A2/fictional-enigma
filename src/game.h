@@ -45,6 +45,7 @@ struct game_t{
 	
 	player_t *player;
 	target_list_t *targets;
+	enemy_list_t *enemies;
 	rect_list_t *terrain_rects;
 	rect_list_t *platform_rects;
 	SDL_Surface *map_image;
