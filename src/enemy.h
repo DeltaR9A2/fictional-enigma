@@ -14,6 +14,11 @@ struct enemy_t{
 	body_t *body;
 	
 	int32_t flashing;
+
+	int32_t durability;
+	int32_t damage;
+
+	uint8_t alive;
 };
 
 enemy_t *enemy_create(void);

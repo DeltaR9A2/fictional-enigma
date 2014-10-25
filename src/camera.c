@@ -133,8 +133,10 @@ void camera_draw_enemies(camera_t *camera, game_t *game)
 	enemy_node_t *iter = game->enemies->head;
 	while(iter != NULL)
 	{
-		if(iter->data->flashing % 2 == 0){
-			camera_fill_rect(camera, iter->data->rect, 0xFF0000FF);
+		if(iter->data->alive){
+			if(iter->data->flashing % 2 == 0){
+				camera_fill_rect(camera, iter->data->rect, 0xFF0000FF);
+			}
 		}
 		iter = iter->next;
 	}
