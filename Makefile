@@ -2,8 +2,8 @@
 export CC := gcc
 
 # Debug Flags #####
-export CFLAGS := -std=c11 -O0 -g -I./src -Wall -Werror -D DEBUG
-export LFLAGS := -Wl,-rpath,. -g -lm -llua -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+export CFLAGS := -std=c11 -O0 -g `sdl2-config --cflags` -I./src -Wall -Werror -D DEBUG
+export LFLAGS := -Wl,-rpath,. -g -lm -llua `sdl2-config --libs` -lSDL2_image -lSDL2_gfx -lSDL2_mixer
 ###################
 
 # Release Flags #####
@@ -25,7 +25,7 @@ src:
 	$(MAKE) -C src
 
 $(TARGET):
-	$(CC) $(LFLAGS) ./obj/*.o -o ./bin/$@
+	$(CC) ./obj/*.o $(LFLAGS) -o ./bin/$@
 
 run: all
 	@(cd bin && exec ./$(TARGET))
