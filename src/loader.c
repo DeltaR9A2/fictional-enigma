@@ -1,6 +1,6 @@
 #include "loader.h"
 
-#include <wchar.h>
+#include <string.h>
 #include <stdbool.h>
 #include <lua.h>
 #include <lualib.h>
@@ -8,7 +8,7 @@
 
 #include "cmap.h"
 
-void load_map(game_t *game, char *filename){
+void load_map(game_t *game, const char *filename){
 	printf("Entering load_map\n");
 	SDL_Surface *map_image = load_image(filename);
 
@@ -59,7 +59,7 @@ void load_map(game_t *game, char *filename){
 static game_t *GAME;
 
 static int lua_load_map(lua_State *L){
-	char *filename = luaL_checkstring(L,1);
+	const char *filename = luaL_checkstring(L,1);
 	
 	load_map(GAME, filename);
 	
@@ -67,36 +67,31 @@ static int lua_load_map(lua_State *L){
 }
 
 static int lua_add_fset(lua_State *L){
-	char *fset_name = luaL_checkstring(L,1);
-	char *file_name = luaL_checkstring(L,2);
+	const char *fset_name = luaL_checkstring(L,1);
+	const char *file_name = luaL_checkstring(L,2);
 	int cols = luaL_checkint(L,3);
 	int rows = luaL_checkint(L,4);
 	bool flip = lua_toboolean(L,5);
 
-	wchar_t real_name[32];
-	swprintf(real_name, 32, L"%s", fset_name);
-
-	fset_t *fset = fset_dict_get(GAME->fsets, real_name);
+	fset_t *fset = fset_dict_get(GAME->fsets, fset_name);
 	fset_init(fset, file_name, cols, rows, flip);
 	
 	return 0;
 }
 
 static int lua_add_anim(lua_State *L){
-	char *fset_name = luaL_checkstring(L,1);
-	char *anim_name = luaL_checkstring(L,2);
+	const char *fset_name = luaL_checkstring(L,1);
+	const char *anim_name = luaL_checkstring(L,2);
 	int start = luaL_checkint(L,3);
 	int length = luaL_checkint(L,4);
 	int rate = luaL_checkint(L,5);
 	
-	wchar_t w_fset_name[32];
-	swprintf(w_fset_name, 32, L"%s", fset_name);
+	#ifdef DEBUG
+		printf("Adding Anim %s %s %i %i %i\n", fset_name, anim_name, start, length, rate);
+	#endif
 
-	wchar_t w_anim_name[32];
-	swprintf(w_anim_name, 32, L"%s", anim_name);
-
-	fset_t *fset = fset_dict_get(GAME->fsets, w_fset_name);
-	anim_t *anim = anim_dict_get(GAME->anims, w_anim_name);
+	fset_t *fset = fset_dict_get(GAME->fsets, fset_name);
+	anim_t *anim = anim_dict_get(GAME->anims, anim_name);
 
 	anim_init(anim, fset, start, length, rate);
 	
@@ -104,16 +99,14 @@ static int lua_add_anim(lua_State *L){
 }
 
 static int lua_configure_target(lua_State *L){
-	int color = luaL_checkint(L,1);
+	uint32_t color = (uint32_t)luaL_checknumber(L,1);
 
-	char *anim_name = luaL_checkstring(L,2);
-	char *portrait = luaL_checkstring(L,3);
-	char *message = luaL_checkstring(L,4);
-
-	wchar_t conversion_buffer[128];
+	const char *anim_name = luaL_checkstring(L,2);
+	const char *portrait = luaL_checkstring(L,3);
+	const char *message = luaL_checkstring(L,4);
 
 	#ifdef DEBUG
-	printf("Configuring %08X %s %s %s\n", color, anim_name, portrait, message);
+		printf("Configuring %08X %s %s %s\n", color, anim_name, portrait, message);
 	#endif
 
 	target_node_t *iter = GAME->targets->head;
@@ -121,14 +114,13 @@ static int lua_configure_target(lua_State *L){
 		if(iter->data->color == color){
 			iter->data->sprite = sprite_create();
 			
-			swprintf(conversion_buffer, 128, L"%hs", anim_name);
-			sprite_set_anim(iter->data->sprite, anim_dict_get(GAME->anims, conversion_buffer));
+			sprite_set_anim(iter->data->sprite, anim_dict_get(GAME->anims, anim_name));
 			rect_set_l_edge(iter->data->sprite->rect, rect_get_l_edge(iter->data->rect));
 			rect_set_t_edge(iter->data->sprite->rect, rect_get_t_edge(iter->data->rect));
 			//rect_move_to(iter->data->sprite->rect, iter->data->rect);
 			
 			iter->data->portrait = load_image(portrait);
-			swprintf(iter->data->message, 128, L"%s", message);
+			sprintf(iter->data->message, "%s", message);
 		}
 		iter = iter->next;
 	}	
@@ -136,7 +128,7 @@ static int lua_configure_target(lua_State *L){
 	return 0;
 }
 
-void load_scripts(game_t *game){
+void load_scripts(){
 	lua_State *LUA = luaL_newstate();
 	luaL_openlibs(LUA);
 
@@ -160,6 +152,6 @@ void load_scripts(game_t *game){
 
 void load_game(game_t *game){
 	GAME = game;
-	load_scripts(game);
+	load_scripts();
 }
 

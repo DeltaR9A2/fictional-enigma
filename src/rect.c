@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
-#include <tgmath.h>
+//#include <tgmath.h>
 
 #include "rect.h"
 
@@ -25,10 +25,10 @@ void rect_init(rect_t *rect, double x, double y, double w, double h){
 }
 
 void rect_copy_to_sdl(rect_t *rect, SDL_Rect *sdl_rect){
-	sdl_rect->x = (rect->x);
-	sdl_rect->y = (rect->y);
-	sdl_rect->w = (rect->w);
-	sdl_rect->h = (rect->h);
+	sdl_rect->x = (uint32_t)(rect->x);
+	sdl_rect->y = (uint32_t)(rect->y);
+	sdl_rect->w = (uint32_t)(rect->w);
+	sdl_rect->h = (uint32_t)(rect->h);
 }
 
 double rect_get_l_edge(rect_t *rect){ return rect->x; }

@@ -39,10 +39,13 @@ typedef struct{
 	double h, s, l;
 }HSL_Pixel;
 
+double vf_fmin(double a, double b){ return (a < b) ? a : b; }
+double vf_fmax(double a, double b){ return (a > b) ? a : b; }
+
 void rgb_to_hsl(RGB_Pixel *src, HSL_Pixel *dst){
 	double min, max;
-	min = fmin(src->r, fmin(src->g, src->b));
-	max = fmax(src->r, fmax(src->g, src->b));
+	min = vf_fmin(src->r, vf_fmin(src->g, src->b));
+	max = vf_fmax(src->r, vf_fmax(src->g, src->b));
 	
 	dst->l = (min + max) / 2.0;
 	
@@ -91,7 +94,7 @@ void hsl_to_rgb(HSL_Pixel *src, RGB_Pixel *dst){
 		
 		if(src->l < 0.5){
 			t1 = src->l * (1.0 + src->s);
-		}else if(src->l >= 0.5){
+		}else{ // src->l >= 0.5
 			t1 = (src->l+src->s) - (src->l*src->s);
 		}
 		
@@ -126,9 +129,9 @@ void rgb_from_pixel(RGB_Pixel *rgb, uint32_t pixel, SDL_PixelFormat *format){
 uint32_t pixel_from_rgb(RGB_Pixel *rgb, SDL_PixelFormat *format){
 	uint8_t r, g, b;
 
-	r = (int)(rgb->r * 255.0);
-	g = (int)(rgb->g * 255.0);
-	b = (int)(rgb->b * 255.0);
+	r = (uint8_t)(rgb->r * 255.0);
+	g = (uint8_t)(rgb->g * 255.0);
+	b = (uint8_t)(rgb->b * 255.0);
 	
 	return SDL_MapRGBA(format, r, g, b, 255);
 }
@@ -141,7 +144,7 @@ uint32_t filter_hsl_grayscale(uint32_t pixel, SDL_PixelFormat *format){
 	
 	rgb_to_hsl(&rgb, &hsl);
 	
-	hsl.s = fmax(0.2, hsl.s * 0.25);
+	hsl.s = vf_fmax(0.2, hsl.s * 0.25);
 	hsl.h = 35;
 	
 	hsl_to_rgb(&hsl, &rgb);
@@ -174,9 +177,9 @@ uint32_t filter_sepia_tone(uint32_t pixel, SDL_PixelFormat *format){
 
 	avg *= 0.9;
 
-	new.r = fmin(1.00, (rgb.r * 0.393) + (rgb.g * 0.769) + (rgb.b * 0.189));
-	new.g = fmin(1.00, (rgb.r * 0.349) + (rgb.g * 0.686) + (rgb.b * 0.168));
-	new.b = fmin(1.00, (rgb.r * 0.272) + (rgb.g * 0.534) + (rgb.b * 0.131));
+	new.r = vf_fmin(1.00, (rgb.r * 0.393) + (rgb.g * 0.769) + (rgb.b * 0.189));
+	new.g = vf_fmin(1.00, (rgb.r * 0.349) + (rgb.g * 0.686) + (rgb.b * 0.168));
+	new.b = vf_fmin(1.00, (rgb.r * 0.272) + (rgb.g * 0.534) + (rgb.b * 0.131));
 	
 	return pixel_from_rgb(&new, format);
 }

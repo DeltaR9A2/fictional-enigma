@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 void video_filter(SDL_Surface *surface, uint32_t (*function)(uint32_t, SDL_PixelFormat*));
 

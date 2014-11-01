@@ -1,7 +1,7 @@
 #ifndef fset_h
 #define fset_h
 
-#include <wchar.h>
+#include <string.h>
 
 #include "sdl_helpers.h"
 

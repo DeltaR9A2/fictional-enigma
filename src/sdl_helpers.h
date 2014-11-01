@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL2_rotozoom.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL2_rotozoom.h>
 
 SDL_Surface *create_surface(int32_t w, int32_t h);
 SDL_Surface *load_image(const char *fn);

@@ -1,10 +1,11 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "mixer.h"
 
-const uint32_t MIXER_CHANNEL_SOUND =	-1;
-const uint32_t MIXER_CHANNEL_MUSIC =	0;
-const uint32_t MIXER_CHANNEL_VOICE =	1;
+const int32_t MIXER_CHANNEL_SOUND =	-1;
+const int32_t MIXER_CHANNEL_MUSIC =	0;
+const int32_t MIXER_CHANNEL_VOICE =	1;
 
 mixer_t *mixer_create(void){
 	Mix_Init(MIX_INIT_OGG);
@@ -22,8 +23,8 @@ mixer_t *mixer_create(void){
 
 	Mix_PlayChannel(MIXER_CHANNEL_MUSIC, mixer->test_music, -1);
 	
-	Mix_Volume(MIXER_CHANNEL_MUSIC, decimal_volume(0.1));
-	Mix_Volume(MIXER_CHANNEL_VOICE, decimal_volume(0.1));
+	Mix_Volume(MIXER_CHANNEL_MUSIC, decimal_volume(0.3));
+	Mix_Volume(MIXER_CHANNEL_VOICE, decimal_volume(0.3));
 
 	for(uint32_t i = 2; i < 16; i++){
 		Mix_Volume(i, decimal_volume(0.5));
@@ -33,8 +34,11 @@ mixer_t *mixer_create(void){
 }
 
 void mixer_test_sound(mixer_t *mixer){
-	Mix_PlayChannel(MIXER_CHANNEL_SOUND, mixer->test_sound, 0);
-
+	int retval = Mix_PlayChannel(MIXER_CHANNEL_SOUND, mixer->test_sound, 0);
+	printf("Playing test sound on channel %i\n", retval);
+	if (retval == -1){
+		printf("SDL_Mixer error: %s\n", Mix_GetError());
+	}
 	return;
 }
 	
@@ -47,6 +51,6 @@ void mixer_delete(mixer_t *mixer){
 	Mix_Quit();
 }
 
-int decimal_volume(double volume){
-	return round(volume * MIX_MAX_VOLUME);
+int32_t decimal_volume(double volume){
+	return (int32_t)(volume * MIX_MAX_VOLUME);
 }

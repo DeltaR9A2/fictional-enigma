@@ -7,10 +7,10 @@
 const uint32_t OPTION_LABEL_LEN = 32;
 const uint32_t MENU_MAX_OPTIONS = 8;
 
-option_t *option_create(wchar_t *label, void (*action)(menu_t*)){
+option_t *option_create(char *label, void (*action)(menu_t*)){
 	option_t *option = malloc(sizeof(option_t));
-	option->label = malloc(sizeof(wchar_t) * OPTION_LABEL_LEN);
-	swprintf(option->label, OPTION_LABEL_LEN, label);
+	option->label = malloc(sizeof(char) * OPTION_LABEL_LEN);
+	sprintf(option->label, label);
 	option->action = action;
 	return option;
 }
@@ -34,7 +34,7 @@ menu_t *menu_create(game_t *game){
 	
 	menu->options = malloc(sizeof(option_t*) * MENU_MAX_OPTIONS);
 	
-	for(int i=0; i<MENU_MAX_OPTIONS; i++){
+	for(uint32_t i=0; i<MENU_MAX_OPTIONS; i++){
 		menu->options[i] = NULL;
 	}
 	
@@ -46,7 +46,7 @@ menu_t *menu_create(game_t *game){
 }
 
 void menu_delete(menu_t *menu){
-	for(int i=0; i<MENU_MAX_OPTIONS; i++){
+	for(uint32_t i=0; i<MENU_MAX_OPTIONS; i++){
 		if(menu->options[i] != NULL){
 			option_delete(menu->options[i]);
 		}
@@ -74,7 +74,7 @@ void menu_create_buffer(menu_t *menu){
 	int32_t w = 0;
 	int32_t h = 0;
 	
-	for(int i=0; i<MENU_MAX_OPTIONS; i++){
+	for(uint32_t i=0; i<MENU_MAX_OPTIONS; i++){
 		if(menu->options[i] != NULL){
 			x = font_get_width(menu->font, menu->options[i]->label);
 			if(x > w){ w = x; }
@@ -111,12 +111,12 @@ void menu_draw_buffer(menu_t *menu){
 	int y = 4;
 	int h = font_get_height(menu->game->font);
 	
-	for(int i=0; i<MENU_MAX_OPTIONS; i++){
+	for(uint32_t i=0; i<MENU_MAX_OPTIONS; i++){
 		if(menu->options[i] != NULL){
 			font_draw_string(menu->game->font, menu->options[i]->label, x, y, menu->buffer);
 		}
 		if(i == menu->selection){
-			font_draw_string(menu->game->font, L">", x-6, y, menu->buffer);
+			font_draw_string(menu->game->font, ">", x-6, y, menu->buffer);
 		}
 		y += h;
 	}
@@ -159,13 +159,13 @@ void menu_draw(menu_t *menu, SDL_Surface *surface){
 	}
 }
 
-void menu_add_option(menu_t *menu, wchar_t *label, void (*action)(menu_t*)){
+void menu_add_option(menu_t *menu, char *label, void (*action)(menu_t*)){
 	menu_delete_buffer(menu);
 
-	for(int i=0; i<MENU_MAX_OPTIONS; i++){
+	for(uint32_t i=0; i<MENU_MAX_OPTIONS; i++){
 		if(menu->options[i] == NULL){
 			menu->options[i] = option_create(label, action);
-			menu->num_options = i+1;
+			menu->num_options = (uint8_t)(i+1);
 			return;
 		}
 	}
@@ -176,10 +176,10 @@ void menu_add_option(menu_t *menu, wchar_t *label, void (*action)(menu_t*)){
 menu_t *menu_create_main_menu(game_t *game){
 	menu_t *menu = menu_create(game);
 	
-	menu_add_option(menu, L"Play Game", &menu_new_game);
-//	menu_add_option(menu, L"Load Game", &menu_load_game);
-//	menu_add_option(menu, L"Options", &menu_options);
-	menu_add_option(menu, L"Exit", &menu_exit);
+	menu_add_option(menu, "Play Game", &menu_new_game);
+//	menu_add_option(menu, "Load Game", &menu_load_game);
+//	menu_add_option(menu, "Options", &menu_options);
+	menu_add_option(menu, "Exit", &menu_exit);
 	
 	return menu;
 }
@@ -193,10 +193,10 @@ void menu_new_game(menu_t *menu){
 }
 
 void menu_load_game(menu_t *menu){
-	game_set_message(menu->game, L"'Load Game' not implemented yet.");
+	game_set_message(menu->game, "'Load Game' not implemented yet.");
 }
 
 void menu_options(menu_t *menu){
-	game_set_message(menu->game, L"'Options' not implemented yet.");
+	game_set_message(menu->game, "'Options' not implemented yet.");
 }
 

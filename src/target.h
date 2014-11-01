@@ -14,7 +14,7 @@ struct target_t{
   void (*action)(target_t*, game_t*);
 
   sprite_t *sprite;
-  wchar_t message[128];
+  char message[128];
 
   SDL_Surface *portrait;
 };

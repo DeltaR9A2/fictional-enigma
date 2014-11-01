@@ -4,18 +4,18 @@
 typedef struct option_t option_t;
 typedef struct menu_t menu_t;
 
-#include <wchar.h>
+#include <string.h>
 
 #include "game.h"
 
 extern const uint32_t OPTION_LABEL_LEN;
 
 struct option_t{
-	wchar_t *label;
+	char *label;
 	void (*action)(menu_t*);
 };
 
-option_t *option_create(wchar_t *label, void (*action)(menu_t*));
+option_t *option_create(char *label, void (*action)(menu_t*));
 void option_delete(option_t *option);
 void option_activate(option_t *option, menu_t *menu);
 
@@ -36,7 +36,7 @@ menu_t *menu_create_main_menu(game_t *game);
 
 void menu_delete(menu_t *menu);
 
-void menu_add_option(menu_t *menu, wchar_t *label, void (*action)(menu_t*));
+void menu_add_option(menu_t *menu, char *label, void (*action)(menu_t*));
 
 void menu_up(menu_t *menu);
 void menu_down(menu_t *menu);

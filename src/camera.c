@@ -34,8 +34,8 @@ void camera_fill_rect(camera_t *camera, rect_t *rect, int32_t color){
 
 	rect_copy_to_sdl(rect, &fill_rect);
 	
-	fill_rect.x -= camera->view->x;
-	fill_rect.y -= camera->view->y;
+	fill_rect.x -= (int)camera->view->x;
+	fill_rect.y -= (int)camera->view->y;
 
 	SDL_FillRect(camera->buffer, &fill_rect, color);
 }
@@ -45,8 +45,8 @@ void camera_draw_sprite(camera_t *camera, sprite_t *sprite){
 
 	rect_copy_to_sdl(sprite->rect, &draw_rect);
 	
-	draw_rect.x -= camera->view->x;
-	draw_rect.y -= camera->view->y;
+	draw_rect.x -= (int)camera->view->x;
+	draw_rect.y -= (int)camera->view->y;
 
 	anim_draw(sprite->anim, sprite->step, camera->buffer, &draw_rect);
 }
@@ -54,8 +54,8 @@ void camera_draw_sprite(camera_t *camera, sprite_t *sprite){
 void camera_draw_surface(camera_t *camera, SDL_Surface *surface){
 	SDL_Rect draw_rect;
 
-	draw_rect.x = 0 - camera->view->x;
-	draw_rect.y = 0 - camera->view->y;
+	draw_rect.x = 0 - (int)camera->view->x;
+	draw_rect.y = 0 - (int)camera->view->y;
 	draw_rect.w = surface->w;
 	draw_rect.h = surface->h;
 

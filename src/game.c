@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
-#include <wchar.h>
-#include <tgmath.h>
+#include <string.h>
+//#include <tgmath.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include "game.h"
 #include "loader.h"
@@ -19,9 +19,9 @@ const uint32_t GAME_DIALOGUE_LEN = 128;
 void game_create_data_structures(game_t *game);
 void game_delete_data_structures(game_t *game);
 
-void game_set_message(game_t *game, const wchar_t *text){
+void game_set_message(game_t *game, const char *text){
 	game->message_timeout = 240;
-	swprintf(game->message, GAME_MESSAGE_LEN, text);
+	sprintf(game->message, text);
 
 	SDL_Rect fill_rect;
 	fill_rect.x = 0;
@@ -39,11 +39,11 @@ void game_set_message(game_t *game, const wchar_t *text){
 	font_draw_string(game->font, game->message, 8, 4, game->message_surface);
 }
 
-static int32_t dialogue_timer = 0;
-void game_set_dialogue(game_t *game, SDL_Surface *portrait, const wchar_t *text){
+static uint32_t dialogue_timer = 0;
+void game_set_dialogue(game_t *game, SDL_Surface *portrait, const char *text){
 	dialogue_timer = 0;
 	game->dialogue_portrait = portrait;
-	swprintf(game->dialogue_content, GAME_DIALOGUE_LEN, text);
+	sprintf(game->dialogue_content, text);
 }
 
 void game_update_targets(game_t *game){
@@ -52,14 +52,14 @@ void game_update_targets(game_t *game){
 	int32_t current_distance = 9999;
 
 	for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
-		if(iter->data->sprite != NULL){
+		if (iter->data->sprite != NULL){
 			iter->data->sprite->step += 1;
-		}
 
-		current_distance = rect_range_to(iter->data->sprite->rect, game->player->body->rect);
-		if(current_distance < nearest_distance){
-			nearest_distance = current_distance;
-			nearest_target = iter->data;
+			current_distance = (int32_t)rect_range_to(iter->data->sprite->rect, game->player->body->rect);
+			if (current_distance < nearest_distance){
+				nearest_distance = current_distance;
+				nearest_target = iter->data;
+			}
 		}
 	}
 
@@ -107,7 +107,7 @@ game_t *game_create(core_t *core){
 
 	game_create_data_structures(game);
 
-	game->font = font_create("font_8bit.png");
+	game->font = font_create("font_8bit.bmp");
 	game->menu = menu_create_main_menu(game);
 
 	camera_init(game->camera, 640, 360);
@@ -115,11 +115,11 @@ game_t *game_create(core_t *core){
 
 	game->map_image = load_image("test_map_image.png");
 
-	game->message = calloc(GAME_MESSAGE_LEN, sizeof(wchar_t));
+	game->message = calloc(GAME_MESSAGE_LEN, sizeof(char));
 	game->message_surface = create_surface(640-16, 6+font_get_height(game->font));
 	game->message_timeout = 0;
 
-	game->dialogue_content = calloc(GAME_DIALOGUE_LEN, sizeof(wchar_t));
+	game->dialogue_content = calloc(GAME_DIALOGUE_LEN, sizeof(char));
 	game->dialogue_surface = create_surface(640-256, 100);
 	game->dialogue_portrait = NULL;
 
@@ -200,7 +200,7 @@ void game_draw_dialogue(game_t *game){
 
 	SDL_FillRect(game->dialogue_surface, NULL, 0x000000FF);
 
-	if(dialogue_timer < wcslen(game->dialogue_content)){	dialogue_timer += 1;	}
+	if(dialogue_timer < strlen(game->dialogue_content)){	dialogue_timer += 1;	}
 	font_draw_string_part(game->font, game->dialogue_content, dialogue_timer, 8, 3, game->dialogue_surface);
 
 	draw_rect.x = game->dialogue_portrait->w;

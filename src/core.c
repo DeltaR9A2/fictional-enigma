@@ -60,8 +60,8 @@ void core_window_resize(core_t *core, int32_t w, int32_t h){
 	
 	double scale = core_get_scale(core);
 	
-	core->active_rect.w = scale * core->win_vw;
-	core->active_rect.h = scale * core->win_vh;
+	core->active_rect.w = (int)(scale * core->win_vw);
+	core->active_rect.h = (int)(scale * core->win_vh);
 	core->active_rect.x = (core->win_cw - core->active_rect.w)/2;
 	core->active_rect.y = (core->win_ch - core->active_rect.h)/2;
 	

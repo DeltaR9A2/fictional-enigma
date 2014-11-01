@@ -53,12 +53,12 @@ struct game_t{
 
 	target_t *active_target;
 
-	wchar_t *message;
+	char *message;
 	uint32_t message_timeout;
 	SDL_Surface *message_surface;
 
 	//////////////////////////////
-	wchar_t *dialogue_content;
+	char *dialogue_content;
 	SDL_Surface *dialogue_portrait;
 	SDL_Surface *dialogue_surface;
 	//////////////////////////////
@@ -71,7 +71,7 @@ void game_delete(game_t *game);
 void game_fast_frame(game_t *game);
 void game_full_frame(game_t *game);
 
-void game_set_message(game_t *game, const wchar_t *text);
-void game_set_dialogue(game_t *game, SDL_Surface *portrait, const wchar_t *text);
+void game_set_message(game_t *game, const char *text);
+void game_set_dialogue(game_t *game, SDL_Surface *portrait, const char *text);
 
 #endif

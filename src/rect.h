@@ -4,7 +4,7 @@
 typedef struct rect_t rect_t;
 
 #include <stdbool.h>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 struct rect_t{
 	double x, y, w, h;

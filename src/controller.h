@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 extern uint32_t KEYMAP_L;
 extern uint32_t KEYMAP_R;

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "controller.h"
 
@@ -92,7 +93,7 @@ void controller_poll_events(controller_t *c){
 	c->previous = c->pressed;
 	while(SDL_PollEvent(&e)){
 		if(e.type == SDL_KEYDOWN){
-			int key = e.key.keysym.scancode;
+			uint32_t key = e.key.keysym.scancode;
 			if(key == KEYMAP_U){
 				c->pressed |= BTN_U;
 			}else if(key == KEYMAP_D){
@@ -123,7 +124,7 @@ void controller_poll_events(controller_t *c){
 				c->pressed |= BTN_BACK;
 			}
 		}else if(e.type == SDL_KEYUP){
-			int key = e.key.keysym.scancode;
+			uint32_t key = e.key.keysym.scancode;
 			if(key == KEYMAP_U){
 				c->pressed &= ~BTN_U;
 			}else if(key == KEYMAP_D){

@@ -22,12 +22,12 @@ void cmap_delete(cmap_t *cmap){
 }
 
 int32_t cmap_xy_to_i(cmap_t *cmap, int32_t x, int32_t y){
-	return (x - cmap->rect->x) + ((y - cmap->rect->y) * cmap->rect->w);
+	return (int32_t)((x - cmap->rect->x) + ((y - cmap->rect->y) * cmap->rect->w));
 }
 
 #define CMAP_ITERATION_START \
-	for(int32_t y = rect_get_t_edge(cmap->rect); y < rect_get_b_edge(cmap->rect); y++){ \
-		for(int32_t x = rect_get_l_edge(cmap->rect); x < rect_get_r_edge(cmap->rect); x++){ \
+	for(int32_t y = (int32_t)rect_get_t_edge(cmap->rect); y < rect_get_b_edge(cmap->rect); y++){ \
+		for(int32_t x = (int32_t)rect_get_l_edge(cmap->rect); x < rect_get_r_edge(cmap->rect); x++){ \
 			int32_t i = cmap_xy_to_i(cmap, x, y);
 
 #define CMAP_ITERATION_STOP \
@@ -35,8 +35,8 @@ int32_t cmap_xy_to_i(cmap_t *cmap, int32_t x, int32_t y){
 	}
 
 #define CMAP_RECT_ITERATION_START \
-	for(int32_t y = rect_get_t_edge(rect); y < rect_get_b_edge(rect); y++){ \
-		for(int32_t x = rect_get_l_edge(rect); x < rect_get_r_edge(rect); x++){ \
+	for(int32_t y = (int32_t)rect_get_t_edge(rect); y < rect_get_b_edge(rect); y++){ \
+		for(int32_t x = (int32_t)rect_get_l_edge(rect); x < rect_get_r_edge(rect); x++){ \
 			int32_t i = cmap_xy_to_i(cmap, x, y);
 
 #define CMAP_RECT_ITERATION_STOP \

@@ -2,9 +2,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
+#include <SDL.h>
+#undef main
+
+#include <SDL_image.h>
+#include <SDL_mixer.h>
 
 #include <lua.h>
 #include <lualib.h>
@@ -14,6 +16,24 @@
 #include "game.h"
 
 #include "video_filters.h"
+
+#pragma comment(lib, "lua51")
+#pragma comment(lib, "SDL2")
+#pragma comment(lib, "SDL2_gfx")
+#pragma comment(lib, "SDL2_mixer")
+#pragma comment(lib, "SDL2_image")
+
+#ifdef WINDOWS
+	#include <direct.h>
+	#define GetCurrentDir _getcwd
+#else
+	#include <unistd.h>
+	#define GetCurrentDir getcwd
+#endif
+
+char cCurrentPath[FILENAME_MAX];
+
+
 
 static uint32_t (*ACTIVE_FILTER)(uint32_t, SDL_PixelFormat*) = NULL;
 
@@ -41,7 +61,16 @@ int main_event_watch(void *data, SDL_Event *e){
 	return 0;
 }
 
-int main(int arc, char* argv[]){
+int main(void){
+	if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
+	{
+		return errno;
+	}
+
+	cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
+
+	printf("The current working directory is %s\n", cCurrentPath);
+
 	SDL_Init(SDL_INIT_EVERYTHING);
 	
 	core_t *core = core_create();

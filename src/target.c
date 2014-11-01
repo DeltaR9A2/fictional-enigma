@@ -17,7 +17,7 @@ target_t *target_create(void){
 	target->sprite = NULL;
 	target->portrait = NULL;
 
-	swprintf(target->message, 128, L"");
+	sprintf(target->message, "");
 	
 	return target;
 }
