@@ -4,13 +4,13 @@
 typedef struct TYPE_node_t TYPE_node_t;
 typedef struct TYPE_dict_t TYPE_dict_t;
 
-#include <wchar.h>
+#include <string.h>
 #include "TYPE.h"
 
 struct TYPE_node_t{
     TYPE_t *data;
     TYPE_node_t *next;
-    wchar_t name[32];
+    char name[32];
 };
 
 struct TYPE_dict_t{
@@ -18,7 +18,7 @@ struct TYPE_dict_t{
 };
 
 TYPE_dict_t *TYPE_dict_create(void);
-TYPE_t *TYPE_dict_get(TYPE_dict_t *dict, const wchar_t *name);
+TYPE_t *TYPE_dict_get(TYPE_dict_t *dict, const char *name);
 void TYPE_dict_delete(TYPE_dict_t *dict);
 
 #endif

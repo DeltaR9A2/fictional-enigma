@@ -17,7 +17,7 @@ target_t *target_create(void){
 	target->sprite = NULL;
 	target->portrait = NULL;
 
-	sprintf(target->message, "");
+	target->message[0] = '\0';
 	
 	return target;
 }

@@ -17,11 +17,13 @@
 
 #include "video_filters.h"
 
-#pragma comment(lib, "lua51")
-#pragma comment(lib, "SDL2")
-#pragma comment(lib, "SDL2_gfx")
-#pragma comment(lib, "SDL2_mixer")
-#pragma comment(lib, "SDL2_image")
+#ifdef WINDOWS
+	#pragma comment(lib, "lua51")
+	#pragma comment(lib, "SDL2")
+	#pragma comment(lib, "SDL2_gfx")
+	#pragma comment(lib, "SDL2_mixer")
+	#pragma comment(lib, "SDL2_image")
+#endif
 
 #ifdef WINDOWS
 	#include <direct.h>
@@ -64,7 +66,7 @@ int main_event_watch(void *data, SDL_Event *e){
 int main(void){
 	if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
 	{
-		return errno;
+		return 1;
 	}
 
 	cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */

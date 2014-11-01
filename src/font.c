@@ -51,7 +51,7 @@ font_t *font_create(const char *image_fn){
 		glyph_surface = create_surface(glyph_rect.w, glyph_rect.h);
 		SDL_BlitSurface(font_img, &glyph_rect, glyph_surface, NULL);
 		
-		font->glyphs[glyph_order[glyph_index]] = glyph_surface;
+		font->glyphs[(int)glyph_order[glyph_index]] = glyph_surface;
 
 		glyph_index += 1;
 	}
@@ -80,8 +80,8 @@ void font_draw_string(font_t *font, const char *string, int32_t x, int32_t y, SD
 	target_rect.x = x;
 	target_rect.y = y;
 	for(uint32_t i=0; i<strlen(string); i++){
-		SDL_BlitSurface(font->glyphs[string[i]], NULL, target, &target_rect);
-		target_rect.x += font->glyphs[string[i]]->w;
+		SDL_BlitSurface(font->glyphs[(int)string[i]], NULL, target, &target_rect);
+		target_rect.x += font->glyphs[(int)string[i]]->w;
 	}
 }
 
@@ -97,13 +97,13 @@ void font_draw_string_part(font_t *font, const char *string, int32_t len, int32_
 int32_t font_get_width(font_t *font, const char *string){
 	int32_t w = 0;
 	for(uint32_t i=0; i<strlen(string); i++){
-		w += font->glyphs[string[i]]->w;
+		w += font->glyphs[(int)string[i]]->w;
 	}
 	return w;
 }
 
 int32_t font_get_height(font_t *font){
-	return font->glyphs[glyph_order[0]]->h;
+	return font->glyphs[(int)glyph_order[0]]->h;
 }
 
 

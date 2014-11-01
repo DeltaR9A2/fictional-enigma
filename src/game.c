@@ -107,7 +107,7 @@ game_t *game_create(core_t *core){
 
 	game_create_data_structures(game);
 
-	game->font = font_create("font_8bit.bmp");
+	game->font = font_create("font_8bit.png");
 	game->menu = menu_create_main_menu(game);
 
 	camera_init(game->camera, 640, 360);

@@ -139,7 +139,7 @@ void menu_activate(menu_t *menu){
 		if(menu->options[menu->selection]->action != NULL){
 			menu->options[menu->selection]->action(menu);
 		}else{
-			printf("ERROR: MENU: Option '%ls' has NULL action.\n", menu->options[menu->selection]->label);
+			printf("ERROR: MENU: Option '%s' has NULL action.\n", menu->options[menu->selection]->label);
 		}
 	}
 	menu_draw_buffer(menu);
@@ -170,7 +170,7 @@ void menu_add_option(menu_t *menu, char *label, void (*action)(menu_t*)){
 		}
 	}
 	
-	printf("ERROR: MENU: Could not add option '%ls': Menu full.\n", label);
+	printf("ERROR: MENU: Could not add option '%s': Menu full.\n", label);
 }
 
 menu_t *menu_create_main_menu(game_t *game){
