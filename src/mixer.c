@@ -19,7 +19,7 @@ mixer_t *mixer_create(void){
 	Mix_ReserveChannels(2);
 
 	mixer->test_sound = Mix_LoadWAV("jump.ogg");
-	mixer->test_music = Mix_LoadWAV("broken_reality.ogg");
+	mixer->test_music = Mix_LoadWAV("rocket.ogg");
 
 	Mix_PlayChannel(MIXER_CHANNEL_MUSIC, mixer->test_music, -1);
 	

@@ -14,7 +14,7 @@ anarchy = "portrait_anarchy_default.png"
 frost = "portrait_frost_default.png"
 
 configure_target(0xDDCC00FF, "npc_anarchy_f_l", anarchy, "What are YOU looking at?");
-configure_target(0xFF00FFFF, "fx_ice_spike", frost, "... seems broken.");
+configure_target(0xFF00FFFF, "npc_vending_machine_broken", frost, "... seems broken.");
 configure_target(0x55DDCCFF, "npc_vending_machine_working", frost, "Looks like this one still works.");
 configure_target(0xAA0000FF, "item_money_bag", frost, "Is this... a bag of money..?");
 
