@@ -26,11 +26,11 @@ player_t *player_create(void){
 	player->fall_speed = 10.0;
 	player->fall_accel = 0.35;
 	
-	player->ground_speed = 3.50;
+	player->ground_speed = 3.85;
 	player->ground_accel = 0.25;
 	player->ground_decel = 0.25;
 	
-	player->jump_force = -8.0;
+	player->jump_force = -8.2;
 	player->jump_brake = -3.0;
 
 	player->face_dir = DIR_R;
