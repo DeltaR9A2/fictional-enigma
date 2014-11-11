@@ -20,13 +20,13 @@ player_t *player_create(void){
    
 	player->body->rect->x = 64;
 	player->body->rect->y = 64;
-	player->body->rect->w = 22;
+	player->body->rect->w = 30;
 	player->body->rect->h = 38;
 	
 	player->fall_speed = 10.0;
 	player->fall_accel = 0.35;
 	
-	player->ground_speed = 3.85;
+	player->ground_speed = 4.00;
 	player->ground_accel = 0.25;
 	player->ground_decel = 0.25;
 	
@@ -69,7 +69,7 @@ void player_update_controls(player_t *player, game_t *game){
 		player->body->flags |= PLAT_DROP;
 	}
 	
-	if(controller_just_pressed(game->controller, BTN_U)){
+	if(controller_pressed(game->controller, BTN_U)){
 		if(player->body->flags & BLOCKED_D && controller_released(game->controller, BTN_D)){
 			player->body->vy = player->jump_force;
 			mixer_test_sound(game->mixer);
