@@ -4,11 +4,11 @@ COMMAND = sed s:TYPE:$(TYPE):g <$< >$@
 SRCDIR := ../
 OBJDIR := ../../obj
 
-LISTS := rect target enemy
+LISTS := rect enemy
 LIST_SOURCES := $(LISTS:%=$(SRCDIR)/%_list.c)
 LIST_HEADERS := $(LISTS:%=$(SRCDIR)/%_list.h)
 
-DICTS := fset anim
+DICTS := fset anim event target
 DICT_SOURCES := $(DICTS:%=$(SRCDIR)/%_dict.c)
 DICT_HEADERS := $(DICTS:%=$(SRCDIR)/%_dict.h)
 
