@@ -11,13 +11,8 @@ target_t *target_create(void){
 
 	target->type = TARGET_NONE;
 	target->rect = rect_create();
-	target->color = 0x00000000;
-	target->action = &target_activate;
-
 	target->sprite = NULL;
-	target->portrait = NULL;
-
-	target->message[0] = '\0';
+	target->event = NULL;
 	
 	return target;
 }
@@ -28,10 +23,12 @@ void target_delete(target_t *target){
 }
 
 void target_activate(target_t *target, game_t *game){
-	#ifdef DEBUG
-	printf("Target Activate %08X\n", target->color);
-	#endif
-	game_set_dialogue(game, target->portrait, target->message);
-	game->mode = GAME_MODE_DIALOGUE;
+	lua_rawgeti(game->LUA, LUA_REGISTRYINDEX, target->event->lua_ref);
+	int retval = lua_pcall(game->LUA, 0, 0, 0);
+
+	if(retval != 0){
+		printf("WARNING: Event returned non-zero value.\n");
+		printf("LUA Error: %s\n", lua_tostring(game->LUA, 1));
+	}
 }
 

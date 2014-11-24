@@ -1,3 +1,6 @@
+#ifndef cmap_h
+#define cmap_h
+
 #include <stdbool.h>
 
 #include "rect.h"
@@ -23,3 +26,5 @@ void cmap_rect_mark(cmap_t *cmap, rect_t *rect);
 bool cmap_rect_check(cmap_t *cmap, rect_t *rect);
 
 void cmap_add_to_rect_list(cmap_t *cmap, rect_list_t *rects);
+
+#endif

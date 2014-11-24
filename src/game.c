@@ -6,8 +6,9 @@
 #include <SDL.h>
 
 #include "game.h"
-#include "loader.h"
 #include "rect.h"
+
+#include "lua_bindings.h"
 
 const uint32_t GAME_MODE_MENU = 0;
 const uint32_t GAME_MODE_PLAY = 1;
@@ -40,10 +41,12 @@ void game_set_message(game_t *game, const char *text){
 }
 
 static uint32_t dialogue_timer = 0;
-void game_set_dialogue(game_t *game, SDL_Surface *portrait, const char *text){
+void game_set_dialogue(game_t *game, const char *portrait, const char *message){
 	dialogue_timer = 0;
-	game->dialogue_portrait = portrait;
-	sprintf(game->dialogue_content, text);
+
+	SDL_FreeSurface(game->dialogue_portrait);
+	game->dialogue_portrait = load_image(portrait);
+	sprintf(game->dialogue_content, message);
 }
 
 void game_update_targets(game_t *game){
@@ -84,14 +87,12 @@ void game_update_enemies(game_t *game){
 				if(rect_overlap(iter->data->rect, game->player->weapon)){
 					iter->data->flashing = 15;
 					iter->data->damage += 25;
-					printf("Enemy hit by player.\n");
 				}
 			}
 
 			if(game->player->flashing == 0){
 				if(rect_overlap(iter->data->weapon, game->player->body->rect)){
 					game->player->flashing = 60;
-					printf("Player hit by enemy.\n");
 				}
 			}
 		}
@@ -111,9 +112,6 @@ game_t *game_create(core_t *core){
 	game->menu = menu_create_main_menu(game);
 
 	camera_init(game->camera, 640, 360);
-	load_game(game);
-
-	game->map_image = load_image("test_map_image.png");
 
 	game->message = calloc(GAME_MESSAGE_LEN, sizeof(char));
 	game->message_surface = create_surface(640-16, 6+font_get_height(game->font));
@@ -122,6 +120,13 @@ game_t *game_create(core_t *core){
 	game->dialogue_content = calloc(GAME_DIALOGUE_LEN, sizeof(char));
 	game->dialogue_surface = create_surface(640-256, 100);
 	game->dialogue_portrait = NULL;
+
+	lua_set_game(game);
+	game->LUA = lua_create();
+	luaL_loadfile(game->LUA, "init.lua");
+	lua_pcall(game->LUA, 0, LUA_MULTRET, 0);
+
+	game->map_image = load_image("test_map_image.png");
 
 	player_update(game->player, game);
 	game_update_targets(game);
@@ -132,8 +137,8 @@ game_t *game_create(core_t *core){
 	debug_enemy->rect->h = 16;
 	debug_enemy->body->rect->w = 16;
 	debug_enemy->body->rect->h = 32;
-	debug_enemy->body->rect->x = 32;
-	debug_enemy->body->rect->y = 32;
+	debug_enemy->body->rect->x = 450;
+	debug_enemy->body->rect->y = 780;
 
 	debug_enemy->body->vx = 1;
 
@@ -144,6 +149,8 @@ game_t *game_create(core_t *core){
 
 void game_delete(game_t *game){
 	free(game->message);
+
+	lua_delete();
 
 	menu_delete(game->menu);	
 	font_delete(game->font);
@@ -177,7 +184,7 @@ void game_fast_frame(game_t *game){
 
 		if(controller_just_pressed(game->controller, BTN_A)){
 			if(game->active_target != NULL){
-				(*game->active_target->action)(game->active_target, game);
+				target_activate(game->active_target, game);
 			}
 		}
 		if(controller_just_pressed(game->controller, BTN_START)){
@@ -244,13 +251,17 @@ void game_create_data_structures(game_t *game){
 	game->terrain_rects = rect_list_create();
 	game->platform_rects = rect_list_create();
 
-	game->targets = target_list_create();
+	game->events = event_dict_create();
+	game->targets = target_dict_create();
+
 	game->enemies = enemy_list_create();
 }
 
 void game_delete_data_structures(game_t *game){
 	enemy_list_delete(game->enemies);
-	target_list_delete(game->targets);
+
+	target_dict_delete(game->targets);
+	event_dict_delete(game->events);
 
 	rect_list_delete(game->platform_rects);
 	rect_list_delete(game->terrain_rects);

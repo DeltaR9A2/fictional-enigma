@@ -1,3 +1,4 @@
+print("Begin Lua Script: frost.lua");
 
 static_framesets = {
     {"p_frost_f_r", "player_frost_female.png",  8,  8, false},
@@ -22,10 +23,11 @@ static_animations = {
     {"p_frost_f_l", "frost_f_skid_l", 22,  2,  8},
 }
 
+-- Welcome to the Blender
 for i, row in ipairs(static_framesets) do
 	add_fset(unpack(row))
 end
-
+-- VrrrrRRRrrrrRRRRrrrrrrrrr....
 for i, row in ipairs(static_animations) do
 	add_anim(unpack(row))
 end

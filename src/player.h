@@ -21,6 +21,7 @@ struct player_t{
 	sprite_t *sprite;
 	uint32_t flashing;
 
+	uint8_t attack;
 	rect_t *weapon;
 	uint32_t weapon_life;
 	uint32_t weapon_delay;

@@ -8,6 +8,7 @@ void camera_draw_platform_rects(camera_t *camera, game_t *game);
 void camera_draw_player(camera_t *camera, player_t *player);
 void camera_draw_enemies(camera_t *camera, game_t *game);
 void camera_draw_targets(camera_t *camera, game_t *game);
+void camera_draw_debug_info(camera_t *camera, game_t *game);
 
 camera_t *camera_create(void){
 	camera_t *camera = malloc(sizeof(camera_t));
@@ -80,6 +81,10 @@ void camera_draw_game(camera_t *camera, game_t *game){
 	camera_draw_enemies(camera, game);
 
 	camera_draw_player(camera, game->player);
+
+	#ifdef DEBUG
+	camera_draw_debug_info(camera, game);
+	#endif
 }
 
 void camera_draw_terrain_rects(camera_t *camera, game_t *game){
@@ -102,7 +107,7 @@ void camera_draw_player(camera_t *camera, player_t *player){
 	
 	if(player->flashing % 2 == 0){
 		#ifdef DEBUG
-		camera_fill_rect(camera, player->body->rect, 0x2222DDFF);
+		//camera_fill_rect(camera, player->body->rect, 0x2222DDFF);
 		#endif
 		
 		camera_draw_sprite(camera, player->sprite);
@@ -117,7 +122,6 @@ void camera_draw_targets(camera_t *camera, game_t *game)
 	while(iter != NULL)
 	{
 		#ifdef DEBUG
-		camera_fill_rect(camera, iter->data->rect, iter->data->color);
 		#endif
 
 		if(iter->data->sprite != NULL){
@@ -141,4 +145,30 @@ void camera_draw_enemies(camera_t *camera, game_t *game)
 		iter = iter->next;
 	}
 }
+
+
+void camera_draw_debug_info(camera_t *camera, game_t *game){
+	char buffer[128] = "\0";
+
+	int line_no = 0;
+	int line_h = 14;
+
+	#define PRINT_DEBUG_LINE font_draw_string(game->font, buffer, 4, 2 + (line_no * line_h), camera->buffer); line_no++;
+
+	sprintf(buffer, "Win Size: %ix%i", game->core->win_cw, game->core->win_ch);
+	PRINT_DEBUG_LINE
+
+	sprintf(buffer, "Scale: %04.2f", core_get_scale(game->core));
+	PRINT_DEBUG_LINE
+
+	sprintf(buffer, "Time: %06.2fs", ((double)game->step)/60.0);
+	PRINT_DEBUG_LINE
+
+	sprintf(buffer, "Player Pos: %4.0f,%4.0f", game->player->body->rect->x, game->player->body->rect->y);
+	PRINT_DEBUG_LINE
+
+	#undef PRINT_DEBUG_LINE
+}
+
+
 

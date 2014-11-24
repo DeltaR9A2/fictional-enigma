@@ -54,7 +54,7 @@ controller_t *controller_create(void){
 	
 	#ifdef DEBUG
 	printf("Joystick Count: %i\n", SDL_NumJoysticks());
-	printf("Joystick Events: %i\n", SDL_JoystickEventState(SDL_ENABLE));
+	printf("Joystick Event State: %i\n", SDL_JoystickEventState(SDL_ENABLE));
 	#endif
 	
 	SDL_JoystickOpen(0);
