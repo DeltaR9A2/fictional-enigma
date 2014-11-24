@@ -7,8 +7,8 @@ export LFLAGS := -Wl,-rpath,. -g -lm -llua `sdl2-config --libs` -lSDL2_image -lS
 ###################
 
 # Release Flags #####
-#export CFLAGS := -std=c11 -O2 -I./src
-#export LFLAGS := -Wl,-rpath,. -lm -llua -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+#export CFLAGS := -std=c11 -O2 `sdl2-config --cflags` -I./src
+#export LFLAGS := -Wl,-rpath,. -lm -llua `sdl2-config --libs` -lSDL2_image -lSDL2_gfx -lSDL2_mixer
 #####################
 
 TARGET := main
