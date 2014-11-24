@@ -4,10 +4,16 @@ Information about this game can be found at http://ninmunanmu.com/
 
 ## Compiling
 
-This game is being developed on a 64bit Arch Linux system where it is built using a combination of tools including sed, imagemagick, make, and gcc. Many of the build steps exist to simplify the development process, and might be eliminated in future versions as the game becomes more "complete".
+This game is being developed on a 64bit Arch Linux system using the traditional GNU toolchain (make, gcc, sed, etc). The makefiles also use imagemagick and ffmpeg to 
 
-Also, this git repository does not contain any of the "binary resources" of the game, including all audio and graphics. These resources are not necessary to compile the game, but it will not run without them and the build system may report errors regarding the missing resources.
+The game is also known to compile correctly on 64bit Microsoft Windows 8; the "msvc" folder contains project files for Microsoft Visual Studio Express 2013 that should compile the game correctly. At present, the windows build process is still experimental and incomplete so don't expect too much from it.
 
-### Platform Support
+Known Dependencies:
+* LUA - http://lua.org/
+* SDL2 - http://libsdl.org/
+  * SDL2_image - http://www.libsdl.org/projects/SDL_image/
+  * SDL2_mixer - http://www.libsdl.org/projects/SDL_mixer/
+  * SDL2_gfx - http://cms.ferzkopp.net/index.php/software/13-sdl-gfx
+* ImageMagick - http://www.imagemagick.org/
+* ffmpeg - https://www.ffmpeg.org/
 
-It should be possible to compile this game on any platform supported by SDL2 (http://libsdl.org/) though I can only verify that it works on 64bit Linux systems. Building the game requires an up-to-date ANSI C compiler; Microsoft's Visual C compiler is NOT compliant with the current ANSI standard and will not work.
