@@ -24,7 +24,9 @@ void target_delete(target_t *target){
 
 void target_activate(target_t *target, game_t *game){
 	lua_rawgeti(game->LUA, LUA_REGISTRYINDEX, target->event->lua_ref);
-	int retval = lua_pcall(game->LUA, 0, 0, 0);
+	lua_pushstring(game->LUA, target->event->config);
+	
+	int retval = lua_pcall(game->LUA, 1, 0, 0);
 
 	if(retval != 0){
 		printf("WARNING: Event returned non-zero value.\n");

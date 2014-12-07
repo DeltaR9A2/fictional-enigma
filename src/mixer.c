@@ -25,7 +25,7 @@ mixer_t *mixer_create(void){
 		Mix_PlayChannel(MIXER_CHANNEL_MUSIC, mixer->test_music, -1);
 	#endif
 	
-	Mix_Volume(MIXER_CHANNEL_MUSIC, decimal_volume(0.3));
+	Mix_Volume(MIXER_CHANNEL_MUSIC, decimal_volume(0.1));
 	Mix_Volume(MIXER_CHANNEL_VOICE, decimal_volume(0.3));
 
 	for(uint32_t i = 2; i < 16; i++){

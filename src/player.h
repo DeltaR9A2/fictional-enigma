@@ -12,19 +12,10 @@ typedef struct player_t player_t;
 
 #include "mixer.h"
 
-//self.dash_vel = 8
-//self.dash_timer = 0
-//self.air_dash = False
-
 struct player_t{
 	body_t *body;
 	sprite_t *sprite;
 	uint32_t flashing;
-
-	uint8_t attack;
-	rect_t *weapon;
-	uint32_t weapon_life;
-	uint32_t weapon_delay;
 
 	///// Physics Vars
 	double fall_speed;

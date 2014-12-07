@@ -6,21 +6,11 @@ const uint32_t DIR_X = 0;
 const uint32_t DIR_R = 1;
 const uint32_t DIR_L = 2;
 
-const uint8_t ATTACK_NONE = 0;
-const uint8_t ATTACK_FAST = 1;
-const uint8_t ATTACK_HARD = 2;
-const uint8_t ATTACK_SPECIAL = 3;
-
 player_t *player_create(void){
 	player_t *player = malloc(sizeof(player_t));
 	
 	player->body = body_create();
 	player->sprite = sprite_create();
-	
-	player->attack = ATTACK_NONE;
-	player->weapon = rect_create();
-	player->weapon_life = 0;
-	player->weapon_delay = 0;
 	
 	player->flashing = 0;
    
@@ -117,60 +107,6 @@ void player_update_controls(player_t *player, game_t *game){
 		player->move_dir = DIR_L;
 	}else{
 		player->move_dir = DIR_X;
-	}
-	
-	//// update weapon
-
-	if(player->attack == ATTACK_NONE){
-		if(controller_just_pressed(game->controller, BTN_B)){
-			player->attack = ATTACK_FAST;
-			player->weapon_delay = 5;
-			player->weapon_life = 20;
-		}else if(controller_just_pressed(game->controller, BTN_Y)){
-			player->attack = ATTACK_HARD;
-			player->weapon_delay = 20;
-			player->weapon_life = 30;
-		}else if(controller_just_pressed(game->controller, BTN_X)){
-			player->attack = ATTACK_SPECIAL;
-			player->weapon_delay = 5;
-			player->weapon_life = 100;
-			player->weapon->w = 16;
-			player->weapon->h = 16;
-			rect_move_to(player->weapon, player->body->rect);
-		}
- 	}else{
-		player->weapon->w = 0
-;
-		player->weapon->h = 0;
-
-		if(player->weapon_life > 0){
-			player->weapon_life -= 1;
-		
-			if(player->attack == ATTACK_FAST){
-				player->weapon->w = 64;
-				player->weapon->h = 8;
-				rect_move_to(player->weapon, player->body->rect);
-
-				if(player->face_dir & DIR_R){
-					rect_set_l_edge(player->weapon, rect_get_mid_x(player->weapon));
-				}else if(player->face_dir & DIR_L){
-					rect_set_r_edge(player->weapon, rect_get_mid_x(player->weapon));
-				}
-			}else if(player->attack == ATTACK_HARD){
-				player->weapon->w = 96;
-				player->weapon->h = 48;
-				rect_move_to(player->weapon, player->body->rect);
-				rect_set_b_edge(player->weapon, rect_get_mid_y(player->weapon));
-			}else if(player->attack == ATTACK_SPECIAL){
-				player->weapon->w = 16;
-				player->weapon->h = 16;
-				player->weapon->x += 2;
-			}
-		}else if(player->weapon_delay > 0){
-			player->weapon_delay -= 1;
-		}else{
-			player->attack = ATTACK_NONE;
-		}
 	}
 }
 

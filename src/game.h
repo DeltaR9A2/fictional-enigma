@@ -55,8 +55,6 @@ struct game_t{
 	event_dict_t *events;
 	target_dict_t *targets;
 
-	enemy_list_t *enemies;
-
 	rect_list_t *terrain_rects;
 	rect_list_t *platform_rects;
 
@@ -66,9 +64,11 @@ struct game_t{
 
 	lua_State *LUA;
 
+	//////////////////////////////
 	char *message;
 	uint32_t message_timeout;
 	SDL_Surface *message_surface;
+	//////////////////////////////
 
 	//////////////////////////////
 	char *dialogue_content;
