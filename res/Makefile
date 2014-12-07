@@ -27,12 +27,12 @@ images: $(OUT_IMAGES)
 sounds: $(OUT_SOUNDS)
 
 ../bin/%.ogg: ./%.wav
-	ffmpeg -i $< -codec:a libvorbis $@
+	ffmpeg -v 0 -i $< -codec:a libvorbis $@
 
 music: $(OUT_MUSIC)
 
 ../bin/%.ogg: ./%.mp3
-	ffmpeg -i $< -codec:a libvorbis $@
+	ffmpeg -v 0 -i $< -codec:a libvorbis $@
 
 fonts: $(OUT_FONTS)
 
