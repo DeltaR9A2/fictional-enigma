@@ -15,8 +15,6 @@
 #include "core.h"
 #include "game.h"
 
-#include "video_filters.h"
-
 #ifdef WINDOWS
 	#pragma comment(lib, "lua51")
 	#pragma comment(lib, "SDL2")
@@ -33,12 +31,6 @@
 	#define GetCurrentDir getcwd
 #endif
 
-char cCurrentPath[FILENAME_MAX];
-
-
-
-static uint32_t (*ACTIVE_FILTER)(uint32_t, SDL_PixelFormat*) = NULL;
-
 int main_event_watch(void *data, SDL_Event *e){
 	game_t *game = (game_t *)data;
 	
@@ -47,15 +39,10 @@ int main_event_watch(void *data, SDL_Event *e){
 	}else if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
 		game->core->running = false;
 	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F1){
-		ACTIVE_FILTER = NULL;
 	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F2){
-		ACTIVE_FILTER = &filter_negative;
 	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F3){
-		ACTIVE_FILTER = &filter_grayscale;
 	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F4){
-		ACTIVE_FILTER = &filter_sepia_tone;
 	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F5){
-		ACTIVE_FILTER = &filter_hue_rotation;
 	}else if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
 		core_window_resize(game->core, e->window.data1, e->window.data2);
 	}
@@ -63,15 +50,14 @@ int main_event_watch(void *data, SDL_Event *e){
 	return 0;
 }
 
+char CURRENT_PATH[FILENAME_MAX];
+
 int main(void){
-	if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
-	{
-		return 1;
-	}
+	if (!GetCurrentDir(CURRENT_PATH, sizeof(CURRENT_PATH))){ return 1; }
 
-	cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
-
-	printf("The current working directory is %s\n", cCurrentPath);
+	#ifdef DEBUG
+	printf("The current working directory is %s\n", CURRENT_PATH);
+	#endif
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	
@@ -80,8 +66,7 @@ int main(void){
 
 	SDL_AddEventWatch(&main_event_watch, game);
 	
-//	  double ms_per_frame = 16.6;
-	double ms_per_frame = 16.6;
+	double ms_per_frame = 16.6; // 16.6ms per frame = 60 frames per second
 	double curr_ms = SDL_GetTicks();
 	double prev_ms = curr_ms;
 	double ms_delta = 0;
@@ -100,22 +85,11 @@ int main(void){
 			
 			if(ms_accum > ms_per_frame){
 				game_fast_frame(game);
-				#ifdef DEBUG
-				printf("Dropped frame.\n");
-				#endif
 			}else{
 				game_full_frame(game);
 
-				if(ACTIVE_FILTER != NULL){
-					video_filter(core->screen, ACTIVE_FILTER);
-				}
-
 				core_window_redraw(core);
 			}
-
-			/////////////////////
-			hue_rotation += 4;
-			/////////////////////
 		}
 	}
 
