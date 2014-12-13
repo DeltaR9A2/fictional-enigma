@@ -1,19 +1,12 @@
 #include <stdlib.h>
-#include <stdbool.h>
 #include <stdio.h>
 
 #include <SDL.h>
 #undef main
 
-#include <SDL_image.h>
-#include <SDL_mixer.h>
-
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-
 #include "core.h"
 #include "game.h"
+#include "controller.h"
 
 #ifdef WINDOWS
 	#pragma comment(lib, "lua51")
@@ -34,15 +27,12 @@
 int main_event_watch(void *data, SDL_Event *e){
 	game_t *game = (game_t *)data;
 	
-	if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
-		core_toggle_fullscreen(game->core);
-	}else if((e->type == SDL_QUIT) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE)){
+	if((e->type == SDL_QUIT)){
 		game->core->running = false;
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F1){
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F2){
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F3){
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F4){
-	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F5){
+	}else if(e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE){
+		game->core->running = false;
+	}else if(e->type == SDL_KEYDOWN && e->key.keysym.scancode == SDL_SCANCODE_F11){
+		core_toggle_fullscreen(game->core);
 	}else if(e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_RESIZED){
 		core_window_resize(game->core, e->window.data1, e->window.data2);
 	}
@@ -87,7 +77,6 @@ int main(void){
 				game_fast_frame(game);
 			}else{
 				game_full_frame(game);
-
 				core_window_redraw(core);
 			}
 		}
