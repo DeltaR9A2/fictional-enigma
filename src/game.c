@@ -42,7 +42,6 @@ static uint32_t dialogue_timer = 0;
 void game_set_dialogue(game_t *game, const char *portrait, const char *message){
 	dialogue_timer = 0;
 
-	SDL_FreeSurface(game->dialogue_portrait);
 	game->dialogue_portrait = load_image(portrait);
 	sprintf(game->dialogue_content, message);
 }

@@ -36,8 +36,6 @@ void fset_init(fset_t *fset, const char *fn, int cols, int rows, bool flip){
 			}
 		}
 	}
-	
-	SDL_FreeSurface(tmp);
 }
 
 void fset_delete(fset_t *fset){

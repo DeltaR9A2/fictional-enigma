@@ -8,6 +8,8 @@
 #include <SDL_image.h>
 #include <SDL2_rotozoom.h>
 
+#include "image_dict.h"
+
 SDL_Surface *create_surface(int32_t w, int32_t h);
 SDL_Surface *load_image(const char *fn);
 SDL_Surface *convert_surface(SDL_Surface *src);
