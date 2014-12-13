@@ -59,8 +59,6 @@ static int lua_load_map(lua_State *L){
 
 	rect_init(GAME->camera->bounds, 0, 0, map_image->w * 8, map_image->h * 8);
 	
-	SDL_FreeSurface(map_image);
-
 	return 0;
 }
 

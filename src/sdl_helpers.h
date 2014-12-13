@@ -18,6 +18,8 @@ SDL_Surface *flip_surface(SDL_Surface *src);
 SDL_Texture *create_texture(SDL_Renderer *render, int32_t w, int32_t h);
 SDL_Texture *create_streaming_texture(SDL_Renderer *render, int32_t w, int32_t h);
 
+void clear_image_cache(void);
+
 bool sdl_rect_overlap(SDL_Rect *a, SDL_Rect *b);
 
 #endif

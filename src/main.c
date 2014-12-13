@@ -7,6 +7,7 @@
 #include "core.h"
 #include "game.h"
 #include "controller.h"
+#include "sdl_helpers.h"
 
 #ifdef WINDOWS
 	#pragma comment(lib, "lua51")
@@ -84,7 +85,8 @@ int main(void){
 
 	game_delete(game);
 	core_delete(core);
-
+	clear_image_cache();
+	
 	SDL_Quit();
 	
 	return 0;

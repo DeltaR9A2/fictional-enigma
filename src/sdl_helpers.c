@@ -19,16 +19,14 @@ SDL_Surface *load_image(const char *fn){
 		image_cache = image_dict_create();
 	}
 	
-	printf("Getting image instance for '%s'\n", fn);
 	im = image_dict_get(image_cache, fn);
-	printf(" >>> Got it!\n");
 	
 	if(im->surface == NULL){
-		printf(" >>> First load for this image.\n");
 		tmp = IMG_Load(fn);
 	
 		if(tmp == NULL){
-			printf("LOAD IMAGE FAILED %s\n", fn);	 
+			printf("LOAD IMAGE FAILED %s\n", fn);
+			printf("This will probably crash the game...\n");	 
 			return NULL;
 		}
 	
@@ -36,11 +34,8 @@ SDL_Surface *load_image(const char *fn){
 		SDL_FreeSurface(tmp);
 
 		im->surface = final;
-	}else{
-		printf(" >>> Found cached image.\n");
 	}
-	
-	printf("Returning image surface...\n");
+
 	return im->surface;
 }
 
@@ -49,9 +44,7 @@ SDL_Surface *flip_surface(SDL_Surface *src){
 }
 
 SDL_Surface *load_image_flipped(const char *fn){
-	return load_image(fn);
-
-/*	image_t *im;
+	image_t *im;
 	SDL_Surface *tmp, *final;
 
 	if(flipped_cache == NULL){
@@ -66,7 +59,12 @@ SDL_Surface *load_image_flipped(const char *fn){
 		im->surface = final;
 	}
 	
-	return im->surface;*/
+	return im->surface;
+}
+
+void clear_image_cache(void){
+	if(image_cache != NULL){ image_dict_delete(image_cache); }
+	if(flipped_cache != NULL){ image_dict_delete(flipped_cache); }
 }
 
 SDL_Texture *create_texture(SDL_Renderer *render, int32_t w, int32_t h){

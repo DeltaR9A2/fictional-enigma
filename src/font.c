@@ -56,8 +56,6 @@ font_t *font_create(const char *image_fn){
 		glyph_index += 1;
 	}
 	
-	SDL_FreeSurface(font_img);
-	
 	return font;
 }
 
