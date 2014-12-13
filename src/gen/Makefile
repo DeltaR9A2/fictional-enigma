@@ -8,7 +8,7 @@ LISTS := rect enemy
 LIST_SOURCES := $(LISTS:%=$(SRCDIR)/%_list.c)
 LIST_HEADERS := $(LISTS:%=$(SRCDIR)/%_list.h)
 
-DICTS := fset anim event target
+DICTS := fset anim event target image
 DICT_SOURCES := $(DICTS:%=$(SRCDIR)/%_dict.c)
 DICT_HEADERS := $(DICTS:%=$(SRCDIR)/%_dict.h)
 
