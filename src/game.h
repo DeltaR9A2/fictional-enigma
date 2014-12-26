@@ -31,8 +31,6 @@ extern const uint32_t GAME_MESSAGE_LEN;
 #include "event_dict.h"
 #include "target_dict.h"
 
-#include "enemy_list.h"
-
 struct game_t{
 	core_t *core;
 	uint32_t step;
