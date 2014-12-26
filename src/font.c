@@ -7,6 +7,8 @@
 
 const char *glyph_order = " 1234567890-=!@#$%^&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\;',./{}|:\"<>?";
 
+//const char *glyph_order = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456780";
+
 font_t *font_create(const char *image_fn){
 	font_t *font = malloc(sizeof(font_t));
 	memset(font, 0, sizeof(font_t));
@@ -17,6 +19,7 @@ font_t *font_create(const char *image_fn){
 
 	int32_t this_mark = 0;
 	int32_t prev_mark = 0;
+	
 	uint32_t mark_color = pixels[0];
 
 	uint32_t glyph_index = 0;
@@ -25,34 +28,63 @@ font_t *font_create(const char *image_fn){
 
 	uint32_t glyph_count = strlen(glyph_order);
 	
+	int32_t kern_mark = 0;
+	uint32_t kern_color = pixels[1];
+	uint32_t kern_counter = 0;
+
 	while(glyph_index < glyph_count){
+		uint8_t ascii_code = (int)glyph_order[glyph_index];
+		
+		// Seek to next glyph
 		while(pixels[this_mark] == mark_color){
 			if(this_mark > font_img->w){ break; }
 			this_mark += 1;
 		}
 		
-		prev_mark = this_mark;
+		// Measure Head Kern
+		kern_mark = this_mark;
+		kern_counter = 0;
+		while(pixels[kern_mark] == kern_color){
+			kern_mark += 1;
+			kern_counter += 1;
+		}
+		printf(">> Head Kern: %i\n", kern_counter);
+		font->head_kerns[ascii_code] = kern_counter;
 		
+		// Measure Glyph
+		prev_mark = this_mark;
 		while(pixels[this_mark] != mark_color){
 			if(this_mark > font_img->w){ break; }
 			this_mark += 1;
 		}
 		
+		// Measure Tail Kern
+		kern_mark = this_mark - 1;
+		kern_counter = 0;
+		while(pixels[kern_mark] == kern_color){
+			kern_mark -= 1;
+			kern_counter += 1;
+		}
+		printf(">> Tail Kern: %i\n", kern_counter);
+		font->tail_kerns[ascii_code] = kern_counter;
+		
+		// Check if we have run out of glyphs early.
 		if(this_mark > font_img->w){
 			fprintf(stderr, "Warning: font_init: Font source shorter than glyph list.\n");
 			break;
 		}
 		
+		// Record glyph to its own surface
 		glyph_rect.x = prev_mark;
 		glyph_rect.w = this_mark - prev_mark;
-		glyph_rect.y = 0;
-		glyph_rect.h = font_img->h;
+		glyph_rect.y = 1;
+		glyph_rect.h = font_img->h-1;
 
 		glyph_surface = create_surface(glyph_rect.w, glyph_rect.h);
 		SDL_BlitSurface(font_img, &glyph_rect, glyph_surface, NULL);
 		
 		font->glyphs[(int)glyph_order[glyph_index]] = glyph_surface;
-
+		
 		glyph_index += 1;
 	}
 	
@@ -78,8 +110,15 @@ void font_draw_string(font_t *font, const char *string, int32_t x, int32_t y, SD
 	target_rect.x = x;
 	target_rect.y = y;
 	for(uint32_t i=0; i<strlen(string); i++){
-		SDL_BlitSurface(font->glyphs[(int)string[i]], NULL, target, &target_rect);
-		target_rect.x += font->glyphs[(int)string[i]]->w;
+		uint8_t ascii_code = (int)string[i];
+		
+		if(font->glyphs[ascii_code] != NULL){
+			target_rect.x -= font->head_kerns[ascii_code];
+			SDL_BlitSurface(font->glyphs[ascii_code], NULL, target, &target_rect);
+			target_rect.x += font->glyphs[ascii_code]->w;
+			target_rect.x -= font->tail_kerns[ascii_code];
+			target_rect.x += 1;
+		}
 	}
 }
 
