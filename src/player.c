@@ -116,39 +116,39 @@ void player_update_animation(player_t *player, game_t *game){
 	if(player->body->flags & BLOCKED_D){
 		if(player->move_dir == DIR_X){
 			if(player->face_dir == DIR_R){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_idle_r"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_move_r"));
 			}else if(player->face_dir == DIR_L){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_idle_l"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_move_l"));
 			}
 		}else if(player->move_dir == DIR_R){
 			if(player->ctrl_dir == DIR_R){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_move_r"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_move_r"));
 			}else{
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_skid_r"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_skid_r"));
 			}
 		}else if(player->move_dir == DIR_L){
 			if(player->ctrl_dir == DIR_L){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_move_l"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_move_l"));
 			}else{
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_skid_l"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_skid_l"));
 			}
 		}
 	}else{
 		if(player->face_dir == DIR_R){
 			if(player->body->vy < -1.0){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_jump_r"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_jump_r"));
 			}else if(player->body->vy > 1.0){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_fall_r"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_fall_r"));
 			}else{
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_hang_r"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_hang_r"));
 			}
 		}else if(player->face_dir == DIR_L){
 			if(player->body->vy < -1.0){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_jump_l"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_jump_l"));
 			}else if(player->body->vy > 1.0){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_fall_l"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_fall_l"));
 			}else{
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "frost_f_hang_l"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_hang_l"));
 			}
 		}
 	}
