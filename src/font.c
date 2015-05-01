@@ -5,7 +5,7 @@
 
 //const char *glyph_order = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
-const char *glyph_order = " 1234567890-=!@#$%^&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\;',./{}|:\"<>?";
+const char *glyph_order = " 1234567890-=`!@#$%^&*()_+~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\;',./{}|:\"<>?";
 
 //const char *glyph_order = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456780";
 
@@ -48,7 +48,6 @@ font_t *font_create(const char *image_fn){
 			kern_mark += 1;
 			kern_counter += 1;
 		}
-		printf(">> Head Kern: %i\n", kern_counter);
 		font->head_kerns[ascii_code] = kern_counter;
 		
 		// Measure Glyph
@@ -65,7 +64,6 @@ font_t *font_create(const char *image_fn){
 			kern_mark -= 1;
 			kern_counter += 1;
 		}
-		printf(">> Tail Kern: %i\n", kern_counter);
 		font->tail_kerns[ascii_code] = kern_counter;
 		
 		// Check if we have run out of glyphs early.
