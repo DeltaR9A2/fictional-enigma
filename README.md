@@ -4,7 +4,7 @@ Information about this game can be found at http://ninmunanmu.com/
 
 ## Compiling
 
-This game is being developed on a 64bit Arch Linux system using the traditional GNU toolchain (make, gcc, sed, etc). The makefiles also use imagemagick and ffmpeg to 
+This game is being developed on a 64bit Arch Linux system using the traditional GNU toolchain (make, gcc, sed, etc). The makefiles also use imagemagick and ffmpeg to convert some of the game's graphics and audio during the build process.
 
 The game is also known to compile correctly on 64bit Microsoft Windows 8; the "msvc" folder contains project files for Microsoft Visual Studio Express 2013 that should compile the game correctly. At present, the windows build process is still experimental and incomplete so don't expect too much from it.
 
@@ -17,3 +17,4 @@ Known Dependencies:
 * ImageMagick - http://www.imagemagick.org/
 * ffmpeg - https://www.ffmpeg.org/
 
+Note that ImageMagick and ffmpeg are not used after the build process; they are required to create game resources but are not required to run the game.
