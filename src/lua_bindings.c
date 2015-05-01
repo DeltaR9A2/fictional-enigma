@@ -94,6 +94,28 @@ static int lua_add_anim(lua_State *L){
 	return 0;
 }
 
+static int lua_add_item(lua_State *L){
+	int item_x = luaL_checkint(L,1);
+	int item_y = luaL_checkint(L,2);
+	const char *anim_name = luaL_checkstring(L,3);
+	
+	item_t *item = item_list_get_dead(GAME->items);
+	
+	item->body->rect->x = item_x;
+	item->body->rect->y = item_y;
+	item->body->rect->w = 8;
+	item->body->rect->h = 8;
+	
+	sprite_set_anim(item->sprite, anim_dict_get(GAME->anims, anim_name));
+	
+	item->flags |= ITEM_ALIVE;
+	item->flags |= ITEM_FALLS;
+	
+	item_update(item);
+	
+	return 0;
+}
+
 static int lua_add_event(lua_State *L){
 	const char *event_name = luaL_checkstring(L,1);
 	const char *func_name = luaL_checkstring(L,2);
@@ -182,6 +204,7 @@ static lua_binding_t bindings[] = {
 	{lua_add_fset, "add_fset"},
 	{lua_add_anim, "add_anim"},
 
+	{lua_add_item, "add_item"},
 	{lua_add_event, "add_event"},
 	{lua_add_target, "add_target"},
 //	{lua_add_trigger, "add_trigger"},

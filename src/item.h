@@ -1,6 +1,9 @@
-#include <stdint.h>
+#ifndef item_h
+#define item_h
 
 typedef struct item_t item_t;
+
+#include <stdint.h>
 
 #include "body.h"
 #include "sprite.h"
@@ -19,4 +22,10 @@ struct item_t{
 item_t *item_create(void);
 void item_delete(item_t *item);
 
+void item_update(item_t *item);
 
+#include "item_list.h"
+
+item_t *item_list_get_dead(item_list_t *list);
+
+#endif

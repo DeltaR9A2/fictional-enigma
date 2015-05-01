@@ -4,6 +4,18 @@ dofile("npcs.lua");
 
 add_fset("item_sprites", "item_sprites.png", 16, 16, false)
 add_anim("item_sprites", "item_money_bag", 0, 1, 8, false)
+add_anim("item_sprites", "item_candy", 1, 1, 8, false)
+add_anim("item_sprites", "item_heart", 2, 1, 8, false)
+add_anim("item_sprites", "item_star", 3, 1, 8, false)
+
+add_item(200, 100, "item_candy");
+add_item(1400, 100, "item_candy");
+add_item(1450, 100, "item_candy");
+add_item(1500, 100, "item_candy");
+add_item(1550, 100, "item_candy");
+add_item(1600, 100, "item_candy");
+
+add_item(1050, 400, "item_star");
 
 add_fset("fx_sprites", "fx_ice_spike.png", 8, 1, false)
 add_anim("fx_sprites", "fx_ice_spike", 0, 8, 12, false)

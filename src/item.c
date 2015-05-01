@@ -21,3 +21,27 @@ void item_delete(item_t *item){
 	
 	free(item);
 }
+
+void item_update(item_t *item){
+	if(item->flags & ITEM_FALLS){
+		item->body->vy = fmin(10.0, item->body->vy + 0.35);
+	}
+
+	item->sprite->step += 1;
+	rect_move_to(item->sprite->rect, item->body->rect);
+}
+
+item_t *item_list_get_dead(item_list_t *list){
+    item_node_t *iter = list->head;
+    
+    while(iter != NULL){
+    	if((iter->data->flags & ITEM_ALIVE) == 0){
+    		return iter->data;
+        }else{
+            iter = iter->next;
+        }
+    }
+
+    return item_list_get(list);
+}
+

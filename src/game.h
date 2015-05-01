@@ -25,6 +25,7 @@ extern const uint32_t GAME_MESSAGE_LEN;
 #include "controller.h"
 
 #include "rect_list.h"
+#include "item_list.h"
 
 #include "fset_dict.h"
 #include "anim_dict.h"
@@ -55,6 +56,8 @@ struct game_t{
 
 	rect_list_t *terrain_rects;
 	rect_list_t *platform_rects;
+
+	item_list_t *items;
 
 	SDL_Surface *map_image;
 

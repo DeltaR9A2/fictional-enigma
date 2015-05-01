@@ -70,6 +70,18 @@ void game_update_targets(game_t *game){
 	}
 }
 
+void game_update_items(game_t *game){
+	for(item_node_t *iter = game->items->head; iter; iter = iter->next){
+		if(iter->data->flags & ITEM_ALIVE){
+			item_update(iter->data);
+			do_physics_to_it(iter->data->body, game->terrain_rects, game->platform_rects);
+			if(rect_overlap(iter->data->body->rect, game->player->body->rect)){
+				iter->data->flags &= !ITEM_ALIVE;
+			}
+		}
+	}
+}
+
 game_t *game_create(core_t *core){
 	game_t *game = malloc(sizeof(game_t));
 
@@ -79,7 +91,7 @@ game_t *game_create(core_t *core){
 
 	game_create_data_structures(game);
 
-	game->font = font_create("font_8bit.png");
+	game->font = font_create("font_nokia.png");
 	game->menu = menu_create_main_menu(game);
 
 	camera_init(game->camera, 640, 360);
@@ -138,6 +150,7 @@ void game_fast_frame(game_t *game){
 	}else if(game->mode == GAME_MODE_PLAY){
 		player_update(game->player, game);
 		game_update_targets(game);
+		game_update_items(game);
 
 		if(controller_just_pressed(game->controller, BTN_A)){
 			if(game->active_target != NULL){
@@ -210,9 +223,11 @@ void game_create_data_structures(game_t *game){
 
 	game->events = event_dict_create();
 	game->targets = target_dict_create();
+	game->items = item_list_create();
 }
 
 void game_delete_data_structures(game_t *game){
+	item_list_delete(game->items);
 	target_dict_delete(game->targets);
 	event_dict_delete(game->events);
 
