@@ -17,5 +17,5 @@ print("Begin Lua Script: init.lua");
 
 load_map("test_map.png");
 
-dofile("frost.lua")
+dofile("pcs.lua")
 dofile("targets.lua")
