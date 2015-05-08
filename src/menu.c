@@ -177,8 +177,8 @@ menu_t *menu_create_main_menu(game_t *game){
 	menu_t *menu = menu_create(game);
 	
 	menu_add_option(menu, "Play Game", &menu_new_game);
-//	menu_add_option(menu, "Load Game", &menu_load_game);
-//	menu_add_option(menu, "Options", &menu_options);
+	menu_add_option(menu, "Load Game", &menu_load_game);
+	menu_add_option(menu, "Options", &menu_options);
 	menu_add_option(menu, "Exit", &menu_exit);
 	
 	return menu;
