@@ -116,9 +116,9 @@ void player_update_animation(player_t *player, game_t *game){
 	if(player->body->flags & BLOCKED_D){
 		if(player->move_dir == DIR_X){
 			if(player->face_dir == DIR_R){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_move_r"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_idle_r"));
 			}else if(player->face_dir == DIR_L){
-				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_move_l"));
+				sprite_set_anim(player->sprite, anim_dict_get(game->anims, "generic_idle_l"));
 			}
 		}else if(player->move_dir == DIR_R){
 			if(player->ctrl_dir == DIR_R){
