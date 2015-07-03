@@ -48,9 +48,6 @@
     <ClCompile Include="..\src\game.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\loader.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -93,7 +90,16 @@
     <ClCompile Include="..\src\rect_list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\target_list.c">
+    <ClCompile Include="..\src\event.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lua_bindings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\event_dict.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\target_dict.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -129,9 +135,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\menu.h">
@@ -173,8 +176,21 @@
     <ClInclude Include="..\src\rect_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\target_list.h">
+    <ClInclude Include="..\src\event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\lua_bindings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\event_dict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\target_dict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\.gitignore" />
+    <None Include="..\src\Makefile" />
   </ItemGroup>
 </Project>

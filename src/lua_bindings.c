@@ -141,8 +141,8 @@ static int lua_add_event(lua_State *L){
 
 static int lua_add_target(lua_State *L){
 	const char *target_name = luaL_checkstring(L, 1);
-	int target_x = luaL_checknumber(L,2);
-	int target_y = luaL_checknumber(L,3);
+	int target_x = (int)luaL_checknumber(L,2);
+	int target_y = (int)luaL_checknumber(L,3);
 	const char *anim_name = luaL_checkstring(L,4);
 	const char *event_name = luaL_checkstring(L,5);
 

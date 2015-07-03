@@ -87,11 +87,13 @@
     <ClCompile Include="..\src\core.c" />
     <ClCompile Include="..\src\enemy.c" />
     <ClCompile Include="..\src\enemy_list.c" />
+    <ClCompile Include="..\src\event.c" />
+    <ClCompile Include="..\src\event_dict.c" />
     <ClCompile Include="..\src\font.c" />
     <ClCompile Include="..\src\fset.c" />
     <ClCompile Include="..\src\fset_dict.c" />
     <ClCompile Include="..\src\game.c" />
-    <ClCompile Include="..\src\loader.c" />
+    <ClCompile Include="..\src\lua_bindings.c" />
     <ClCompile Include="..\src\main.c" />
     <ClCompile Include="..\src\menu.c" />
     <ClCompile Include="..\src\mixer.c" />
@@ -102,7 +104,7 @@
     <ClCompile Include="..\src\sdl_helpers.c" />
     <ClCompile Include="..\src\sprite.c" />
     <ClCompile Include="..\src\target.c" />
-    <ClCompile Include="..\src\target_list.c" />
+    <ClCompile Include="..\src\target_dict.c" />
     <ClCompile Include="..\src\video_filters.c" />
   </ItemGroup>
   <ItemGroup>
@@ -116,11 +118,13 @@
     <ClInclude Include="..\src\core.h" />
     <ClInclude Include="..\src\enemy.h" />
     <ClInclude Include="..\src\enemy_list.h" />
+    <ClInclude Include="..\src\event.h" />
+    <ClInclude Include="..\src\event_dict.h" />
     <ClInclude Include="..\src\font.h" />
     <ClInclude Include="..\src\fset.h" />
     <ClInclude Include="..\src\fset_dict.h" />
     <ClInclude Include="..\src\game.h" />
-    <ClInclude Include="..\src\loader.h" />
+    <ClInclude Include="..\src\lua_bindings.h" />
     <ClInclude Include="..\src\menu.h" />
     <ClInclude Include="..\src\mixer.h" />
     <ClInclude Include="..\src\physics.h" />
@@ -130,8 +134,12 @@
     <ClInclude Include="..\src\sdl_helpers.h" />
     <ClInclude Include="..\src\sprite.h" />
     <ClInclude Include="..\src\target.h" />
-    <ClInclude Include="..\src\target_list.h" />
+    <ClInclude Include="..\src\target_dict.h" />
     <ClInclude Include="..\src\video_filters.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\.gitignore" />
+    <None Include="..\src\Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
