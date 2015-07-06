@@ -65,8 +65,8 @@ static int lua_load_map(lua_State *L){
 static int lua_add_fset(lua_State *L){
 	const char *fset_name = luaL_checkstring(L,1);
 	const char *file_name = luaL_checkstring(L,2);
-	int cols = luaL_checkint(L,3);
-	int rows = luaL_checkint(L,4);
+	int cols = (int)luaL_checkinteger(L,3);
+	int rows = (int)luaL_checkinteger(L,4);
 	bool flip = lua_toboolean(L,5);
 
 	fset_t *fset = fset_dict_get(GAME->fsets, fset_name);
@@ -78,9 +78,9 @@ static int lua_add_fset(lua_State *L){
 static int lua_add_anim(lua_State *L){
 	const char *fset_name = luaL_checkstring(L,1);
 	const char *anim_name = luaL_checkstring(L,2);
-	int start = luaL_checkint(L,3);
-	int length = luaL_checkint(L,4);
-	int rate = luaL_checkint(L,5);
+	int start = (int)luaL_checkinteger(L,3);
+	int length = (int)luaL_checkinteger(L,4);
+	int rate = (int)luaL_checkinteger(L,5);
 	
 	#ifdef DEBUG
 		printf("Adding Anim %s %s %i %i %i\n", fset_name, anim_name, start, length, rate);
@@ -95,8 +95,8 @@ static int lua_add_anim(lua_State *L){
 }
 
 static int lua_add_item(lua_State *L){
-	int item_x = luaL_checkint(L,1);
-	int item_y = luaL_checkint(L,2);
+	int item_x = luaL_checkinteger(L,1);
+	int item_y = luaL_checkinteger(L,2);
 	const char *anim_name = luaL_checkstring(L,3);
 	
 	item_t *item = item_list_get_dead(GAME->items);
