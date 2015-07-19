@@ -18,9 +18,6 @@
     <ClCompile Include="..\src\anim.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\battle.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\body.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -34,9 +31,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\core.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\enemy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\font.c">
@@ -81,9 +75,6 @@
     <ClCompile Include="..\src\anim_dict.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\enemy_list.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\fset_dict.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -102,12 +93,21 @@
     <ClCompile Include="..\src\target_dict.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\item.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image_dict.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\item_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\anim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\battle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\body.h">
@@ -123,9 +123,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\font.h">
@@ -167,9 +164,6 @@
     <ClInclude Include="..\src\anim_dict.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\enemy_list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\fset_dict.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -186,6 +180,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\target_dict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\image_dict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\item_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
