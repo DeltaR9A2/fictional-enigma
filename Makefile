@@ -1,15 +1,25 @@
 
+# Standard Linux Build ########
 export CC := gcc
+export PC := pkg-config
+export PACKAGES := sdl2 SDL2_image SDL2_gfx SDL2_mixer lua
+###############################
+
+# MINGW Build for Windows #####
+#export CC := i686-w64-mingw32-gcc
+#export PC := i686-w64-mingw32-pkg-config
+#export PACKAGES := sdl2 SDL2_image SDL2_mixer SDL2_gfx lua5.1
+###############################
 
 # Debug Flags #####
-debug : export CFLAGS := -std=c11 -O0 -g `sdl2-config --cflags` -I./src -Wall -Werror -D DEBUG
-debug : export LFLAGS := -Wl,-rpath,. -g -lm -llua `sdl2-config --libs` -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+debug : export CFLAGS := -std=c11 -O0 -g `$(PC) --cflags $(PACKAGES)` -I./src -Wall -Werror -D DEBUG
+debug : export LFLAGS := -Wl,-rpath,. -g `$(PC) --libs $(PACKAGES)` -lstdc++
 debug : all
 ###################
 
 # Release Flags #####
-release : export CFLAGS := -std=c11 -O2 `sdl2-config --cflags` -I./src
-release : export LFLAGS := -Wl,-rpath,. -lm -llua `sdl2-config --libs` -lSDL2_image -lSDL2_gfx -lSDL2_mixer
+release : export CFLAGS := -std=c11 -O2 `$(PC) --cflags $(PACKAGES)` -I./src
+release : export LFLAGS := -Wl,-rpath,. `$(PC) --libs $(PACKAGES)`
 release : all
 #####################
 
