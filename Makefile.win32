@@ -1,0 +1,49 @@
+
+# MINGW Build for Windows #####
+export OS := win32
+export CC := i686-w64-mingw32-gcc
+export PC := i686-w64-mingw32-pkg-config
+export PACKAGES := sdl2 SDL2_image SDL2_mixer SDL2_gfx lua5.1
+export TARGET := nnlaf.exe
+export CFLAGS := -std=c11 -O2 `$(PC) --cflags $(PACKAGES)` -I./src
+export LFLAGS := -Wl,-rpath,. `$(PC) --libs $(PACKAGES)` -lstdc++
+export REMOVE  := rm -f
+###############################
+
+# Debug Flags #####
+debug : export CFLAGS := $(CFLAGS) -Wall -Werror -D DEBUG
+debug : export LFLAGS := $(LFLAGS)
+###################
+
+.PHONY: all src res clean_src clean_res clean run $(TARGET) debug mingw
+
+all: $(TARGET)
+
+res:
+	$(MAKE) -C res
+
+src:
+	$(MAKE) -C src
+
+$(TARGET): src res
+	$(CC) ./obj/$(OS)/*.o $(LFLAGS) -o ./bin/$(OS)/$@
+	cp ./dll/* ./bin/$(OS)/
+
+run: $(TARGET)
+	@(cd bin/$(OS) && exec wine ./$(TARGET))
+
+clean_src:
+	$(MAKE) -C src clean
+	$(REMOVE) ./bin/$(TARGET)
+
+clean_res:
+	$(MAKE) -C res clean
+
+clean: clean_src clean_res
+	$(REMOVE) ./bin/$(OS)/*
+	$(REMOVE) ./obj/$(OS)/*
+
+debug: all
+
+mingw: all
+

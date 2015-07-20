@@ -1,15 +1,15 @@
 
 SRC_IMAGES := $(wildcard ./*.xcf)
-OUT_IMAGES := $(SRC_IMAGES:./%.xcf=../bin/%.png)
+OUT_IMAGES := $(SRC_IMAGES:./%.xcf=../bin/$(OS)/%.png)
 
 SRC_SOUNDS := $(wildcard ./*.wav)
-OUT_SOUNDS := $(SRC_SOUNDS:./%.wav=../bin/%.ogg)
+OUT_SOUNDS := $(SRC_SOUNDS:./%.wav=../bin/$(OS)/%.ogg)
 
 SRC_MUSIC := $(wildcard ./*.mp3)
-OUT_MUSIC := $(SRC_MUSIC:./%.mp3=../bin/%.ogg)
+OUT_MUSIC := $(SRC_MUSIC:./%.mp3=../bin/$(OS)/%.ogg)
 
 SRC_FONTS := $(wildcard ./*.ttf)
-OUT_FONTS := $(SRC_FONTS:./%.ttf=../bin/%.png)
+OUT_FONTS := $(SRC_FONTS:./%.ttf=../bin/$(OS)/%.png)
 
 REMOVE = rm -f
 
@@ -21,22 +21,22 @@ all: images sounds music fonts
 
 images: $(OUT_IMAGES)
 
-../bin/%.png: ./%.xcf
+../bin/$(OS)/%.png: ./%.xcf
 	convert $< -background none -flatten $@
 
 sounds: $(OUT_SOUNDS)
 
-../bin/%.ogg: ./%.wav
+../bin/$(OS)/%.ogg: ./%.wav
 	ffmpeg -v 0 -i $< -codec:a libvorbis $@
 
 music: $(OUT_MUSIC)
 
-../bin/%.ogg: ./%.mp3
+../bin/$(OS)/%.ogg: ./%.mp3
 	ffmpeg -v 0 -i $< -codec:a libvorbis $@
 
 fonts: $(OUT_FONTS)
 
-../bin/%.png: ./%.ttf
+../bin/$(OS)/%.png: ./%.ttf
 	./make_font.py --out $@ --size 16 $<
 
 clean_images:

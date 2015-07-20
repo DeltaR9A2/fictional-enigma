@@ -2,7 +2,7 @@
 COMMAND = sed s:TYPE:$(TYPE):g <$< >$@
 
 SRCDIR := ../
-OBJDIR := ../../obj
+OBJDIR := ../../obj/$(OS)
 
 LISTS := rect item
 LIST_SOURCES := $(LISTS:%=$(SRCDIR)/%_list.c)
