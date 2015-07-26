@@ -10,14 +10,6 @@
 #include "sdl_helpers.h"
 
 #ifdef WINDOWS
-	#pragma comment(lib, "lua51")
-	#pragma comment(lib, "SDL2")
-	#pragma comment(lib, "SDL2_gfx")
-	#pragma comment(lib, "SDL2_mixer")
-	#pragma comment(lib, "SDL2_image")
-#endif
-
-#ifdef WINDOWS
 	#include <direct.h>
 	#define GetCurrentDir _getcwd
 #else
