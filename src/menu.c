@@ -42,6 +42,10 @@ menu_t *menu_create(game_t *game){
 	
 	menu->selection = 0;
 	
+	// Default position in top-left of screen, 8 pixels from edges.
+	menu->x_pos = 8;
+	menu->y_pos = 8;
+	
 	return menu;
 }
 
@@ -145,15 +149,13 @@ void menu_activate(menu_t *menu){
 	menu_draw_buffer(menu);
 }
 
-
-
 void menu_draw(menu_t *menu, SDL_Surface *surface){
 	if(menu->buffer == NULL){
 		menu_draw_buffer(menu);
 	}else{
 		SDL_Rect draw_rect;
-		draw_rect.x = surface->w - (menu->buffer->w + 8);
-		draw_rect.y = surface->h - (menu->buffer->h + 8);
+		draw_rect.x = menu->x_pos;
+		draw_rect.y = menu->y_pos;
 	
 		SDL_BlitSurface(menu->buffer, NULL, surface, &draw_rect);
 	}

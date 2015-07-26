@@ -19,7 +19,6 @@ option_t *option_create(char *label, void (*action)(menu_t*));
 void option_delete(option_t *option);
 void option_activate(option_t *option, menu_t *menu);
 
-
 extern const uint32_t MENU_MAX_OPTIONS;
 
 struct menu_t{
@@ -29,6 +28,8 @@ struct menu_t{
 	SDL_Surface *buffer;
 	uint8_t num_options;
 	uint8_t selection;
+	
+	uint32_t x_pos, y_pos;
 };
 
 menu_t *menu_create(game_t *game);
