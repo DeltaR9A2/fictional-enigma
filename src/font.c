@@ -132,7 +132,13 @@ void font_draw_string_part(font_t *font, const char *string, int32_t len, int32_
 int32_t font_get_width(font_t *font, const char *string){
 	int32_t w = 0;
 	for(uint32_t i=0; i<strlen(string); i++){
-		w += font->glyphs[(int)string[i]]->w;
+		uint8_t ascii_code = (int)string[i];
+		if(font->glyphs[ascii_code] != NULL){
+			w -= font->head_kerns[ascii_code];
+			w += font->glyphs[ascii_code]->w;
+			w -= font->tail_kerns[ascii_code];
+			w += 1;
+		}
 	}
 	return w;
 }
