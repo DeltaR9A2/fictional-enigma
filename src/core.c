@@ -58,7 +58,7 @@ void core_window_resize(core_t *core, int32_t w, int32_t h){
 	core->win_cw = w;
 	core->win_ch = h;
 	
-	double scale = core_get_scale(core);
+	double scale = (int)core_get_scale(core);
 	
 	core->active_rect.w = (int)(scale * core->win_vw);
 	core->active_rect.h = (int)(scale * core->win_vh);

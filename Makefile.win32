@@ -3,7 +3,7 @@
 export OS := win32
 export CC := i686-w64-mingw32-gcc
 export PC := i686-w64-mingw32-pkg-config
-export PACKAGES := sdl2 SDL2_image SDL2_mixer SDL2_gfx lua5.1
+export PACKAGES := sdl2 SDL2_image SDL2_mixer SDL2_gfx lua
 export TARGET := nnlaf.exe
 export CFLAGS := -std=c11 -O2 `$(PC) --cflags $(PACKAGES)` -I./src
 export LFLAGS := -Wl,-rpath,. `$(PC) --libs $(PACKAGES)` -lstdc++
@@ -11,7 +11,7 @@ export REMOVE  := rm -f
 ###############################
 
 # Debug Flags #####
-debug : export CFLAGS := $(CFLAGS) -Wall -Werror -D DEBUG
+debug : export CFLAGS := $(CFLAGS) -g -Wall -Werror -D DEBUG
 debug : export LFLAGS := $(LFLAGS)
 ###################
 

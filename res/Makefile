@@ -37,7 +37,7 @@ music: $(OUT_MUSIC)
 fonts: $(OUT_FONTS)
 
 ../bin/$(OS)/%.png: ./%.ttf
-	./make_font.py --out $@ --size 16 $<
+	./make_font.py --out $@ --size 24 $<
 
 clean_images:
 	$(REMOVE) $(OUT_IMAGES)

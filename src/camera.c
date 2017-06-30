@@ -7,7 +7,7 @@ camera_t *camera_create(void){
 	camera->view = rect_create();
 	camera->bounds = rect_create();
 	camera->buffer = NULL;
-	
+	camera->fade_buffer = NULL;
 	#ifdef DEBUG
 	camera->debug_buffer = NULL;
 	#endif
@@ -19,6 +19,9 @@ void camera_init(camera_t *camera, int32_t w, int32_t h){
 	camera->view->w = w;
 	camera->view->h = h;
 	camera->buffer = create_surface(w, h);
+	camera->fade_buffer = create_surface(w, h);
+	
+	camera_set_fade(camera, 0x00000000);
 	
 	#ifdef DEBUG
 	camera->debug_buffer = create_surface(w, h);
@@ -32,6 +35,10 @@ void camera_delete(camera_t *camera){
 	#ifdef DEBUG
 	SDL_FreeSurface(camera->buffer);
 	#endif
+}
+
+void camera_set_fade(camera_t *camera, int32_t color){
+  SDL_FillRect(camera->fade_buffer, NULL, color);
 }
 
 void camera_fill_rect(camera_t *camera, rect_t *rect, int32_t color){
@@ -79,7 +86,7 @@ void camera_draw_debug_info(camera_t *camera, game_t *game){
 	char buffer[128] = "\0";
 
 	int line_no = 0;
-	int line_h = 14;
+	int line_h = font_get_height(game->debug_font) + 2;
 
 	fill_rect.x = 0;
 	fill_rect.y = 0;
@@ -88,7 +95,7 @@ void camera_draw_debug_info(camera_t *camera, game_t *game){
 
 	SDL_FillRect(camera->debug_buffer, &fill_rect, 0x000000AA);
 	
-	#define PRINT_DEBUG_LINE font_draw_string(game->font, buffer, 4, 2 + (line_no * line_h), camera->debug_buffer); line_no++;
+	#define PRINT_DEBUG_LINE font_draw_string(game->debug_font, buffer, 4, 3 + (line_no * line_h), camera->debug_buffer); line_no++;
 
 	sprintf(buffer, "Win Size: %ix%i", game->core->win_cw, game->core->win_ch);
 	PRINT_DEBUG_LINE
@@ -120,7 +127,7 @@ void camera_draw_sprite(camera_t *camera, sprite_t *sprite){
 	draw_rect.x -= (int)camera->view->x;
 	draw_rect.y -= (int)camera->view->y;
 
-	anim_draw(sprite->anim, sprite->step, camera->buffer, &draw_rect);
+ 	anim_draw(sprite->anim, sprite->step, camera->buffer, &draw_rect);
 }
 
 void camera_draw_surface(camera_t *camera, SDL_Surface *surface){
@@ -208,6 +215,8 @@ void camera_draw_game(camera_t *camera, game_t *game){
 	
 	SDL_BlitSurface(camera->debug_buffer, NULL, camera->buffer, NULL);
 	#endif
+
+  SDL_BlitSurface(camera->fade_buffer, NULL, camera->buffer, NULL);
 }
 
 

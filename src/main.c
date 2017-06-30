@@ -28,11 +28,11 @@ int main_event_watch(void *data, SDL_Event *e){
 		core_window_resize(game->core, e->window.data1, e->window.data2);
 	}
 
-	#ifdef DEBUG
-	if(e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE){
-		game->core->running = false;
-	}
-	#endif
+//	#ifdef DEBUG
+//	if(e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE){
+//		game->core->running = false;
+//	}
+//	#endif
 
 	return 0;
 }
@@ -40,6 +40,13 @@ int main_event_watch(void *data, SDL_Event *e){
 char CURRENT_PATH[FILENAME_MAX];
 
 int main(void){
+  freopen("stdout.txt","w",stdout);
+  
+  printf("Size of int: %i \n", (int)sizeof(int));
+  printf("Size of SDL_Surface: %i \n", (int)sizeof(SDL_Surface));
+  printf("Size of SDL_Surface*: %i \n", (int)sizeof(SDL_Surface*));
+  printf("Size of SDL_Surface**: %i \n", (int)sizeof(SDL_Surface**));
+
 	if (!GetCurrentDir(CURRENT_PATH, sizeof(CURRENT_PATH))){ return 1; }
 
 	#ifdef DEBUG
@@ -84,6 +91,8 @@ int main(void){
 	clear_image_cache();
 	
 	SDL_Quit();
+	
+	fflush(stdout);
 	
 	return 0;
 }

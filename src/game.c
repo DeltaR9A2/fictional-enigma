@@ -76,6 +76,7 @@ void game_update_items(game_t *game){
 			item_update(iter->data);
 			do_physics_to_it(iter->data->body, game->terrain_rects, game->platform_rects);
 			if(rect_overlap(iter->data->body->rect, game->player->body->rect)){
+				game->hud->counter->count += 1;
 				iter->data->flags &= !ITEM_ALIVE;
 			}
 		}
@@ -83,17 +84,23 @@ void game_update_items(game_t *game){
 }
 
 game_t *game_create(core_t *core){
+  printf("Begin game_create.\n");
+  fflush(stdout);
+  
 	game_t *game = malloc(sizeof(game_t));
 
 	game->core = core;
 	game->step = 0;
-	game->mode = GAME_MODE_MENU;
+	game->mode = GAME_MODE_PLAY;
 
 	game_create_data_structures(game);
 
 	game->font = font_create("font_nokia.png");
-	game->menu = menu_create_main_menu(game);
+	game->debug_font = font_create("font_nokia.png");
 
+	game->menu = menu_create_main_menu(game);
+	game->hud = hud_create(game);
+	
 	camera_init(game->camera, 640, 360);
 
 	game->message = calloc(GAME_MESSAGE_LEN, sizeof(char));
@@ -104,14 +111,29 @@ game_t *game_create(core_t *core){
 	game->dialogue_surface = create_surface(640-256, 100);
 	game->dialogue_portrait = NULL;
 
-	lua_set_game(game);
+  printf("Creating LUA state.\n");
 	game->LUA = lua_create();
+	lua_set_game(game);
+	
+	printf("Loading LUA scripts... ");
 	luaL_loadfile(game->LUA, "init.lua");
-	lua_pcall(game->LUA, 0, LUA_MULTRET, 0);
+	printf("OK\n");
+	
+	printf("[>>> Begin LUA Execution <<<]\n");
+	int lua_return = lua_pcall(game->LUA, 0, LUA_MULTRET, 0);
+
+	if(lua_return != 0){
+	  printf("Lua Error: %s", lua_tostring(game->LUA, -1));
+	}
+	
+	printf("[>>> End LUA Execution <<<]\n");
+
+  fflush(stdout);
 
 	game->map_image = load_image("test_map_image.png");
 
 	player_update(game->player, game);
+	
 	game_update_targets(game);
 
 	return game;
@@ -159,10 +181,12 @@ void game_fast_frame(game_t *game){
 		}
 		if(controller_just_pressed(game->controller, BTN_START)){
 			game->mode = GAME_MODE_MENU;
+			camera_set_fade(game->camera, 0x000000CC);
 		}
 
 	}else if(game->mode == GAME_MODE_DIALOGUE){
-		if(controller_just_pressed(game->controller, BTN_A)){
+		if(controller_just_pressed(game->controller, BTN_A) ||
+			controller_just_pressed(game->controller, BTN_B)){
 			game->mode = GAME_MODE_PLAY;
 		}
 	}
@@ -185,6 +209,10 @@ void game_draw_dialogue(game_t *game){
 	SDL_BlitSurface(game->dialogue_surface, NULL, game->core->screen, &draw_rect);
 }
 
+void game_draw_hud(game_t *game){
+	counter_draw(game->hud->counter, game->core->screen); 
+}
+
 void game_full_frame(game_t *game){
 	SDL_Rect draw_rect;
 
@@ -198,6 +226,8 @@ void game_full_frame(game_t *game){
 		menu_draw(game->menu, game->core->screen);
 	}else if(game->mode == GAME_MODE_DIALOGUE){
 		game_draw_dialogue(game);
+	}else{
+		game_draw_hud(game);
 	}
 
 	if(game->message_timeout > 0){
@@ -207,6 +237,7 @@ void game_full_frame(game_t *game){
 
 		SDL_BlitSurface(game->message_surface, NULL, game->core->screen, &draw_rect);
 	}
+	
 }
 
 void game_create_data_structures(game_t *game){

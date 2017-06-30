@@ -11,8 +11,10 @@ anim_t *anim_create(void){
 }
 
 void anim_init(anim_t *anim, fset_t *fset, int start, int len, int fps){
+  printf("anim_init([*anim], [*fset], %i, %i, %i) \n", start, len, fps);
 	anim->len = len;
 	anim->fps = fps;
+	
 	anim->frames = malloc(sizeof(SDL_Surface*)*(anim->len));
 	
 	for(int i=0; i < anim->len; i++){

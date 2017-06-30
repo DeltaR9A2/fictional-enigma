@@ -42,7 +42,7 @@ menu_t *menu_create(game_t *game){
 	
 	menu->selection = 0;
 	
-	// Default position in top-left of screen, 8 pixels from edges.
+	// Default position in top-left of screen
 	menu->x_pos = 8;
 	menu->y_pos = 8;
 	
@@ -192,6 +192,7 @@ void menu_exit(menu_t *menu){
 
 void menu_new_game(menu_t *menu){
 	menu->game->mode = GAME_MODE_PLAY;
+	camera_set_fade(menu->game->camera, 0x00000000);
 }
 
 void menu_load_game(menu_t *menu){

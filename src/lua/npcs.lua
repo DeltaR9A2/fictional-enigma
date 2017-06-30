@@ -20,6 +20,6 @@ npc_sprite_data = {
 }
 
 for i, row in ipairs(npc_sprite_data) do
-	add_anim("npc_sprites", unpack(row));
+	add_anim("npc_sprites", table.unpack(row));
 end
 

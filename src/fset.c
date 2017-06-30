@@ -10,6 +10,7 @@ fset_t *fset_create(void){
 }
 
 void fset_init(fset_t *fset, const char *fn, int cols, int rows, bool flip){
+  printf("fset_init %s %i %i %s \n", fn, cols, rows, flip ? "true" : "false");
 	fset->len = cols * rows;
 	fset->frames = malloc(sizeof(SDL_Surface*)*(fset->len));
 

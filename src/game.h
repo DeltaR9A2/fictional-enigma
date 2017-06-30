@@ -17,6 +17,7 @@ extern const uint32_t GAME_MESSAGE_LEN;
 
 #include "core.h"
 
+#include "hud.h"
 #include "font.h"
 #include "menu.h"
 #include "mixer.h"
@@ -38,9 +39,11 @@ struct game_t{
 	uint32_t mode;
 
 	font_t *font;
+	font_t *debug_font;
 
 	controller_t *controller;
 	
+	hud_t *hud;
 	menu_t *menu;
 	
 	mixer_t *mixer;

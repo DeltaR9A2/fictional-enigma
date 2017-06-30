@@ -8,14 +8,19 @@ add_anim("item_sprites", "item_candy", 1, 1, 8, false)
 add_anim("item_sprites", "item_heart", 2, 1, 8, false)
 add_anim("item_sprites", "item_star", 3, 1, 8, false)
 
-add_item(200, 100, "item_candy");
+-- add_item(200, 100, "item_candy");
 add_item(1400, 100, "item_candy");
 add_item(1450, 100, "item_candy");
 add_item(1500, 100, "item_candy");
 add_item(1550, 100, "item_candy");
 add_item(1600, 100, "item_candy");
+add_item(1600, 100, "item_candy");
 
-add_item(1050, 400, "item_star");
+add_item(1050, 400, "item_candy");
+
+add_item(1950, 740, "item_candy");
+add_item(1925, 740, "item_candy");
+add_item(1900, 740, "item_candy");
 
 add_fset("fx_sprites", "fx_ice_spike.png", 8, 1, false)
 add_anim("fx_sprites", "fx_ice_spike", 0, 8, 12, false)
@@ -44,7 +49,7 @@ dialogue_event_data = {
 
 function dialogue_event_func(config)
 	print(config);
-	simple_dialogue(unpack(dialogue_event_data[config]));
+	simple_dialogue(table.unpack(dialogue_event_data[config]));
 end
 
 function message_event_func(config)

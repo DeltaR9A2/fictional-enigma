@@ -69,6 +69,10 @@ static int lua_add_fset(lua_State *L){
 	int rows = (int)luaL_checkinteger(L,4);
 	bool flip = lua_toboolean(L,5);
 
+	#ifdef DEBUG
+		printf("Adding FSet %s %s %i %i %i\n", fset_name, file_name, cols, rows, flip);
+	#endif
+
 	fset_t *fset = fset_dict_get(GAME->fsets, fset_name);
 	fset_init(fset, file_name, cols, rows, flip);
 	
@@ -79,12 +83,10 @@ static int lua_add_anim(lua_State *L){
 	const char *fset_name = luaL_checkstring(L,1);
 	const char *anim_name = luaL_checkstring(L,2);
 	int start = (int)luaL_checkinteger(L,3);
-	int length = (int)luaL_checkinteger(L,4);
+	int length = atoi(luaL_checkstring(L,4));
 	int rate = (int)luaL_checkinteger(L,5);
 	
-	#ifdef DEBUG
-		printf("Adding Anim %s %s %i %i %i\n", fset_name, anim_name, start, length, rate);
-	#endif
+  printf("Adding Anim %s %s %i %i %i\n", fset_name, anim_name, start, length, rate);
 
 	fset_t *fset = fset_dict_get(GAME->fsets, fset_name);
 	anim_t *anim = anim_dict_get(GAME->anims, anim_name);
@@ -218,9 +220,21 @@ static lua_binding_t bindings[] = {
 };
 
 static void lua_bind_functions(){
+  #ifdef DEBUG
+  printf("Binding lua functions...\n");
+  #endif
+  
 	for(int i=0; bindings[i].function != NULL; i++){
+	  #ifdef DEBUG
+	  printf(">>> %s ... ", bindings[i].lua_name);
+	  #endif
+	  
 		lua_pushcfunction(LUA, bindings[i].function);
 		lua_setglobal(LUA, bindings[i].lua_name);
+		
+		#ifdef DEBUG
+		printf("OK\n");
+		#endif
 	}
 }
 
