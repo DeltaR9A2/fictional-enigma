@@ -1,5 +1,7 @@
 print("Begin Lua Script: targets.lua");
 
+load_map("map_test.png", "map_test_image.png");
+
 add_fset("item_sprites", "item_sprites.png", 16, 16, false)
 add_anim("item_sprites", "item_money_bag", 0, 1, 8, false)
 add_anim("item_sprites", "item_candy", 1, 1, 8, false)
@@ -44,15 +46,6 @@ dialogue_event_data = {
 	["tutorial_pentagram"] = {pentagram, "Tutorial dialogue 007."},
 	["tutorial_venus"]     = {venus,     "Tutorial dialogue 008."}
 }
-
-function dialogue_event_func(config)
-	print(config);
-	simple_dialogue(table.unpack(dialogue_event_data[config]));
-end
-
-function message_event_func(config)
-	simple_message(config);
-end
 
 add_event("dialogue_tutorial_anarchy",   "dialogue_event_func", "tutorial_anarchy");
 add_event("dialogue_tutorial_biohazard", "dialogue_event_func", "tutorial_biohazard");

@@ -14,9 +14,9 @@ player_t *player_create(void){
 	
 	player->flashing = 0;
    
-	player->body->rect->x = 213*8;
-	player->body->rect->y = 49*8;
-	player->body->rect->w = 30;
+	player->body->rect->x = 0;
+	player->body->rect->y = 0;
+	player->body->rect->w = 24;
 	player->body->rect->h = 38;
 	
 	player->fall_speed = 10.0;

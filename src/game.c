@@ -111,6 +111,9 @@ game_t *game_create(core_t *core){
 	game->dialogue_surface = create_surface(640-256, 100);
 	game->dialogue_portrait = NULL;
 
+	game_load_map(game, "map_default.png", "map_default_image.png");	
+	game->player->body->rect->x = (128 - (game->player->body->rect->w/2));
+	game->player->body->rect->y = (128 - (game->player->body->rect->h/2));
   printf("Creating LUA state.\n");
 	game->LUA = lua_create();
 	lua_set_game(game);
@@ -120,17 +123,13 @@ game_t *game_create(core_t *core){
 	printf("OK\n");
 	
 	printf("[>>> Begin LUA Execution <<<]\n");
-	int lua_return = lua_pcall(game->LUA, 0, LUA_MULTRET, 0);
-
-	if(lua_return != 0){
-	  printf("Lua Error: %s", lua_tostring(game->LUA, -1));
-	}
 	
+	// Turns out an unprotected LUA call is better than protected if all you
+	// want is a crash with file and line number.
+	lua_call(game->LUA, 0, 0);
+
 	printf("[>>> End LUA Execution <<<]\n");
 
-  fflush(stdout);
-
-	game->map_image = load_image("test_map_image.png");
 
 	player_update(game->player, game);
 	
@@ -150,6 +149,57 @@ void game_delete(game_t *game){
 	game_delete_data_structures(game);
 
 	free(game);
+}
+
+void game_reset_map(game_t *game){
+	item_list_delete(game->items);
+	target_dict_delete(game->targets);
+	event_dict_delete(game->events);
+	rect_list_delete(game->terrain_rects);
+ 	rect_list_delete(game->platform_rects);
+	
+	game->platform_rects = rect_list_create();
+	game->terrain_rects = rect_list_create();
+	game->events = event_dict_create();
+	game->targets = target_dict_create();
+	game->items = item_list_create();
+}
+
+void game_load_map(game_t *game, const char *map_fn, const char *image_fn){
+	game_reset_map(game);
+
+	SDL_Surface *map_data = load_image(map_fn);
+
+	cmap_t *terrain_cmap = cmap_create();
+	cmap_init(terrain_cmap, 0, 0, map_data->w, map_data->h);
+
+	cmap_t *platform_cmap = cmap_create();
+	cmap_init(platform_cmap, 0, 0, map_data->w, map_data->h);
+
+	for(int i=0; i < map_data->w * map_data->h; i++){
+		uint32_t pixel = ((Uint32 *)map_data->pixels)[i];
+
+		if(pixel == 0x333366FF){
+			terrain_cmap->data[i] = 1;
+			platform_cmap->data[i] = 0;
+		}else if(pixel == 0x9999DDFF){
+			terrain_cmap->data[i] = 0;
+			platform_cmap->data[i] = 1;
+		}else{
+			terrain_cmap->data[i] = 0;
+			platform_cmap->data[i] = 0;
+		}
+	}
+
+	cmap_add_to_rect_list(terrain_cmap, game->terrain_rects);
+	cmap_delete(terrain_cmap);
+
+	cmap_add_to_rect_list(platform_cmap, game->platform_rects);
+	cmap_delete(platform_cmap);
+
+	rect_init(game->camera->bounds, 0, 0, map_data->w * 8, map_data->h * 8);
+
+	game->map_image = load_image(image_fn);
 }
 
 void game_fast_frame(game_t *game){

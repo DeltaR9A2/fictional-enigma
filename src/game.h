@@ -85,6 +85,8 @@ struct game_t{
 game_t *game_create(core_t *core);
 void game_delete(game_t *game);
 
+void game_load_map(game_t *game, const char *map_fn, const char *image_fn);
+
 void game_fast_frame(game_t *game);
 void game_full_frame(game_t *game);
 

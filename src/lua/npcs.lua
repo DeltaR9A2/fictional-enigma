@@ -16,7 +16,8 @@ npc_sprite_data = {
 	{"npc_010",       10, 1, 1},
 	{"npc_011",       11, 1, 1},
 	{"npc_012",       12, 1, 1},
-	{"npc_013",       13, 1, 1}
+	{"npc_013",       13, 1, 1},
+	{"npc_door",          64, 1, 1}
 }
 
 for i, row in ipairs(npc_sprite_data) do

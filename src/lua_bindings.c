@@ -26,39 +26,11 @@ void lua_set_game(game_t *game){
 }
 
 static int lua_load_map(lua_State *L){
-	const char *filename = luaL_checkstring(L,1);
-
-	SDL_Surface *map_image = load_image(filename);
-
-	cmap_t *terrain_cmap = cmap_create();
-	cmap_init(terrain_cmap, 0, 0, map_image->w, map_image->h);
-
-	cmap_t *platform_cmap = cmap_create();
-	cmap_init(platform_cmap, 0, 0, map_image->w, map_image->h);
-
-	for(int i=0; i < map_image->w * map_image->h; i++){
-		uint32_t pixel = ((Uint32 *)map_image->pixels)[i];
-
-		if(pixel == 0x333366FF){
-			terrain_cmap->data[i] = 1;
-			platform_cmap->data[i] = 0;
-		}else if(pixel == 0x9999DDFF){
-			terrain_cmap->data[i] = 0;
-			platform_cmap->data[i] = 1;
-		}else{
-			terrain_cmap->data[i] = 0;
-			platform_cmap->data[i] = 0;
-		}
-	}
-
-	cmap_add_to_rect_list(terrain_cmap, GAME->terrain_rects);
-	cmap_delete(terrain_cmap);
-
-	cmap_add_to_rect_list(platform_cmap, GAME->platform_rects);
-	cmap_delete(platform_cmap);
-
-	rect_init(GAME->camera->bounds, 0, 0, map_image->w * 8, map_image->h * 8);
+	const char *map_fn = luaL_checkstring(L,1);
+	const char *map_image_fn = luaL_checkstring(L,2);
 	
+	game_load_map(GAME, map_fn, map_image_fn);
+		
 	return 0;
 }
 
@@ -188,7 +160,15 @@ static int lua_simple_message(lua_State *L){
 static int lua_move_player_to_target(lua_State *L){
 	const char *target_name = luaL_checkstring(L, 1);
 	
+	#ifdef DEBUG
+		printf("Moving player to target %s \n", target_name);
+	#endif
+
 	target_t *target = target_dict_get(GAME->targets, target_name);
+
+	#ifdef DEBUG
+		printf(">>> Move to position %f, %f \n", rect_get_mid_x(target->rect), rect_get_mid_y(target->rect));
+	#endif
 
 	rect_move_to(GAME->player->body->rect, target->rect);
 

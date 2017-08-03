@@ -1,5 +1,7 @@
 print("Begin Lua Script: targets.lua");
 
+load_map("test_map.png", "test_map_image.png");
+
 add_fset("item_sprites", "item_sprites.png", 16, 16, false)
 add_anim("item_sprites", "item_money_bag", 0, 1, 8, false)
 add_anim("item_sprites", "item_candy", 1, 1, 8, false)

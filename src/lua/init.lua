@@ -15,7 +15,21 @@ add_trigger(name, x, y, w, h, event)
 
 print("Begin Lua Script: init.lua");
 
-load_map("test_map.png");
+function dialogue_event_func(config)
+	print(config);
+	simple_dialogue(table.unpack(dialogue_event_data[config]));
+end
+
+function message_event_func(config)
+	simple_message(config);
+end
+
+function goto_func(config)
+	dofile("map_" .. config .. ".lua")
+end
 
 dofile("pcs.lua")
-dofile("targets.lua")
+dofile("npcs.lua")
+
+dofile("map_test.lua")
+dofile("map_room_001.lua")
