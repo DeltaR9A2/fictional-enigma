@@ -1,8 +1,16 @@
 #include <stdlib.h>
 
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 #include "TYPE_dict.h"
 
 TYPE_node_t *_TYPE_node_create(const char *name){
+		#ifdef DEBUG
+		printf("Creating new TYPE_dict node for name %s.\n", name);
+		#endif
+
     TYPE_node_t *node = malloc(sizeof(TYPE_node_t));
     node->data = TYPE_create();
     node->next = NULL;

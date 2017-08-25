@@ -1,8 +1,16 @@
 #include <stdlib.h>
 
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 #include "anim_dict.h"
 
 anim_node_t *_anim_node_create(const char *name){
+		#ifdef DEBUG
+		printf("Creating new anim_dict node for name %s.\n", name);
+		#endif
+
     anim_node_t *node = malloc(sizeof(anim_node_t));
     node->data = anim_create();
     node->next = NULL;

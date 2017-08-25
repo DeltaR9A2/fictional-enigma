@@ -1,8 +1,16 @@
 #include <stdlib.h>
 
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 #include "event_dict.h"
 
 event_node_t *_event_node_create(const char *name){
+		#ifdef DEBUG
+		printf("Creating new event_dict node for name %s.\n", name);
+		#endif
+
     event_node_t *node = malloc(sizeof(event_node_t));
     node->data = event_create();
     node->next = NULL;

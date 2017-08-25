@@ -46,17 +46,19 @@ void game_set_dialogue(game_t *game, const char *portrait, const char *message){
 	sprintf(game->dialogue_content, message);
 }
 
-void game_update_targets(game_t *game){
+void game_update_map(game_t *game){
+	if(game->active_map == NULL){ return; }
+	
+	map_update(game->active_map);
+
 	target_t *nearest_target = NULL;
 	int32_t nearest_distance = 9999;
 	int32_t current_distance = 9999;
 
-	for(target_node_t *iter = game->targets->head; iter; iter = iter->next){
-		if (iter->data->sprite != NULL){
-			iter->data->sprite->step += 1;
-
+	for(target_node_t *iter = game->active_map->targets->head; iter; iter = iter->next){
+		if(iter->data->sprite != NULL){
 			current_distance = (int32_t)rect_range_to(iter->data->sprite->rect, game->player->body->rect);
-			if (current_distance < nearest_distance){
+			if(current_distance < nearest_distance){
 				nearest_distance = current_distance;
 				nearest_target = iter->data;
 			}
@@ -68,19 +70,20 @@ void game_update_targets(game_t *game){
 	}else{
 		game->active_target = NULL;
 	}
-}
 
-void game_update_items(game_t *game){
-	for(item_node_t *iter = game->items->head; iter; iter = iter->next){
+	for(item_node_t *iter = game->active_map->items->head; iter; iter = iter->next){
 		if(iter->data->flags & ITEM_ALIVE){
-			item_update(iter->data);
-			do_physics_to_it(iter->data->body, game->terrain_rects, game->platform_rects);
 			if(rect_overlap(iter->data->body->rect, game->player->body->rect)){
 				game->hud->counter->count += 1;
 				iter->data->flags &= !ITEM_ALIVE;
 			}
 		}
 	}
+}
+
+static void game_add_default_map(game_t *game){
+	map_t *map = map_dict_get(game->maps, "default");
+	map_init(map, "map_default.png", "map_default_image.png");
 }
 
 game_t *game_create(core_t *core){
@@ -111,9 +114,11 @@ game_t *game_create(core_t *core){
 	game->dialogue_surface = create_surface(640-256, 100);
 	game->dialogue_portrait = NULL;
 
-	game_load_map(game, "map_default.png", "map_default_image.png");	
+	game_add_default_map(game);
+	game_select_map(game, "default");
 	game->player->body->rect->x = (128 - (game->player->body->rect->w/2));
 	game->player->body->rect->y = (128 - (game->player->body->rect->h/2));
+	
   printf("Creating LUA state.\n");
 	game->LUA = lua_create();
 	lua_set_game(game);
@@ -133,7 +138,7 @@ game_t *game_create(core_t *core){
 
 	player_update(game->player, game);
 	
-	game_update_targets(game);
+	game_update_map(game);
 
 	return game;
 }
@@ -151,55 +156,11 @@ void game_delete(game_t *game){
 	free(game);
 }
 
-void game_reset_map(game_t *game){
-	item_list_delete(game->items);
-	target_dict_delete(game->targets);
-	event_dict_delete(game->events);
-	rect_list_delete(game->terrain_rects);
- 	rect_list_delete(game->platform_rects);
+void game_select_map(game_t *game, const char *map_name){
+	game->active_map = map_dict_get(game->maps, map_name);
+	game->active_target = NULL;
 	
-	game->platform_rects = rect_list_create();
-	game->terrain_rects = rect_list_create();
-	game->events = event_dict_create();
-	game->targets = target_dict_create();
-	game->items = item_list_create();
-}
-
-void game_load_map(game_t *game, const char *map_fn, const char *image_fn){
-	game_reset_map(game);
-
-	SDL_Surface *map_data = load_image(map_fn);
-
-	cmap_t *terrain_cmap = cmap_create();
-	cmap_init(terrain_cmap, 0, 0, map_data->w, map_data->h);
-
-	cmap_t *platform_cmap = cmap_create();
-	cmap_init(platform_cmap, 0, 0, map_data->w, map_data->h);
-
-	for(int i=0; i < map_data->w * map_data->h; i++){
-		uint32_t pixel = ((Uint32 *)map_data->pixels)[i];
-
-		if(pixel == 0x333366FF){
-			terrain_cmap->data[i] = 1;
-			platform_cmap->data[i] = 0;
-		}else if(pixel == 0x9999DDFF){
-			terrain_cmap->data[i] = 0;
-			platform_cmap->data[i] = 1;
-		}else{
-			terrain_cmap->data[i] = 0;
-			platform_cmap->data[i] = 0;
-		}
-	}
-
-	cmap_add_to_rect_list(terrain_cmap, game->terrain_rects);
-	cmap_delete(terrain_cmap);
-
-	cmap_add_to_rect_list(platform_cmap, game->platform_rects);
-	cmap_delete(platform_cmap);
-
-	rect_init(game->camera->bounds, 0, 0, map_data->w * 8, map_data->h * 8);
-
-	game->map_image = load_image(image_fn);
+	rect_match_to(game->camera->bounds, game->active_map->rect);
 }
 
 void game_fast_frame(game_t *game){
@@ -221,8 +182,7 @@ void game_fast_frame(game_t *game){
 
 	}else if(game->mode == GAME_MODE_PLAY){
 		player_update(game->player, game);
-		game_update_targets(game);
-		game_update_items(game);
+		game_update_map(game);
 
 		if(controller_just_pressed(game->controller, BTN_A)){
 			if(game->active_target != NULL){
@@ -299,21 +259,26 @@ void game_create_data_structures(game_t *game){
 	game->fsets = fset_dict_create();
 	game->anims = anim_dict_create();
 
-	game->terrain_rects = rect_list_create();
-	game->platform_rects = rect_list_create();
+//	game->terrain_rects = rect_list_create();
+//	game->platform_rects = rect_list_create();
 
+	game->maps = map_dict_create();
 	game->events = event_dict_create();
-	game->targets = target_dict_create();
-	game->items = item_list_create();
+
+//	game->targets = target_dict_create();
+//	game->items = item_list_create();
 }
 
 void game_delete_data_structures(game_t *game){
-	item_list_delete(game->items);
-	target_dict_delete(game->targets);
-	event_dict_delete(game->events);
+//	item_list_delete(game->items);
+//	target_dict_delete(game->targets);
 
-	rect_list_delete(game->platform_rects);
-	rect_list_delete(game->terrain_rects);
+	event_dict_delete(game->events);
+	map_dict_delete(game->maps);
+	
+//	rect_list_delete(game->platform_rects);
+//	rect_list_delete(game->terrain_rects);
+
 	anim_dict_delete(game->anims);
 	fset_dict_delete(game->fsets);
 

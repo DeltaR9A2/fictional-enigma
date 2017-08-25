@@ -25,13 +25,14 @@ extern const uint32_t GAME_MESSAGE_LEN;
 #include "player.h"
 #include "controller.h"
 
-#include "rect_list.h"
-#include "item_list.h"
-
 #include "fset_dict.h"
 #include "anim_dict.h"
+
 #include "event_dict.h"
-#include "target_dict.h"
+#include "map_dict.h"
+
+#include "map.h"
+#include "target.h"
 
 struct game_t{
 	core_t *core;
@@ -55,15 +56,9 @@ struct game_t{
 	player_t *player;
 
 	event_dict_t *events;
-	target_dict_t *targets;
+	map_dict_t *maps;
 
-	rect_list_t *terrain_rects;
-	rect_list_t *platform_rects;
-
-	item_list_t *items;
-
-	SDL_Surface *map_image;
-
+	map_t *active_map;
 	target_t *active_target;
 
 	lua_State *LUA;
@@ -85,10 +80,10 @@ struct game_t{
 game_t *game_create(core_t *core);
 void game_delete(game_t *game);
 
-void game_load_map(game_t *game, const char *map_fn, const char *image_fn);
-
 void game_fast_frame(game_t *game);
 void game_full_frame(game_t *game);
+
+void game_select_map(game_t *game, const char *map_name);
 
 void game_set_message(game_t *game, const char *text);
 void game_set_dialogue(game_t *game, const char *portrait, const char *message);

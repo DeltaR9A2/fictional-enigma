@@ -65,7 +65,7 @@ void camera_debug_rect(camera_t *camera, rect_t *rect, int32_t color){
 }
 
 void camera_draw_terrain_rects(camera_t *camera, game_t *game){
-	rect_node_t *iter = game->terrain_rects->head;
+	rect_node_t *iter = game->active_map->terrain_rects->head;
 	while(iter != NULL){
 		camera_debug_rect(camera, iter->data, 0x33336644);
 		iter = iter->next;
@@ -73,7 +73,7 @@ void camera_draw_terrain_rects(camera_t *camera, game_t *game){
 }
 
 void camera_draw_platform_rects(camera_t *camera, game_t *game){
-	rect_node_t *iter = game->platform_rects->head;
+	rect_node_t *iter = game->active_map->platform_rects->head;
 	while(iter != NULL){
 		camera_debug_rect(camera, iter->data, 0x7777AA44);
 		iter = iter->next;
@@ -155,7 +155,7 @@ void camera_draw_player(camera_t *camera, player_t *player){
 
 void camera_draw_targets(camera_t *camera, game_t *game)
 {
-	target_node_t *iter = game->targets->head;
+	target_node_t *iter = game->active_map->targets->head;
 	while(iter != NULL)
 	{
 
@@ -172,7 +172,7 @@ void camera_draw_targets(camera_t *camera, game_t *game)
 }
 
 void camera_draw_items(camera_t *camera, game_t *game){
-	item_node_t *iter = game->items->head;
+	item_node_t *iter = game->active_map->items->head;
 	while(iter != NULL){
 		if(iter->data->flags & ITEM_ALIVE){
 			if(iter->data->sprite != NULL){
@@ -204,7 +204,7 @@ void camera_draw_game(camera_t *camera, game_t *game){
 	camera_draw_platform_rects(camera, game);
 	#endif
 	
-	camera_draw_surface(camera, game->map_image);
+	camera_draw_surface(camera, game->active_map->image);
 	camera_draw_targets(camera, game);
 	camera_draw_items(camera, game);
 

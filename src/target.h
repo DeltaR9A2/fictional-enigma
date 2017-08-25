@@ -13,6 +13,7 @@ struct target_t{
   rect_t *rect;
   sprite_t *sprite;
   event_t *event;
+ 	uint32_t flags;
 };
 
 target_t *target_create(void);

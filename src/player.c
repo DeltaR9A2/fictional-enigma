@@ -49,7 +49,7 @@ void player_update(player_t *player, game_t *game){
 	
 	player_update_controls(player, game);
 	player_update_animation(player, game);
-	do_physics_to_it(player->body, game->terrain_rects, game->platform_rects);
+	do_physics_to_it(player->body, game->active_map->terrain_rects, game->active_map->platform_rects);
 	rect_move_to(player->sprite->rect, player->body->rect);
 }
 

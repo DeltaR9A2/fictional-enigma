@@ -1,8 +1,16 @@
 #include <stdlib.h>
 
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 #include "target_dict.h"
 
 target_node_t *_target_node_create(const char *name){
+		#ifdef DEBUG
+		printf("Creating new target_dict node for name %s.\n", name);
+		#endif
+
     target_node_t *node = malloc(sizeof(target_node_t));
     node->data = target_create();
     node->next = NULL;

@@ -2,6 +2,8 @@
 
 
 static game_t *GAME = NULL;
+static map_t *MAP = NULL;
+
 static lua_State *LUA = NULL;
 
 static void lua_bind_functions();
@@ -25,12 +27,27 @@ void lua_set_game(game_t *game){
 	GAME = game;
 }
 
-static int lua_load_map(lua_State *L){
-	const char *map_fn = luaL_checkstring(L,1);
-	const char *map_image_fn = luaL_checkstring(L,2);
+static int lua_add_map(lua_State *L){
+	const char *map_name = luaL_checkstring(L,1);
+	const char *map_fn = luaL_checkstring(L,2);
+	const char *map_image_fn = luaL_checkstring(L,3);
 	
-	game_load_map(GAME, map_fn, map_image_fn);
-		
+	map_t *map = map_dict_get(GAME->maps, map_name);
+	
+	map_init(map, map_fn, map_image_fn);
+	
+	MAP = map;
+	
+	return 0;
+}
+
+static int lua_edit_map(lua_State *L){
+	const char *map_name = luaL_checkstring(L,1);
+
+	map_t *map = map_dict_get(GAME->maps, map_name);
+
+	MAP = map;
+	
 	return 0;
 }
 
@@ -73,7 +90,7 @@ static int lua_add_item(lua_State *L){
 	int item_y = luaL_checkinteger(L,2);
 	const char *anim_name = luaL_checkstring(L,3);
 	
-	item_t *item = item_list_get_dead(GAME->items);
+	item_t *item = item_list_get_dead(MAP->items);
 	
 	item->body->rect->x = item_x;
 	item->body->rect->y = item_y;
@@ -124,7 +141,7 @@ static int lua_add_target(lua_State *L){
 		printf("Configuring Target: %s %i %i %s %s\n", target_name, target_x, target_y, anim_name, event_name);
 	#endif
 
-	target_t *target = target_dict_get(GAME->targets, target_name);
+	target_t *target = target_dict_get(MAP->targets, target_name);
 	target->rect->x = target_x;
 	target->rect->y = target_y;
 	target->rect->w = 8;
@@ -157,6 +174,13 @@ static int lua_simple_message(lua_State *L){
 	return 0;
 }
 
+static int lua_move_player_to_map(lua_State *L){
+	const char *map_name = luaL_checkstring(L, 1);
+	game_select_map(GAME, map_name);
+	
+	return 0;
+}
+
 static int lua_move_player_to_target(lua_State *L){
 	const char *target_name = luaL_checkstring(L, 1);
 	
@@ -164,7 +188,8 @@ static int lua_move_player_to_target(lua_State *L){
 		printf("Moving player to target %s \n", target_name);
 	#endif
 
-	target_t *target = target_dict_get(GAME->targets, target_name);
+	//GAME->active_map = MAP;
+	target_t *target = target_dict_get(GAME->active_map->targets, target_name);
 
 	#ifdef DEBUG
 		printf(">>> Move to position %f, %f \n", rect_get_mid_x(target->rect), rect_get_mid_y(target->rect));
@@ -181,19 +206,20 @@ typedef struct lua_binding_t{
 } lua_binding_t;
 
 static lua_binding_t bindings[] = {
-	{lua_load_map, "load_map"},
-
 	{lua_add_fset, "add_fset"},
 	{lua_add_anim, "add_anim"},
 
+	{lua_add_map, "add_map"},
 	{lua_add_item, "add_item"},
 	{lua_add_event, "add_event"},
 	{lua_add_target, "add_target"},
-//	{lua_add_trigger, "add_trigger"},
+
+	{lua_edit_map, "edit_map"},
 	
 	{lua_simple_dialogue, "simple_dialogue"},
 	{lua_simple_message,  "simple_message"},
 
+	{lua_move_player_to_map, "move_player_to_map"},
 	{lua_move_player_to_target, "move_player_to_target"},
 
 	{NULL, NULL} // Last element marker.

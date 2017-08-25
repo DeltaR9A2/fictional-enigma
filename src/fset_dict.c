@@ -1,8 +1,16 @@
 #include <stdlib.h>
 
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 #include "fset_dict.h"
 
 fset_node_t *_fset_node_create(const char *name){
+		#ifdef DEBUG
+		printf("Creating new fset_dict node for name %s.\n", name);
+		#endif
+
     fset_node_t *node = malloc(sizeof(fset_node_t));
     node->data = fset_create();
     node->next = NULL;
