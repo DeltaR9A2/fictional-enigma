@@ -10,7 +10,7 @@ typedef struct anim_dict_t anim_dict_t;
 struct anim_node_t{
     anim_t *data;
     anim_node_t *next;
-    char name[32];
+    char name[64];
 };
 
 struct anim_dict_t{

@@ -14,7 +14,7 @@ event_node_t *_event_node_create(const char *name){
     event_node_t *node = malloc(sizeof(event_node_t));
     node->data = event_create();
     node->next = NULL;
-    strncpy(node->name, name, 31);
+    strncpy(node->name, name, 63);
     return node;
 }
 
@@ -38,7 +38,7 @@ event_t *event_dict_get(event_dict_t *dict, const char *name){
     event_node_t *iter = dict->head;
     
     while(iter != NULL){
-        if(strcmp(name, iter->name) == 0){
+        if(strncmp(name, iter->name, 63) == 0){
             return iter->data;
         }else if(iter->next == NULL){
             iter->next = _event_node_create(name);

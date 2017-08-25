@@ -10,7 +10,7 @@ typedef struct fset_dict_t fset_dict_t;
 struct fset_node_t{
     fset_t *data;
     fset_node_t *next;
-    char name[32];
+    char name[64];
 };
 
 struct fset_dict_t{

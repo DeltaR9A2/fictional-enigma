@@ -110,7 +110,7 @@ void camera_draw_debug_info(camera_t *camera, game_t *game){
 	PRINT_DEBUG_LINE
 
 	int npc_x = ((int)(game->player->body->rect->x/8.0)*8);
-	int npc_y = ((int)((game->player->body->rect->y-26)/8.0)*8);
+	int npc_y = ((int)((game->player->body->rect->y-26)/8.0)*8)+8;
 
 	sprintf(buffer, "NPC Pos: %i,%i", npc_x, npc_y);
 	PRINT_DEBUG_LINE

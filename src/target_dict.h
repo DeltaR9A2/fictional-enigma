@@ -10,7 +10,7 @@ typedef struct target_dict_t target_dict_t;
 struct target_node_t{
     target_t *data;
     target_node_t *next;
-    char name[32];
+    char name[64];
 };
 
 struct target_dict_t{

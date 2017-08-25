@@ -129,6 +129,44 @@ void font_draw_string_part(font_t *font, const char *string, int32_t len, int32_
 	font_draw_string(font, temp, x, y, target);
 }
 
+void font_wrap_string(font_t *font, const char *string, int32_t x, int32_t y, int32_t w, SDL_Surface *target){
+	char temp[1024];
+	int32_t h = font_get_height(font);
+	int32_t line_start = 0;
+	int32_t line_end = 0;
+	strncpy(temp, string+line_start, line_end-line_start);
+	
+	while(line_end < strlen(string)){
+		line_end += 1;
+
+		strncpy(temp, &(string[line_start]), line_end-line_start);
+		temp[line_end-line_start] = '\0';
+
+		if(font_get_width(font, temp) > w){
+			int32_t temp_end = line_end-1;
+			while(string[line_end] != ' '){
+				line_end -= 1;
+				if(line_end == 0){
+					line_end = temp_end;
+					break;
+				}
+			}
+			
+			strncpy(temp, &(string[line_start]), line_end-line_start);
+			temp[line_end-line_start] = '\0';
+
+			font_draw_string(font, temp, x, y, target);
+			line_start = line_end + 1;
+			line_end = line_start + 1;
+			y += h;
+		}
+		
+		if(line_end == strlen(string)){
+			font_draw_string(font, &(string[line_start]), x, y, target);
+		}
+	}
+}
+
 int32_t font_get_width(font_t *font, const char *string){
 	int32_t w = 0;
 	for(uint32_t i=0; i<strlen(string); i++){

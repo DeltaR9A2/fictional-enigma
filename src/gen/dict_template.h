@@ -10,7 +10,7 @@ typedef struct TYPE_dict_t TYPE_dict_t;
 struct TYPE_node_t{
     TYPE_t *data;
     TYPE_node_t *next;
-    char name[32];
+    char name[64];
 };
 
 struct TYPE_dict_t{

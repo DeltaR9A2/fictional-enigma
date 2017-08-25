@@ -10,7 +10,7 @@ typedef struct image_dict_t image_dict_t;
 struct image_node_t{
     image_t *data;
     image_node_t *next;
-    char name[32];
+    char name[64];
 };
 
 struct image_dict_t{

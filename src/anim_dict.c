@@ -14,7 +14,7 @@ anim_node_t *_anim_node_create(const char *name){
     anim_node_t *node = malloc(sizeof(anim_node_t));
     node->data = anim_create();
     node->next = NULL;
-    strncpy(node->name, name, 31);
+    strncpy(node->name, name, 63);
     return node;
 }
 
@@ -38,7 +38,7 @@ anim_t *anim_dict_get(anim_dict_t *dict, const char *name){
     anim_node_t *iter = dict->head;
     
     while(iter != NULL){
-        if(strcmp(name, iter->name) == 0){
+        if(strncmp(name, iter->name, 63) == 0){
             return iter->data;
         }else if(iter->next == NULL){
             iter->next = _anim_node_create(name);

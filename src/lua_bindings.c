@@ -152,6 +152,8 @@ static int lua_add_target(lua_State *L){
 	rect_set_l_edge(target->sprite->rect, rect_get_l_edge(target->rect));
 	rect_set_t_edge(target->sprite->rect, rect_get_t_edge(target->rect));
 
+	rect_match_to(target->rect, target->sprite->rect);
+
 	target->event = event_dict_get(GAME->events, event_name);
 	
 	return 0;

@@ -10,7 +10,7 @@ typedef struct event_dict_t event_dict_t;
 struct event_node_t{
     event_t *data;
     event_node_t *next;
-    char name[32];
+    char name[64];
 };
 
 struct event_dict_t{

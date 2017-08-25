@@ -14,7 +14,7 @@ image_node_t *_image_node_create(const char *name){
     image_node_t *node = malloc(sizeof(image_node_t));
     node->data = image_create();
     node->next = NULL;
-    strncpy(node->name, name, 31);
+    strncpy(node->name, name, 63);
     return node;
 }
 
@@ -38,7 +38,7 @@ image_t *image_dict_get(image_dict_t *dict, const char *name){
     image_node_t *iter = dict->head;
     
     while(iter != NULL){
-        if(strcmp(name, iter->name) == 0){
+        if(strncmp(name, iter->name, 63) == 0){
             return iter->data;
         }else if(iter->next == NULL){
             iter->next = _image_node_create(name);

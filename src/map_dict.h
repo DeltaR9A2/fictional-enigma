@@ -10,7 +10,7 @@ typedef struct map_dict_t map_dict_t;
 struct map_node_t{
     map_t *data;
     map_node_t *next;
-    char name[32];
+    char name[64];
 };
 
 struct map_dict_t{

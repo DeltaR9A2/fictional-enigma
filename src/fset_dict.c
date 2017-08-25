@@ -14,7 +14,7 @@ fset_node_t *_fset_node_create(const char *name){
     fset_node_t *node = malloc(sizeof(fset_node_t));
     node->data = fset_create();
     node->next = NULL;
-    strncpy(node->name, name, 31);
+    strncpy(node->name, name, 63);
     return node;
 }
 
@@ -38,7 +38,7 @@ fset_t *fset_dict_get(fset_dict_t *dict, const char *name){
     fset_node_t *iter = dict->head;
     
     while(iter != NULL){
-        if(strcmp(name, iter->name) == 0){
+        if(strncmp(name, iter->name, 63) == 0){
             return iter->data;
         }else if(iter->next == NULL){
             iter->next = _fset_node_create(name);

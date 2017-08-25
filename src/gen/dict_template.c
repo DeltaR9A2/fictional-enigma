@@ -14,7 +14,7 @@ TYPE_node_t *_TYPE_node_create(const char *name){
     TYPE_node_t *node = malloc(sizeof(TYPE_node_t));
     node->data = TYPE_create();
     node->next = NULL;
-    strncpy(node->name, name, 31);
+    strncpy(node->name, name, 63);
     return node;
 }
 
@@ -38,7 +38,7 @@ TYPE_t *TYPE_dict_get(TYPE_dict_t *dict, const char *name){
     TYPE_node_t *iter = dict->head;
     
     while(iter != NULL){
-        if(strcmp(name, iter->name) == 0){
+        if(strncmp(name, iter->name, 63) == 0){
             return iter->data;
         }else if(iter->next == NULL){
             iter->next = _TYPE_node_create(name);

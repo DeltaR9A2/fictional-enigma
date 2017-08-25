@@ -212,7 +212,7 @@ void game_draw_dialogue(game_t *game){
 	SDL_FillRect(game->dialogue_surface, NULL, 0x000000FF);
 
 	if(dialogue_timer < strlen(game->dialogue_content)){	dialogue_timer += 1;	}
-	font_draw_string_part(game->font, game->dialogue_content, dialogue_timer, 8, 3, game->dialogue_surface);
+	font_wrap_string(game->font, game->dialogue_content, 8, 3, 368, game->dialogue_surface);
 
 	draw_rect.x = game->dialogue_portrait->w;
 	draw_rect.y = 380-100;

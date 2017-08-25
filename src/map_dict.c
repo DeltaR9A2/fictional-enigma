@@ -14,7 +14,7 @@ map_node_t *_map_node_create(const char *name){
     map_node_t *node = malloc(sizeof(map_node_t));
     node->data = map_create();
     node->next = NULL;
-    strncpy(node->name, name, 31);
+    strncpy(node->name, name, 63);
     return node;
 }
 
@@ -38,7 +38,7 @@ map_t *map_dict_get(map_dict_t *dict, const char *name){
     map_node_t *iter = dict->head;
     
     while(iter != NULL){
-        if(strcmp(name, iter->name) == 0){
+        if(strncmp(name, iter->name, 63) == 0){
             return iter->data;
         }else if(iter->next == NULL){
             iter->next = _map_node_create(name);
