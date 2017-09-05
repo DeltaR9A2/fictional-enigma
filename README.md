@@ -6,9 +6,7 @@ NNLAF is a game combining elements of 2D platformers, visual novels, and JRPGs. 
 
 This game is being developed on a 64bit Arch Linux system using the traditional GNU toolchain (make, gcc, sed, etc). The makefiles also use imagemagick and ffmpeg to convert some of the game's graphics and audio during the build process.
 
-The game is also known to compile correctly on 64bit Microsoft Windows 8; the "msvc" folder contains project files for Microsoft Visual Studio Express 2013 that should compile the game correctly. At present, the windows build process is still experimental and incomplete so don't expect too much from it.
-
-As of mid-July 2015, the game has been cross-compiled using mingw to produce an i686-compatible exe that seems to work on most windows machines. This will probably replace MSVC support in the near future.
+The windows version is cross-compiled from linux using the mingw version of GCC.
 
 Known Dependencies:
 * LUA - http://lua.org/
