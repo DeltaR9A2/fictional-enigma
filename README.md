@@ -13,7 +13,7 @@ Known Dependencies:
 * SDL2 - http://libsdl.org/
   * SDL2_image - http://www.libsdl.org/projects/SDL_image/
   * SDL2_mixer - http://www.libsdl.org/projects/SDL_mixer/
-  * SDL2_gfx - http://cms.ferzkopp.net/index.php/software/13-sdl-gfx
+  * SDL2_gfx - http://www.ferzkopp.net/wordpress/2016/01/02/sdl_gfx-sdl2_gfx/
 * ImageMagick - http://www.imagemagick.org/
 * ffmpeg - https://www.ffmpeg.org/
 
