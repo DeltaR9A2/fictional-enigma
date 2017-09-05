@@ -58,5 +58,5 @@ add_target("npc_dth", 552, 640+8,  "npc_heart",   "dialogue_tutorial_heart");
 add_target("npc_dtp", 800, 64+8,  "npc_pentagram",   "dialogue_tutorial_pentagram");
 add_target("npc_dtv", 1232, 64+8,  "npc_venus",   "dialogue_tutorial_venus");
 
-add_target("new_game_spawn", 200,  128, "npc_spawn_point", "none");
+add_target("new_game_spawn", 200,  136, "npc_spawn_point", "none");
 
