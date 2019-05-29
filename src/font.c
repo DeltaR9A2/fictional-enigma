@@ -134,7 +134,10 @@ void font_wrap_string(font_t *font, const char *string, int32_t x, int32_t y, in
 	int32_t h = font_get_height(font);
 	int32_t line_start = 0;
 	int32_t line_end = 0;
-	strncpy(temp, string+line_start, line_end-line_start);
+
+//  This line generates a warning and doesn't appear to do anything.
+//  I don't remember why I put it here, so I'm commenting it out for now.
+//	strncpy(temp, string+line_start, line_end-line_start);
 	
 	while(line_end < strlen(string)){
 		line_end += 1;
