@@ -24,85 +24,32 @@ end
 
 function do_nothing(config) end
 
-add_event("none", "do_nothing", "")
+add_event("none", "do_nothing", "");
 
 print("Begin Lua Script: pcs.lua");
 
-static_framesets = {
-    {"p_frost_f_r", "player_frost_female.png",  8,  8, false},
-    {"p_frost_f_l", "player_frost_female.png",  8,  8, true },
 
-    {"p_generic_r", "player_generic.png",  8,  8, false},
-    {"p_generic_l", "player_generic.png",  8,  8, true }
-}
+add_fset("p_generic_r", "player_generic.png",  8,  8, false);
+add_fset("p_generic_l", "player_generic.png",  8,  8, true );
 
-static_animations = {
-    {"p_frost_f_r", "frost_f_idle_r",  0,  4,  5},
-    {"p_frost_f_r", "frost_f_move_r",  8,  8, 10},
-    {"p_frost_f_r", "frost_f_jump_r", 16,  2,  8},
-    {"p_frost_f_r", "frost_f_hang_r", 18,  2,  8},
-    {"p_frost_f_r", "frost_f_fall_r", 20,  2,  8},
-    {"p_frost_f_r", "frost_f_skid_r", 22,  2,  8},
+add_anim("p_generic_r", "generic_idle_r",  0,  1,  5);
+add_anim("p_generic_r", "generic_move_r",  8,  6, 10);
+add_anim("p_generic_r", "generic_jump_r", 16,  1,  8);
+add_anim("p_generic_r", "generic_hang_r", 18,  1,  8);
+add_anim("p_generic_r", "generic_fall_r", 20,  1,  8);
+add_anim("p_generic_r", "generic_skid_r", 22,  1,  8);
 
-    {"p_frost_f_l", "frost_f_idle_l",  0,  4,  5},
-    {"p_frost_f_l", "frost_f_move_l",  8,  8, 10},
-    {"p_frost_f_l", "frost_f_jump_l", 16,  2,  8},
-    {"p_frost_f_l", "frost_f_hang_l", 18,  2,  8},
-    {"p_frost_f_l", "frost_f_fall_l", 20,  2,  8},
-    {"p_frost_f_l", "frost_f_skid_l", 22,  2,  8},
-
-
-    {"p_generic_r", "generic_idle_r",  0,  1.0,  5},
-    {"p_generic_r", "generic_move_r",  8,  6, 10},
-    {"p_generic_r", "generic_jump_r", 16,  1,  8},
-    {"p_generic_r", "generic_hang_r", 18,  1,  8},
-    {"p_generic_r", "generic_fall_r", 20,  1,  8},
-    {"p_generic_r", "generic_skid_r", 22,  1,  8},
-
-    {"p_generic_l", "generic_idle_l",  0,  1.0,  5},
-    {"p_generic_l", "generic_move_l",  8,  6, 10},
-    {"p_generic_l", "generic_jump_l", 16,  1,  8},
-    {"p_generic_l", "generic_hang_l", 18,  1,  8},
-    {"p_generic_l", "generic_fall_l", 20,  1,  8},
-    {"p_generic_l", "generic_skid_l", 22,  1,  8}
-}
-
--- Welcome to the Blender
-for i, row in ipairs(static_framesets) do
-  print("add_fset", table.unpack(row));
-	add_fset(table.unpack(row))
-end
--- VrrrrRRRrrrrRRRRrrrrrrrrr....
-for i, row in ipairs(static_animations) do
-  print("add_anim", table.unpack(row));
-	add_anim(table.unpack(row))
-end
-
+add_anim("p_generic_l", "generic_idle_l",  0,  1,  5);
+add_anim("p_generic_l", "generic_move_l",  8,  6, 10);
+add_anim("p_generic_l", "generic_jump_l", 16,  1,  8);
+add_anim("p_generic_l", "generic_hang_l", 18,  1,  8);
+add_anim("p_generic_l", "generic_fall_l", 20,  1,  8);
+add_anim("p_generic_l", "generic_skid_l", 22,  1,  8);
 
 add_fset("npc_sprites", "npc_sprites.png",  16,  8, false)
 
-npc_sprite_data = {
-	{"npc_anarchy",      0, 1, 1},
-	{"npc_biohazard",    1, 1, 1},
-	{"npc_danger",       2, 1, 1},
-	{"npc_radiation",    3, 1, 1},
-	{"npc_frost",        4, 1, 1},
-	{"npc_heart",        5, 1, 1},
-	{"npc_pentagram",    6, 1, 1},
-	{"npc_venus",        7, 1, 1},
-	{"npc_vitae",        8, 1, 1},
-	{"npc_009",          9, 1, 1},
-	{"npc_010",         10, 1, 1},
-	{"npc_011",         11, 1, 1},
-	{"npc_012",         12, 1, 1},
-	{"npc_013",         13, 1, 1},
-	{"npc_door",        64, 1, 1},
-	{"npc_spawn_point", 65, 1, 1},
-}
-
-for i, row in ipairs(npc_sprite_data) do
-	add_anim("npc_sprites", table.unpack(row));
-end
+add_anim("npc_sprites", "npc_door",        64, 1, 1);
+add_anim("npc_sprites", "npc_spawn_point", 65, 1, 1);
 
 local links = {
 --name = {map_name, target_name}
@@ -154,14 +101,19 @@ edit_map("test_map");
 add_target("new_game_spawn", 200,  136, "npc_spawn_point", "none");
 
 add_fset("item_sprites", "item_sprites.png", 16, 16, false)
-add_anim("item_sprites", "item_money_bag", 0, 1, 8, false)
-add_anim("item_sprites", "item_candy", 1, 1, 8, false)
-add_anim("item_sprites", "item_heart", 2, 1, 8, false)
-add_anim("item_sprites", "item_star", 3, 1, 8, false)
 
-for i=1, 16 do add_item(1400 + i*16, 100, "item_candy") end
-add_item(1050, 400, "item_candy");
-for i=1, 3 do add_item(1900 + i*16, 740, "item_candy") end
+--add_anim(fset, name, start, length, fps)
+add_anim("item_sprites", "item_money_bag",  0, 1, 8)
+add_anim("item_sprites", "item_candy",      1, 1, 8)
+add_anim("item_sprites", "item_heart",      2, 1, 8)
+add_anim("item_sprites", "item_star",       3, 1, 8)
+add_anim("item_sprites", "item_star_angry", 4, 1, 8)
+add_anim("item_sprites", "item_gear_big",   5, 1, 8)
+add_anim("item_sprites", "item_gear",       6, 1, 8)
+
+for i=1, 16 do add_item(1400 + i*16, 100, "item_gear") end
+add_item(1050, 400, "item_gear");
+for i=1, 3 do add_item(1900 + i*16, 740, "item_gear") end
 
 
 move_player_to_map("test_map")
