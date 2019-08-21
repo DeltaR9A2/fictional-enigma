@@ -75,7 +75,9 @@ static int lua_add_anim(lua_State *L){
 	int length = atoi(luaL_checkstring(L,4));
 	int rate = (int)luaL_checkinteger(L,5);
 	
-  printf("Adding Anim %s %s %i %i %i\n", fset_name, anim_name, start, length, rate);
+	#ifdef DEBUG
+        printf("Adding Anim %s %s %i %i %i\n", fset_name, anim_name, start, length, rate);
+    #endif
 
 	fset_t *fset = fset_dict_get(GAME->fsets, fset_name);
 	anim_t *anim = anim_dict_get(GAME->anims, anim_name);
